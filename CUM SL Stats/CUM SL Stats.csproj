@@ -1,0 +1,287 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4DC62B3D-D44D-4157-9487-0E97C97928C5}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>SKYNET</RootNamespace>
+    <AssemblyName>CUM SL Notes</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>logo-horizontal.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>D:\Instaladores\Programación\Projects\SKYNET Seguimiento a Egresados MES\SKYNET Seguimiento a Egresados MES\bin\Debug\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.2, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts">
+      <HintPath>D:\Instaladores\Programación\Projects\SKYNET Seguimiento a Egresados MES\SKYNET Seguimiento a Egresados MES\bin\Debug\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.WinForms">
+      <HintPath>D:\Instaladores\Programación\Projects\SKYNET Seguimiento a Egresados MES\SKYNET Seguimiento a Egresados MES\bin\Debug\LiveCharts.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf">
+      <HintPath>D:\Instaladores\Programación\Projects\SKYNET Seguimiento a Egresados MES\SKYNET Seguimiento a Egresados MES\bin\Debug\LiveCharts.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="SKYNET.SQLite">
+      <HintPath>D:\Instaladores\Programación\Projects\Skynet.SQLite\SKYNET.SQLite\bin\Debug\SKYNET.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="frmAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAbout.Designer.cs">
+      <DependentUpon>frmAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSettings.Designer.cs">
+      <DependentUpon>frmSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Controls\SKYNET_Label.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GUI\Controls\SKYNET_SexSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Controls\SKYNET_SexSelector.Designer.cs">
+      <DependentUpon>SKYNET_SexSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\SubjectList_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\SubjectList_Control.Designer.cs">
+      <DependentUpon>SubjectList_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\EvaluationList_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\EvaluationList_Control.Designer.cs">
+      <DependentUpon>EvaluationList_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\Evaluation_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\Evaluation_Control.Designer.cs">
+      <DependentUpon>Evaluation_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\Group_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\Group_Control.Designer.cs">
+      <DependentUpon>Group_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\Stats\StatsSelector_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\Stats\StatsSelector_Control.Designer.cs">
+      <DependentUpon>StatsSelector_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\Import_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\Import_Control.Designer.cs">
+      <DependentUpon>Import_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\Stats\SubjectStats_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\Stats\SubjectStats_Control.Designer.cs">
+      <DependentUpon>SubjectStats_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\Subject_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\Subject_Control.Designer.cs">
+      <DependentUpon>Subject_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\Student_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\Student_Control.Designer.cs">
+      <DependentUpon>Student_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\Career_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\Career_Control.Designer.cs">
+      <DependentUpon>Career_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\SchoolCource_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\SchoolCource_Control.Designer.cs">
+      <DependentUpon>SchoolCource_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Controls\SKYNET_TextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Controls\SKYNET_TextBox.designer.cs">
+      <DependentUpon>SKYNET_TextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\BlurExtentions.cs" />
+    <Compile Include="Helpers\Extentions.cs" />
+    <Compile Include="Managers\ChartManager.cs" />
+    <Compile Include="Managers\Manager.cs" />
+    <Compile Include="Managers\SettingsManager.cs" />
+    <Compile Include="frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Controls\SKYNET_Button.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GUI\Controls\SKYNET_TabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Helpers\modCommon.cs" />
+    <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\Subject.cs" />
+    <Compile Include="Models\Career.cs" />
+    <Compile Include="Models\Evaluation.cs" />
+    <Compile Include="Models\RegisterType.cs" />
+    <Compile Include="Models\Student.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\SchoolCource.cs" />
+    <EmbeddedResource Include="frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAbout.resx">
+      <DependentUpon>frmAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSettings.resx">
+      <DependentUpon>frmSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Controls\SKYNET_SexSelector.resx">
+      <DependentUpon>SKYNET_SexSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\SubjectList_Control.resx">
+      <DependentUpon>SubjectList_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\EvaluationList_Control.resx">
+      <DependentUpon>EvaluationList_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\Evaluation_Control.resx">
+      <DependentUpon>Evaluation_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\Group_Control.resx">
+      <DependentUpon>Group_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\Stats\StatsSelector_Control.resx">
+      <DependentUpon>StatsSelector_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\Import_Control.resx">
+      <DependentUpon>Import_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\Stats\SubjectStats_Control.resx">
+      <DependentUpon>SubjectStats_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\Subject_Control.resx">
+      <DependentUpon>Subject_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\Student_Control.resx">
+      <DependentUpon>Student_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\Career_Control.resx">
+      <DependentUpon>Career_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\SchoolCource_Control.resx">
+      <DependentUpon>SchoolCource_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Controls\SKYNET_TextBox.resx">
+      <DependentUpon>SKYNET_TextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="logo-horizontal.ico" />
+    <None Include="Resources\índice.png" />
+    <None Include="Resources\user_male.png" />
+    <None Include="Resources\user_male_Selected.png" />
+    <None Include="Resources\female_user_Sekected.png" />
+    <None Include="Resources\female_user.png" />
+    <None Include="Resources\logo-footer.png" />
+    <None Include="Resources\logo-horizontal.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
