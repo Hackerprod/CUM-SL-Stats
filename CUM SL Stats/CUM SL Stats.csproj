@@ -276,6 +276,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo-horizontal.ico" />
+    <Content Include="SKYNET.SQLite.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sqlite3.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\índice.png" />
     <None Include="Resources\user_male.png" />
     <None Include="Resources\user_male_Selected.png" />
