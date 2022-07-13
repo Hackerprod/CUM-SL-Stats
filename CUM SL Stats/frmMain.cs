@@ -24,7 +24,7 @@ namespace SKYNET
         public static frmMain frm;
         public static SettingsManager Settings;
         public static SQLiteDatabase DB;
-        public static Manager Manager;
+        public static DBManager Manager;
 
         public RegisterType CurrentRegisterType;
         public TabPage LastTab;
@@ -49,7 +49,7 @@ namespace SKYNET
                 DB = new SQLiteDatabase(System.IO.Path.Combine("Data", "DB.db"));
             }
 
-            Manager = new Manager(DB);
+            Manager = new DBManager(DB);
             Manager.Initialize();
             LastTab = tabPage_Home;
 
@@ -599,7 +599,7 @@ namespace SKYNET
                 Settings.DBPath = openDialog.FileName;
                 //Settings.Save();
                 DB = new SQLiteDatabase(openDialog.FileName);
-                Manager = new Manager(DB);
+                Manager = new DBManager(DB);
                 Manager.Initialize();
                 LoadStats();
             }

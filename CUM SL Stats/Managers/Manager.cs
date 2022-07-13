@@ -8,7 +8,7 @@ using SQLite;
 
 namespace SKYNET.Managers
 {
-    public class Manager
+    public class DBManager
     {
         private SQLiteDatabase DB;
 
@@ -19,7 +19,7 @@ namespace SKYNET.Managers
         public List<Subject> Subjects => DB.GetTables<Subject>();
         public List<Group> Groups => DB.GetTables<Group>();
 
-        public Manager(SQLiteDatabase dB)
+        public DBManager(SQLiteDatabase dB)
         {
             this.DB = dB;
         }

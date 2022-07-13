@@ -40,7 +40,7 @@ namespace SKYNET
                 Settings.DBPath = openDialog.FileName;
                 //Settings.Save();
                 DB = new SQLiteDatabase(openDialog.FileName);
-                Manager = new Managers.Manager(DB);
+                Manager = new Managers.DBManager(DB);
                 Manager.Initialize();
                 frm.LoadStats();
             }
