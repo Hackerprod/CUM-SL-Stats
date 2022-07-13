@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SKYNET.Models;
 using SQLite;
 
@@ -203,25 +201,31 @@ namespace SKYNET.Managers
         public List<Career> GetCareers(SchoolCource cource)
         {
             var careers = new List<Career>();
-            var allgroups = GetActiveGroups(cource.ID);
-            var groups = new List<Group>();
-
-            foreach (var group in allgroups)
+            try
             {
-                var current = groups.Find(g => g.CourceID == group.CourceID && g.CareerID == group.CareerID);
-                if (current == null)
+                var allgroups = GetActiveGroups(cource.ID);
+                var groups = new List<Group>();
+
+                foreach (var group in allgroups)
                 {
-                    groups.Add(group);
+                    var current = groups.Find(g => g.CourceID == group.CourceID && g.CareerID == group.CareerID);
+                    if (current == null)
+                    {
+                        groups.Add(group);
+                    }
+                }
+
+                foreach (var group in groups)
+                {
+                    var Career = GetCareer(group.CareerID);
+                    if (Career != null && careers.Find(c => c.ID == Career.ID || c.Name == Career.Name) == null)
+                    {
+                        careers.Add(Career);
+                    }
                 }
             }
-
-            foreach (var group in groups)
+            catch
             {
-                var Career = GetCareer(group.CareerID);
-                if (Career != null && careers.Find(c => c.ID == Career.ID || c.Name == Career.Name) == null)
-                {
-                    careers.Add(Career);
-                }
             }
             return careers;
         }

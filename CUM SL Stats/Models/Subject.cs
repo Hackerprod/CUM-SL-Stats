@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SQLite;
 
 namespace SKYNET.Models
@@ -19,12 +15,14 @@ namespace SKYNET.Models
         public Year Year { get; set; }
 
     }
+
     public enum Semester
     {
         Both,
         First,
         Second
     }
+
     public enum Year : int
     {
         Onknown = 0,
