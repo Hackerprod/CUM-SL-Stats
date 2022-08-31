@@ -56,12 +56,12 @@ namespace SKYNET.GUI.W_Controls
 
             if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out SchoolCource cource))
             {
-                modCommon.Show("El Curso seleccionado no es válido");
+                Common.Show("El Curso seleccionado no es válido");
                 return;
             }
             if (!CareerDB.GetCareer(CH_Career.Text, out Career career))
             {
-                modCommon.Show("La carrera seleccionada no es válida");
+                Common.Show("La carrera seleccionada no es válida");
                 return;
             }
 
@@ -72,7 +72,7 @@ namespace SKYNET.GUI.W_Controls
 
             if (!Subjects.Any())
             {
-                modCommon.Show("No existen Asignaturas registradas");
+                Common.Show("No existen Asignaturas registradas");
                 return;
             }
 
@@ -93,23 +93,23 @@ namespace SKYNET.GUI.W_Controls
         {
             if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out SchoolCource cource))
             {
-                modCommon.Show("El Curso seleccionado no es válido");
+                Common.Show("El Curso seleccionado no es válido");
                 return;
             }
             if (!CareerDB.GetCareer(CH_Career.Text, out Career career))
             {
-                modCommon.Show("La carrera seleccionada no es válida");
+                Common.Show("La carrera seleccionada no es válida");
                 return;
             }
             Semester semester = (Semester)CH_Semester.SelectedIndex;
             if (semester == Semester.Both)
             {
-                modCommon.Show("Debe seleccionar un semestre válido para agregar la asignatura." + Environment.NewLine + "Solo esta permitido agregarla en Primer semestre o Segundo semestre");
+                Common.Show("Debe seleccionar un semestre válido para agregar la asignatura." + Environment.NewLine + "Solo esta permitido agregarla en Primer semestre o Segundo semestre");
                 return;
             }
             if (SubjectDB.GetSubject(TB_SubjectName.Text, cource.ID, career.ID, semester, out Subject subject))
             {
-                modCommon.Show($"La asignatura \"{TB_SubjectName.Text}\" existe en el curso seleccionado");
+                Common.Show($"La asignatura \"{TB_SubjectName.Text}\" existe en el curso seleccionado");
                 return;
             }
             subject = new Subject()
@@ -122,11 +122,11 @@ namespace SKYNET.GUI.W_Controls
             };
             if (!SubjectDB.RegisterSubject(subject))
             {
-                modCommon.Show($"Error agregando la asignatura \"{TB_SubjectName.Text}\"");
+                Common.Show($"Error agregando la asignatura \"{TB_SubjectName.Text}\"");
                 return;
             }
 
-            modCommon.Show($"La asignatura \"{TB_SubjectName.Text}\" se ha agregado correctamente");
+            Common.Show($"La asignatura \"{TB_SubjectName.Text}\" se ha agregado correctamente");
             BT_Show_Click(null, null);
             TB_SubjectName.Text = "";
         }

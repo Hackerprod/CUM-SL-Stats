@@ -145,7 +145,7 @@ namespace SKYNET
                         {
                             if (notify)
                             {
-                                modCommon.Show($"El Curso {schoolCource.Name} se ha registrado correctamente");
+                                Common.Show($"El Curso {schoolCource.Name} se ha registrado correctamente");
                             }
                             SelectTab(LastTab);
                             LoadStats();
@@ -160,7 +160,7 @@ namespace SKYNET
                         {
                             if (notify)
                             {
-                                modCommon.Show($"La Carrera {Career.Name} se ha registrado correctamente");
+                                Common.Show($"La Carrera {Career.Name} se ha registrado correctamente");
                             }
                             SelectTab(LastTab);
                             return true;
@@ -175,7 +175,7 @@ namespace SKYNET
                         {
                             if (notify)
                             {
-                                modCommon.Show($"El estudiante {student.Names} se ha registrado correctamente");
+                                Common.Show($"El estudiante {student.Names} se ha registrado correctamente");
                             }
                             SelectTab(LastTab);
                             return true;
@@ -193,7 +193,7 @@ namespace SKYNET
                         {
                             if (notify)
                             {
-                                modCommon.Show($"La asignatura {subject.Name} se ha guardado correctamente");
+                                Common.Show($"La asignatura {subject.Name} se ha guardado correctamente");
                             }
                             SelectTab(LastTab);
                             return true;
@@ -209,7 +209,7 @@ namespace SKYNET
                         {
                             if (notify)
                             {
-                                modCommon.Show($"El Grupo {group.Name} se ha guardado correctamente");
+                                Common.Show($"El Grupo {group.Name} se ha guardado correctamente");
                             }
                             SelectTab(LastTab);
                             return true;
@@ -564,11 +564,11 @@ namespace SKYNET
             }
             if (student == null)
             {
-                modCommon.Show("Por favor, Marque el estudiante al que desea mostrar sus estadísticas");
+                Common.Show("Por favor, Marque el estudiante al que desea mostrar sus estadísticas");
             }
             else
             {
-                modCommon.Show("Implementar estadística para " + student.Names);
+                Common.Show("Implementar estadística para " + student.Names);
             }
         }
 
@@ -738,7 +738,7 @@ namespace SKYNET
             }
             catch 
             {
-                modCommon.Show("Seleccione el estudiante que desea editar");
+                Common.Show("Seleccione el estudiante que desea editar");
             }
         }
 
@@ -756,11 +756,11 @@ namespace SKYNET
                     SchoolCource Cource = (SchoolCource)item.SubItems[0].Tag;
                     if (SchoolCourceDB.RemoveCource(Cource))
                     {
-                        modCommon.Show($"El Curso {Cource.Name} se ha eliminado correctamente");
+                        Common.Show($"El Curso {Cource.Name} se ha eliminado correctamente");
                     }
                     else
                     {
-                        modCommon.Show($"Error eliminando el Curso {Cource.Name}");
+                        Common.Show($"Error eliminando el Curso {Cource.Name}");
                     }
                 }
             }
@@ -797,7 +797,7 @@ namespace SKYNET
                         }
                         else
                         {
-                            modCommon.Show($"Error eliminando el estudiante {KV.Key.Names}");
+                            Common.Show($"Error eliminando el estudiante {KV.Key.Names}");
                         }
                     }
                 }

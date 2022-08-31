@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
-using SKYNET;
-using SKYNET.Models;
 
-public class modCommon
+public class Common
 {
     public static string GetPath()
     {
@@ -39,7 +34,7 @@ public class modCommon
 
     internal static int GetTextSize(Control control, string text)
     {
-        return Convert.ToInt32(modCommon.GetTextSize(text, control.Font).Width);
+        return Convert.ToInt32(Common.GetTextSize(text, control.Font).Width);
     }
     public static SizeF GetTextSize(string text, Font font)
     {

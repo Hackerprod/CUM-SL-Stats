@@ -148,7 +148,7 @@ namespace SKYNET.Controls
                 };
                 if (!GroupDB.RegisterGroup(group))
                 {
-                    modCommon.Show($"Error creando el grupo {CB_Group.Text}");
+                    Common.Show($"Error creando el grupo {CB_Group.Text}");
                     return;
                 }
             }

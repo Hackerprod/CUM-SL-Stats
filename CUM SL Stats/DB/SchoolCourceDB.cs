@@ -30,7 +30,7 @@ namespace SKYNET.DB
                 DB.InsertOrUpdate(source);
                 return true;
             }
-            modCommon.Show($"El curso {source.Name} existe.");
+            Common.Show($"El curso {source.Name} existe.");
             return false;
         }
 
@@ -133,6 +133,11 @@ namespace SKYNET.DB
                 }
             }
             return Years;
+        }
+
+        public static SchoolCource GetCourceByName(string name)
+        {
+            return SchoolCources.Find(g => g.Name == name);
         }
 
         public static uint CreateCourceId()

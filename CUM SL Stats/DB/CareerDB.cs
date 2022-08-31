@@ -31,7 +31,7 @@ namespace SKYNET.DB
                 DB.InsertOrUpdate(source);
                 return true;
             }
-            modCommon.Show($"La carrera {source.Name} existe.");
+            Common.Show($"La carrera {source.Name} existe.");
             return false;
         }
 

@@ -28,7 +28,7 @@ namespace SKYNET.DB
             }
             else
             {
-                modCommon.Show("El estudiante ya se encuentra evaluado en el semestre seleccionado");
+                Common.Show("El estudiante ya se encuentra evaluado en el semestre seleccionado");
                 return false;
             }
         }

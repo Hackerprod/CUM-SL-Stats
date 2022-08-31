@@ -93,5 +93,10 @@ namespace SKYNET.DB
             Groups.Sort((s1, s2) => s2.ID.CompareTo(s1.ID));
             return Groups.Count == 0 ? 1 : Groups[Groups.Count - 1].ID + 1;
         }
+
+        internal static void UpdateGroup(Group group)
+        {
+            DB.InsertOrUpdate(group);
+        }
     }
 }

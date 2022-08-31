@@ -17,7 +17,7 @@ namespace SKYNET
 
         public SettingsManager()
         {
-            dataPath = Path.Combine(modCommon.GetPath(), "Data");
+            dataPath = Path.Combine(Common.GetPath(), "Data");
             settingsPath = Path.Combine(dataPath, "settings.json");
 
             if (!Directory.Exists(dataPath))

@@ -85,17 +85,17 @@ namespace SKYNET.GUI.W_Controls
 
             if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out SchoolCource cource))
             {
-                modCommon.Show("El Curso seleccionado no es válido");
+                Common.Show("El Curso seleccionado no es válido");
                 return;
             }
             if (!CareerDB.GetCareer(CH_Career.Text, out Career career))
             {
-                modCommon.Show("La carrera seleccionada no es válida");
+                Common.Show("La carrera seleccionada no es válida");
                 return;
             }
             if (!GroupDB.GetGroup(cource, career, CH_Group.Text, out Group group))
             {
-                modCommon.Show("El Grupo seleccionado no es válido");
+                Common.Show("El Grupo seleccionado no es válido");
                 return;
             }
 
@@ -152,7 +152,7 @@ namespace SKYNET.GUI.W_Controls
                     Text = subject.Name,
                     TextAlign = HorizontalAlignment.Center
                 };
-                column.Width = modCommon.GetTextSize(LV_Students, subject.Name) + 10;
+                column.Width = Common.GetTextSize(LV_Students, subject.Name) + 10;
                 column.Tag = subject;
                 LV_Students.Columns.Add(column);
             }
@@ -163,7 +163,7 @@ namespace SKYNET.GUI.W_Controls
 
             if (Evaluations.Count == 0)
             {
-                modCommon.Show($"No se han encontrado evaluaciones en el {semesterString}");
+                Common.Show($"No se han encontrado evaluaciones en el {semesterString}");
                 return;
             }
 

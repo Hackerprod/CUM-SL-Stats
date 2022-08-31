@@ -204,7 +204,7 @@
     <Compile Include="GUI\Controls\SKYNET_TabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Helpers\modCommon.cs" />
+    <Compile Include="Helpers\Common.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\Subject.cs" />
     <Compile Include="Models\Career.cs" />

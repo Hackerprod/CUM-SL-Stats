@@ -326,7 +326,7 @@ namespace SKYNET.GUI.W_Controls
                 }
             }
 
-            modCommon.Show($"Se han importado {registered} estudiantes de {Count} en el archivo");
+            Common.Show($"Se han importado {registered} estudiantes de {Count} en el archivo");
 
             if (done)
             {

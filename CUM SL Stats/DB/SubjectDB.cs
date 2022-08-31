@@ -30,7 +30,7 @@ namespace SKYNET.DB
                 DB.InsertOrUpdate(source);
                 return true;
             }
-            modCommon.Show($"La asignatura {source.Name} existe.");
+            Common.Show($"La asignatura {source.Name} existe.");
             return false;
         }
 
