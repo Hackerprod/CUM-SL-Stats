@@ -138,7 +138,7 @@ namespace SKYNET.DB
         public static uint CreateCourceId()
         {
             SchoolCources.Sort((s1, s2) => s1.ID.CompareTo(s2.ID));
-            return (SchoolCources.Any() && SchoolCources[0].ID <= 0U) ? 1 : SchoolCources[SchoolCources.Count - 1].ID + 1;
+            return SchoolCources.Count == 0 ? 1 : SchoolCources[SchoolCources.Count - 1].ID + 1;
         }
     }
 }

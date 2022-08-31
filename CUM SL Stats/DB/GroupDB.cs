@@ -91,7 +91,7 @@ namespace SKYNET.DB
         public static uint CreateGroupId()
         {
             Groups.Sort((s1, s2) => s2.ID.CompareTo(s1.ID));
-            return (Groups.Any() && Groups[0].ID <= 0U) ? 1 : Groups[Groups.Count - 1].ID + 1;
+            return Groups.Count == 0 ? 1 : Groups[Groups.Count - 1].ID + 1;
         }
     }
 }

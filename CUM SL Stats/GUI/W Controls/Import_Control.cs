@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using iTextSharp.text.pdf;
@@ -33,161 +29,164 @@ namespace SKYNET.GUI.W_Controls
             CH_SchoolCource.Items.Clear();
             Students.Clear();
 
-            PdfReader reader = new PdfReader(pdfFile);
-            List<string> pdfLines = new List<string>();
-
-            string pdfContent = "";
-            for (int page = 1; page <= reader.NumberOfPages; page++)
+            Task.Run(delegate 
             {
-                pdfContent = PdfTextExtractor.GetTextFromPage(reader, page, new SimpleTextExtractionStrategy());
-            }
-            reader.Close();
-            pdfLines = SplitLines(pdfContent);
-            File.WriteAllText("d:/reporte.txt", pdfContent);
-            Sex sex = Sex.Unknown;
+                PdfReader reader = new PdfReader(pdfFile);
+                List<string> pdfLines = new List<string>();
 
-            // Get SchoolCource ///////////////////////////////////////////////////////////
-
-            string CourceName = "";
-            var stringCources = pdfLines.FindAll(s => s.Contains("-"));
-            foreach (var stringCource in stringCources)
-            {
-                if (SchoolCourceDB.IsValidCourceName(stringCource, out string _courceName))
+                string pdfContent = "";
+                for (int page = 1; page <= reader.NumberOfPages; page++)
                 {
-                    CourceName = _courceName;
+                    pdfContent = PdfTextExtractor.GetTextFromPage(reader, page, new SimpleTextExtractionStrategy());
                 }
-            }
+                reader.Close();
+                pdfLines = SplitLines(pdfContent);
+                File.WriteAllText("d:/reporte.txt", pdfContent);
+                Sex sex = Sex.Unknown;
 
-            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
-            {
-                SchoolCource cource = SchoolCourceDB.SchoolCources[i];
-                CH_SchoolCource.Items.Add(cource.Name);
-                CH_SchoolCource.SelectedIndex = i;
-            }
+                // Get SchoolCource ///////////////////////////////////////////////////////////
 
-            for (int i = 0; i < CH_SchoolCource.Items.Count; i++)
-            {
-                object item = CH_SchoolCource.Items[i];
-                if (item.ToString() == CourceName)
+                string CourceName = "";
+                var stringCources = pdfLines.FindAll(s => s.Contains("-"));
+                foreach (var stringCource in stringCources)
                 {
+                    if (SchoolCourceDB.IsValidCourceName(stringCource, out string _courceName))
+                    {
+                        CourceName = _courceName;
+                    }
+                }
+
+                for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
+                {
+                    SchoolCource cource = SchoolCourceDB.SchoolCources[i];
+                    CH_SchoolCource.Items.Add(cource.Name);
                     CH_SchoolCource.SelectedIndex = i;
                 }
-            }
 
-            if (CH_SchoolCource.Text != CourceName)
-            {
-                CH_SchoolCource.Text = CourceName;
-            }
-
-            ///////////////////////////////////////////////////////////////////////////////
-
-            // Get Career /////////////////////////////////////////////////////////////////
-
-            string stringCareer = pdfLines.Find(s => s.Contains("Carrera:"));
-            if (!string.IsNullOrEmpty(stringCareer))
-            {
-                string[] parts = stringCareer.Split(':');
-                string career = parts[1].Contains(" Grupo") ? parts[1].Replace(" Grupo", "") : parts[1];
-
-                CH_Career.Text = career;
-
-            }
-
-            ///////////////////////////////////////////////////////////////////////////////
-
-            // Get Group name /////////////////////////////////////////////////////////////
-
-            string stringGroup = pdfLines.Find(s => s.Contains("Tipo de Curso:"));
-            if (!string.IsNullOrEmpty(stringGroup))
-            {
-                string[] parts = stringGroup.Split(new string[] { "Tipo de Curso:" }, StringSplitOptions.None);
-                string Name = parts[0];
-                while (Name.EndsWith(" "))
+                for (int i = 0; i < CH_SchoolCource.Items.Count; i++)
                 {
-                    string name = "";
-                    for (int i = 0; i < Name.Length; i++)
+                    object item = CH_SchoolCource.Items[i];
+                    if (item.ToString() == CourceName)
                     {
-                        if (i != Name.Length - 1)
+                        CH_SchoolCource.SelectedIndex = i;
+                    }
+                }
+
+                if (CH_SchoolCource.Text != CourceName)
+                {
+                    CH_SchoolCource.Text = CourceName;
+                }
+
+                ///////////////////////////////////////////////////////////////////////////////
+
+                // Get Career /////////////////////////////////////////////////////////////////
+
+                string stringCareer = pdfLines.Find(s => s.Contains("Carrera:"));
+                if (!string.IsNullOrEmpty(stringCareer))
+                {
+                    string[] parts = stringCareer.Split(':');
+                    string career = parts[1].Contains(" Grupo") ? parts[1].Replace(" Grupo", "") : parts[1];
+
+                    CH_Career.Text = career;
+
+                }
+
+                ///////////////////////////////////////////////////////////////////////////////
+
+                // Get Group name /////////////////////////////////////////////////////////////
+
+                string stringGroup = pdfLines.Find(s => s.Contains("Tipo de Curso:"));
+                if (!string.IsNullOrEmpty(stringGroup))
+                {
+                    string[] parts = stringGroup.Split(new string[] { "Tipo de Curso:" }, StringSplitOptions.None);
+                    string Name = parts[0];
+                    while (Name.EndsWith(" "))
+                    {
+                        string name = "";
+                        for (int i = 0; i < Name.Length; i++)
                         {
-                            name += Name[i];
+                            if (i != Name.Length - 1)
+                            {
+                                name += Name[i];
+                            }
+                        }
+                        Name = name;
+                    }
+                    CH_Group.Text = Name;
+                }
+
+                ///////////////////////////////////////////////////////////////////////////////
+
+                //Students Count //////////////////////////////////////////////////////////////
+
+                string studentsCount = pdfLines.Find(s => s.Contains(" Total de estudiantes:"));
+                if (!string.IsNullOrEmpty(studentsCount))
+                {
+                    string[] parts = studentsCount.Split(new string[] { " Total de estudiantes:" }, StringSplitOptions.None);
+                    string count = parts[0];
+                    int.TryParse(count, out Count);
+                }
+                if (Count > 0)
+                {
+                    for (int i = 1; i < Count + 1; i++)
+                    {
+                        string student = pdfLines.Find(s => s.EndsWith(i.ToString()));
+                        if (!string.IsNullOrEmpty(student) && student.Contains(" " + i.ToString()))
+                        {
+                            Student Student = GetStudent(student, i);
+                            if (Student == null)
+                            {
+                                string ProcessedLine = ProcessWrongLine(pdfLines, student);
+                                Student = GetStudent(ProcessedLine, i);
+                            }
+                            Students.Add(i, Student);
+                        }
+                        else
+                        {
+                            string wrongStudent = pdfLines.Find(s => s == i.ToString() && s.Length == i.ToString().Length);
+                            if (!string.IsNullOrEmpty(wrongStudent))
+                            {
+                                string ProcessedLine = ProcessWrongLine(pdfLines, wrongStudent);
+                                Student Student = GetStudent(ProcessedLine, i);
+                                Students.Add(i, Student);
+                            }
                         }
                     }
-                    Name = name;
                 }
-                CH_Group.Text = Name;
-            }
 
-            ///////////////////////////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////////////////////////////
 
-            //Students Count //////////////////////////////////////////////////////////////
-
-            string studentsCount = pdfLines.Find(s => s.Contains(" Total de estudiantes:"));
-            if (!string.IsNullOrEmpty(studentsCount))
-            {
-                string[] parts = studentsCount.Split(new string[] { " Total de estudiantes:" }, StringSplitOptions.None);
-                string count = parts[0];
-                int.TryParse(count, out Count);
-            }
-            if (Count > 0)
-            {
-                for (int i = 1; i < Count + 1; i++)
+                int goodStudents = 0;
+                foreach (var KV in Students)
                 {
-                    string student = pdfLines.Find(s => s.EndsWith(i.ToString()));
-                    if (!string.IsNullOrEmpty(student) && student.Contains(" " + i.ToString()))
+                    Student Student = KV.Value;
+
+                    var lvItem = new ListViewItem();
+                    lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
+                    lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
+                    lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
+                    lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
+
+                    if (Student == null)
                     {
-                        Student Student = GetStudent(student, i);
-                        if (Student == null)
-                        {
-                            string ProcessedLine = ProcessWrongLine(pdfLines, student);
-                            Student = GetStudent(ProcessedLine, i);
-                        }
-                        Students.Add(i, Student);
+                        lvItem.SubItems[0].BackColor = Color.FromArgb(255, 232, 233);
+                        lvItem.SubItems[1].Text = KV.Key.ToString();
                     }
                     else
                     {
-                        string wrongStudent = pdfLines.Find(s => s == i.ToString() && s.Length == i.ToString().Length);
-                        if (!string.IsNullOrEmpty(wrongStudent))
-                        {
-                            string ProcessedLine = ProcessWrongLine(pdfLines, wrongStudent);
-                            Student Student = GetStudent(ProcessedLine, i);
-                            Students.Add(i, Student);
-                        }
+                        lvItem.SubItems[0].Tag = Student;
+                        lvItem.SubItems[0].Text = "";
+                        lvItem.SubItems[1].Text = KV.Key.ToString();
+                        lvItem.SubItems[2].Text = Student.CI;
+                        lvItem.SubItems[3].Text = Student.Names;
+                        lvItem.SubItems[4].Text = Student.Sex.ToString();
+                        goodStudents++;
                     }
+
+                    LV_Students.Items.Add(lvItem);
                 }
-            }
-
-            ///////////////////////////////////////////////////////////////////////////////
-
-            int goodStudents = 0;
-            foreach (var KV in Students)
-            {
-                Student Student = KV.Value;
-
-                var lvItem = new ListViewItem();
-                lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
-                lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
-                lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
-                lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
-
-                if (Student == null)
-                {
-                    lvItem.SubItems[0].BackColor = Color.FromArgb(255, 232, 233);
-                    lvItem.SubItems[1].Text = KV.Key.ToString();
-                }
-                else
-                {
-                    lvItem.SubItems[0].Tag = Student;
-                    lvItem.SubItems[0].Text = "";
-                    lvItem.SubItems[1].Text = KV.Key.ToString();
-                    lvItem.SubItems[2].Text = Student.CI;
-                    lvItem.SubItems[3].Text = Student.Names;
-                    lvItem.SubItems[4].Text = Student.Sex.ToString();
-                    goodStudents++;
-                }
-
-                LV_Students.Items.Add(lvItem);
-            }
-            LB_Info.Text = $"Mostrando {goodStudents} de {Count} estudiantes en el archivo";
+                LB_Info.Text = $"Mostrando {goodStudents} de {Count} estudiantes en el archivo";
+            });
         }
 
         private Student GetStudent(string student, int i)

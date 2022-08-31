@@ -86,7 +86,7 @@ namespace SKYNET.DB
         public static uint CreateCareerId()
         {
             Careers.Sort((s1, s2) => s2.ID.CompareTo(s1.ID));
-            return (Careers.Any() && Careers[0].ID <= 0U) ? 1 : Careers[Careers.Count - 1].ID + 1;
+            return Careers.Count == 0 ? 1 : Careers[Careers.Count - 1].ID + 1;
         }
     }
 }

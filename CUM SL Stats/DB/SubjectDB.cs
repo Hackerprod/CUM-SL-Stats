@@ -88,7 +88,7 @@ namespace SKYNET.DB
         public static uint CreateSubjectId()
         {
             Subjects.Sort((s1, s2) => s2.ID.CompareTo(s1.ID));
-            return (Subjects.Any() && Subjects[0].ID <= 0U) ? 1 : Subjects[Subjects.Count - 1].ID + 1;
+            return Subjects.Count == 0 ? 1 : Subjects[Subjects.Count - 1].ID + 1;
         }
     }
 }

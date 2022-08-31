@@ -101,7 +101,7 @@ namespace SKYNET.DB
         public static uint CreateEvaluationId()
         {
             Evaluations.Sort((s1, s2) => s2.ID.CompareTo(s1.ID));
-            return (Evaluations.Any() && Evaluations[0].ID <= 0U) ? 1 : Evaluations[Evaluations.Count - 1].ID + 1;
+            return Evaluations.Count == 0 ? 1 : Evaluations[Evaluations.Count - 1].ID + 1;
         }
     }
 }

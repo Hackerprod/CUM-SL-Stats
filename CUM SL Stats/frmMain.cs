@@ -32,8 +32,8 @@ namespace SKYNET
         public frmMain()
         {
             InitializeComponent();
+            CheckForIllegalCrossThreadCalls = false;
             frm = this;
-            //this.EnableBlur();
 
             Settings = new SettingsManager();
             Settings.Load();
@@ -295,9 +295,16 @@ namespace SKYNET
                     Active = students,
                 });
 
+                int Groups = 0;
+                foreach (var career in CareerDB.GetCareers(Cource))
+                {
+                    Groups += GroupDB.GetGroups(Cource, career).Count;
+                }
+
                 var lvItem = new ListViewItem();
                 lvItem.SubItems.Add(Cource.Name);
                 lvItem.SubItems.Add(CareerDB.GetCareers(Cource).Count.ToString());
+                lvItem.SubItems.Add(Groups.ToString());
                 lvItem.SubItems.Add(Enrolleds.ToString());
                 lvItem.SubItems.Add(students.ToString());
                 lvItem.SubItems[0].Tag = Cource;
