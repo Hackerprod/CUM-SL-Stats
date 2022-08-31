@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
+using SKYNET.DB;
 using SKYNET.Models;
 
 namespace SKYNET.GUI.W_Controls
@@ -18,6 +19,7 @@ namespace SKYNET.GUI.W_Controls
     {
         private Dictionary<int, Student> Students;
         private int Count;
+
         public Import_Control()
         {
             InitializeComponent();
@@ -50,15 +52,15 @@ namespace SKYNET.GUI.W_Controls
             var stringCources = pdfLines.FindAll(s => s.Contains("-"));
             foreach (var stringCource in stringCources)
             {
-                if (frmMain.Manager.IsValidCourceName(stringCource, out string _courceName))
+                if (SchoolCourceDB.IsValidCourceName(stringCource, out string _courceName))
                 {
                     CourceName = _courceName;
                 }
             }
 
-            for (int i = 0; i < frmMain.Manager.SchoolCources.Count; i++)
+            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
             {
-                SchoolCource cource = frmMain.Manager.SchoolCources[i];
+                SchoolCource cource = SchoolCourceDB.SchoolCources[i];
                 CH_SchoolCource.Items.Add(cource.Name);
                 CH_SchoolCource.SelectedIndex = i;
             }
@@ -263,12 +265,12 @@ namespace SKYNET.GUI.W_Controls
                 MessageBox.Show($"Introduzca el nombre del Curso");
                 return;
             }
-            if (!frmMain.Manager.IsValidCourceName(CH_SchoolCource.Text, out _))
+            if (!SchoolCourceDB.IsValidCourceName(CH_SchoolCource.Text, out _))
             {
                 MessageBox.Show($"En nombre del Curso no es válido, el nombre tiene que seguir el siguiente formato: 2020-2021");
                 return;
             }
-            SchoolCource Cource = frmMain.Manager.GetCource(CH_SchoolCource.Text);
+            SchoolCource Cource = SchoolCourceDB.GetCource(CH_SchoolCource.Text);
             if (Cource == null)
             {
                 var Dialog = MessageBox.Show($"El Curso {CH_SchoolCource.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
@@ -276,10 +278,10 @@ namespace SKYNET.GUI.W_Controls
                 {
                     Cource = new SchoolCource()
                     {
-                        ID = frmMain.Manager.CreateCourceId(),
+                        ID = SchoolCourceDB.CreateCourceId(),
                         Name = CH_SchoolCource.Text
                     };
-                    frmMain.Manager.RegisterSchoolCource(Cource);
+                    SchoolCourceDB.RegisterSchoolCource(Cource);
                 }
                 else
                 {
@@ -287,26 +289,26 @@ namespace SKYNET.GUI.W_Controls
                 }
             }
 
-            if (!frmMain.Manager.GetCareer(CH_Career.Text, out Career Career))
+            if (!CareerDB.GetCareer(CH_Career.Text, out Career Career))
             {
                 Career = new Career()
                 {
-                    ID = frmMain.Manager.CreateCareerId(),
+                    ID = CareerDB.CreateCareerId(),
                     Name = CH_Career.Text
                 };
-                frmMain.Manager.RegisterCareer(Career);
+                CareerDB.RegisterCareer(Career);
             }
 
-            if (!frmMain.Manager.GetGroup(Cource, Career, CH_Group.Text, out Group Group))
+            if (!GroupDB.GetGroup(Cource, Career, CH_Group.Text, out Group Group))
             {
                 Group = new Group()
                 {
-                    ID = frmMain.Manager.CreateGroupId(),
+                    ID = GroupDB.CreateGroupId(),
                     CourceID = Cource.ID,
                     CareerID = Career.ID,
                     Name = CH_Group.Text
                 };
-                frmMain.Manager.RegisterGroup(Group);
+                GroupDB.RegisterGroup(Group);
             }
 
             int registered = 0;
@@ -320,7 +322,7 @@ namespace SKYNET.GUI.W_Controls
                     Student.CareerID = Career.ID;
                     Student.GroupID = Group.ID;
 
-                    done = frmMain.Manager.RegisterStudent(Student);
+                    done = StudentDB.RegisterStudent(Student);
                     registered += done ? 1 : 0;
                 }
             }
@@ -332,6 +334,7 @@ namespace SKYNET.GUI.W_Controls
                 frmMain.frm.SelectTab();
             }
         }
+
         public static List<string> SplitLines(string content)
         {
             List<string> result = new List<string>();

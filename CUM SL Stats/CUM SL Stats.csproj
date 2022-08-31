@@ -82,6 +82,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DB\EvaluationDB.cs" />
+    <Compile Include="DB\StudentDB.cs" />
+    <Compile Include="DB\SubjectDB.cs" />
+    <Compile Include="DB\GroupDB.cs" />
+    <Compile Include="DB\SchoolCourceDB.cs" />
+    <Compile Include="DB\CareerDB.cs" />
     <Compile Include="GUI\frmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -178,7 +184,7 @@
     <Compile Include="Helpers\BlurExtentions.cs" />
     <Compile Include="Helpers\Extentions.cs" />
     <Compile Include="Managers\ChartManager.cs" />
-    <Compile Include="Managers\Manager.cs" />
+    <Compile Include="Managers\DBManager.cs" />
     <Compile Include="Managers\SettingsManager.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>

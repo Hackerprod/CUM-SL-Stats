@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using SKYNET.Controls;
+using SKYNET.DB;
 using SKYNET.Helpers;
 using SKYNET.Managers;
 using SKYNET.Models;
@@ -24,7 +25,6 @@ namespace SKYNET
         public static frmMain frm;
         public static SettingsManager Settings;
         public static SQLiteDatabase DB;
-        public static DBManager Manager;
 
         public RegisterType CurrentRegisterType;
         public TabPage LastTab;
@@ -49,8 +49,7 @@ namespace SKYNET
                 DB = new SQLiteDatabase(System.IO.Path.Combine("Data", "DB.db"));
             }
 
-            Manager = new DBManager(DB);
-            Manager.Initialize();
+            DBManager.Initialize(DB);
             LastTab = tabPage_Home;
 
             this.EnableBlur();
@@ -145,7 +144,7 @@ namespace SKYNET
                 case RegisterType.SchoolCource:
                     {
                         SchoolCource schoolCource = (SchoolCource)Data;
-                        if (Manager.RegisterSchoolCource(schoolCource))
+                        if (SchoolCourceDB.RegisterSchoolCource(schoolCource))
                         {
                             if (notify)
                             {
@@ -160,7 +159,7 @@ namespace SKYNET
                 case RegisterType.Career:
                     {
                         Career Career = (Career)Data;
-                        if (Manager.RegisterCareer(Career))
+                        if (CareerDB.RegisterCareer(Career))
                         {
                             if (notify)
                             {
@@ -174,7 +173,7 @@ namespace SKYNET
                 case RegisterType.Student:
                     {
                         Student student = (Student)Data;
-                        bool registered = Manager.RegisterStudent(student);
+                        bool registered = StudentDB.RegisterStudent(student);
                         if (registered && !other)
                         {
                             if (notify)
@@ -193,7 +192,7 @@ namespace SKYNET
                 case RegisterType.Subject:
                     {
                         Subject subject = (Subject)Data;
-                        if (Manager.RegisterSubject(subject))
+                        if (SubjectDB.RegisterSubject(subject))
                         {
                             if (notify)
                             {
@@ -208,7 +207,7 @@ namespace SKYNET
                     {
                         Group group = (Group)Data;
 
-                        bool registered = Manager.RegisterGroup(group);
+                        bool registered = GroupDB.RegisterGroup(group);
                         if (registered)
                         {
                             if (notify)
@@ -283,11 +282,11 @@ namespace SKYNET
         {
             LV_Cources.Items.Clear();
             List<CourceStats> stats = new List<CourceStats>();
-            foreach (var Cource in Manager.SchoolCources)
+            foreach (var Cource in SchoolCourceDB.SchoolCources)
             {
-                Manager.GetEnrolledAndGraduates(Cource, out int Enrolleds, out int Graduates);
-                Manager.GetActiveStudents(Cource, out int students);
-                Manager.GetCourceEvaluations(Cource, out uint _5Points, out uint _4Points, out uint _3Points);
+                StudentDB.GetEnrolledAndGraduates(Cource, out int Enrolleds, out int Graduates);
+                StudentDB.GetActiveStudents(Cource, out int students);
+                StudentDB.GetCourceEvaluations(Cource, out uint _5Points, out uint _4Points, out uint _3Points);
                 stats.Add(new CourceStats()
                 {
                     Cource = Cource,
@@ -298,7 +297,7 @@ namespace SKYNET
 
                 var lvItem = new ListViewItem();
                 lvItem.SubItems.Add(Cource.Name);
-                lvItem.SubItems.Add(Manager.GetCareers(Cource).Count.ToString());
+                lvItem.SubItems.Add(CareerDB.GetCareers(Cource).Count.ToString());
                 lvItem.SubItems.Add(Enrolleds.ToString());
                 lvItem.SubItems.Add(students.ToString());
                 lvItem.SubItems[0].Tag = Cource;
@@ -317,7 +316,7 @@ namespace SKYNET
             SchoolCource Cource = (SchoolCource)LV_Cources.SelectedItems[0].SubItems[0].Tag;
             if (Cource != null)
             {
-                var Careers = Manager.GetCareers(Cource);
+                var Careers = CareerDB.GetCareers(Cource);
                 if (Careers.Any())
                 {
                     LoadCourceStats(Cource);
@@ -332,11 +331,11 @@ namespace SKYNET
         private void LoadCourceStats(SchoolCource Cource)
         {
             LV_Careers.Items.Clear();
-            var Cources = Manager.GetActiveCources(Cource.ID);
+            var Cources = SchoolCourceDB.GetActiveCources(Cource.ID);
 
             foreach (var cource in Cources)
             {
-                var Careers = Manager.GetCareers(cource);
+                var Careers = CareerDB.GetCareers(cource);
                 foreach (var career in Careers)
                 {
                     var lvItem = new ListViewItem();
@@ -345,7 +344,7 @@ namespace SKYNET
                     lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
 
                     lvItem.SubItems[0].Text = career.Name;
-                    lvItem.SubItems[1].Text = Manager.GetCourceYear(cource, Settings.CurrentCource); 
+                    lvItem.SubItems[1].Text = StudentDB.GetCourceYear(cource, Settings.CurrentCource); 
                     lvItem.SubItems[0].Tag = career;
                     lvItem.SubItems[1].Tag = cource;
 
@@ -362,8 +361,8 @@ namespace SKYNET
 
             if (group != null)
             {
-                SchoolCource Cource = Manager.GetCource(group.CourceID);
-                var Students = Manager.GetStudents(group);
+                SchoolCource Cource = SchoolCourceDB.GetCource(group.CourceID);
+                var Students = StudentDB.GetStudents(group);
                 foreach (var item in Students)
                 {
                     var lvItem = new ListViewItem();
@@ -394,6 +393,7 @@ namespace SKYNET
                 CustomizeItem(LV_Groups, LV_Groups.SelectedItems[0].Text, 0, Color.FromArgb(0, 120, 215), Color.White);
             }
         }
+
         private void LV_Careers_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -404,7 +404,7 @@ namespace SKYNET
 
                 if (Cource != null && Career != null)
                 {
-                    var Groups = Manager.GetGroups(Cource, Career);
+                    var Groups = GroupDB.GetGroups(Cource, Career);
                     foreach (var group in Groups)
                     {
                         var lvItem = new ListViewItem();
@@ -494,7 +494,7 @@ namespace SKYNET
                 Group Group = (Group)LV_Groups.SelectedItems[0].SubItems[0].Tag;
                 if (Career != null)
                 {
-                    var Students = Manager.GetStudents(Cource, Career, Group);
+                    var Students = StudentDB.GetStudents(Cource, Career, Group);
                     foreach (var student in Students)
                     {
                         var lvItem = new ListViewItem();
@@ -599,15 +599,15 @@ namespace SKYNET
                 Settings.DBPath = openDialog.FileName;
                 //Settings.Save();
                 DB = new SQLiteDatabase(openDialog.FileName);
-                Manager = new DBManager(DB);
-                Manager.Initialize();
+                DBManager.Initialize(DB);
                 LoadStats();
             }
         }
+
         private void addStudentMenuItem_Click(object sender, EventArgs e)
         {
             string Header = "Para registrar un estudiante necesitas haber registrado un Curso escolar y una carrera." + Environment.NewLine;
-            if (Manager.SchoolCources.Count == 0)
+            if (SchoolCourceDB.SchoolCources.Count == 0)
             {
                 var dialog = MessageBox.Show(Header + "No contamos con ningun Curso, desea registrarlo ahora?", "", MessageBoxButtons.YesNo);
                 if (dialog == DialogResult.Yes)
@@ -616,7 +616,7 @@ namespace SKYNET
                 }
                 return;
             }
-            else if (Manager.Careers.Count == 0)
+            else if (CareerDB.Careers.Count == 0)
             {
                 var dialog = MessageBox.Show(Header + "No contamos con ninguna Carrera, desea registrarla ahora?", "", MessageBoxButtons.YesNo);
                 if (dialog == DialogResult.Yes)
@@ -630,6 +630,7 @@ namespace SKYNET
                 Register(RegisterType.Student);
             }
         }
+
         private void addCourceMenuItem_Click(object sender, EventArgs e)
         {
             Register(RegisterType.SchoolCource);
@@ -644,6 +645,7 @@ namespace SKYNET
         {
             Register(RegisterType.Subject);
         }
+
         private void homeMenuItem_Click(object sender, EventArgs e)
         {
             LoadStats();
@@ -653,6 +655,7 @@ namespace SKYNET
         {
             LoadStats();
         }
+
         private void importMenuItem_Click(object sender, EventArgs e)
         {
             var openDialog = new OpenFileDialog
@@ -750,7 +753,7 @@ namespace SKYNET
                 if (item.Selected)
                 {
                     SchoolCource Cource = (SchoolCource)item.SubItems[0].Tag;
-                    if (Manager.RemoveCource(Cource))
+                    if (SchoolCourceDB.RemoveCource(Cource))
                     {
                         modCommon.Show($"El Curso {Cource.Name} se ha eliminado correctamente");
                     }
@@ -787,7 +790,7 @@ namespace SKYNET
                 {
                     foreach (var KV in toRemove)
                     {
-                        if (Manager.RemoveStudent(KV.Key))
+                        if (StudentDB.RemoveStudent(KV.Key))
                         {
                             LV_Students.Items.Remove(KV.Value);
                         }
@@ -809,8 +812,6 @@ namespace SKYNET
         {
             SelectTab(tabPage_CourceStats);
         }
-
-
     }
 }
 

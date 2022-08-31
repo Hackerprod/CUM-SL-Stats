@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using SKYNET.DB;
 using SKYNET.Managers;
 using SKYNET.Models;
 
@@ -22,15 +23,15 @@ namespace SKYNET.Controls
                         TB_CI.Text = value.CI;
                         TB_CI.Enabled = false;
 
-                        SchoolCource cource = frmMain.Manager.GetCource(value.CourceID);
+                        SchoolCource cource = SchoolCourceDB.GetCource(value.CourceID);
                         CB_SchoolCource.Text = cource?.Name;
                         CB_SchoolCource.Tag = cource;
 
-                        Career career = frmMain.Manager.GetCareer(value.CareerID);
+                        Career career = CareerDB.GetCareer(value.CareerID);
                         CB_Career.Text = career?.Name;
                         CB_Career.Tag = career;
 
-                        Group group = frmMain.Manager.GetGroup(value.GroupID);
+                        Group group = GroupDB.GetGroup(value.GroupID);
                         CB_Group.Text = group?.Name;
                         CB_Group.Tag = group;
 
@@ -58,9 +59,9 @@ namespace SKYNET.Controls
 
             TB_StudentName.TextChanged += TB_StudentName_TextChanged;
 
-            for (int i = 0; i < frmMain.Manager.SchoolCources.Count; i++)
+            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
             {
-                SchoolCource Cource = frmMain.Manager.SchoolCources[i];
+                SchoolCource Cource = SchoolCourceDB.SchoolCources[i];
                 CB_SchoolCource.Items.Add(Cource.Name);
                 CB_SchoolCource.SelectedIndex = i;
             }
@@ -117,13 +118,13 @@ namespace SKYNET.Controls
                 MessageBox.Show("Debe seleccionar el curso para continuar");
                 return;
             }
-            if (!frmMain.Manager.GetCource(CB_SchoolCource.Text, out SchoolCource cource))
+            if (!SchoolCourceDB.GetCource(CB_SchoolCource.Text, out SchoolCource cource))
             {
                 MessageBox.Show($"El curso {CB_SchoolCource.Text} no existe.");
                 return;
             }
 
-            if (!frmMain.Manager.GetCareer(CB_Career.Text, out Career career))
+            if (!CareerDB.GetCareer(CB_Career.Text, out Career career))
             {
                 MessageBox.Show($"La carrera {CB_Career.Text} no existe.");
                 return;
@@ -135,17 +136,17 @@ namespace SKYNET.Controls
                 return;
             }
 
-            Group group = frmMain.Manager.GetGroup(CB_Group.Text);
+            Group group = GroupDB.GetGroup(CB_Group.Text);
             if (group == null)
             {
                 group = new Group()
                 { 
-                    ID = frmMain.Manager.CreateGroupId(),
+                    ID = GroupDB.CreateGroupId(),
                     CourceID = cource.ID,
                     CareerID = career.ID, 
                     Name = CB_Group.Text
                 };
-                if (!frmMain.Manager.RegisterGroup(group))
+                if (!GroupDB.RegisterGroup(group))
                 {
                     modCommon.Show($"Error creando el grupo {CB_Group.Text}");
                     return;
@@ -180,7 +181,7 @@ namespace SKYNET.Controls
                 _student.GroupID = group.ID;
                 _student.Status = status;
 
-                frmMain.Manager.UpdateStudent(_student);
+                StudentDB.UpdateStudent(_student);
                 frmMain.frm.RefreshUpdated(RegisterType.Student, _student);
                 frmMain.frm.SelectTab();
             }
@@ -190,8 +191,8 @@ namespace SKYNET.Controls
         {
             CB_Career.Items.Clear();
 
-            var cource = frmMain.Manager.GetCource(CB_SchoolCource.Text);
-            var careers = frmMain.Manager.GetCareers(cource);
+            var cource = SchoolCourceDB.GetCource(CB_SchoolCource.Text);
+            var careers = CareerDB.GetCareers(cource);
 
             for (int i = 0; i < careers.Count; i++)
             {
@@ -204,11 +205,11 @@ namespace SKYNET.Controls
         private void CB_Career_SelectedIndexChanged(object sender, EventArgs e)
         {
             CB_Group.Items.Clear();
-            if (!frmMain.Manager.GetCource(CB_SchoolCource.Text, out SchoolCource cource) || !frmMain.Manager.GetCareer(CB_Career.Text, out Career career))
+            if (!SchoolCourceDB.GetCource(CB_SchoolCource.Text, out SchoolCource cource) || !CareerDB.GetCareer(CB_Career.Text, out Career career))
             {
                 return;
             }
-            var groups = frmMain.Manager.GetGroups(cource, career);
+            var groups = GroupDB.GetGroups(cource, career);
             for (int i = 0; i < groups.Count; i++)
             {
                 Group group = groups[i];

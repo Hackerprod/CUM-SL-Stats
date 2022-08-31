@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using SKYNET.Managers;
+using SKYNET.DB;
 using SKYNET.Models;
 
 namespace SKYNET.Controls
@@ -26,7 +19,7 @@ namespace SKYNET.Controls
                 MessageBox.Show("Debe especificar el nombre de la carrera para continuar");
                 return;
             }
-            Career Career = frmMain.Manager.GetCareer(TB_Career.Text);
+            Career Career = CareerDB.GetCareer(TB_Career.Text);
 
             if (Career != null)
             {
@@ -36,7 +29,7 @@ namespace SKYNET.Controls
 
             Career = new Career()
             {
-                ID = frmMain.Manager.CreateCareerId(),
+                ID = CareerDB.CreateCareerId(),
                 Name = TB_Career.Text,
             };
             frmMain.frm.RegisterData(RegisterType.Career, Career);

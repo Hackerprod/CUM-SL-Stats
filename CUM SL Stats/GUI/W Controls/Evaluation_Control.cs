@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SKYNET.DB;
 using SKYNET.Managers;
 using SKYNET.Models;
 using static SKYNET.frmMain;
@@ -91,7 +92,7 @@ namespace SKYNET.Controls
             {
                 Evaluation evaluation = new Evaluation()
                 {
-                    ID = frmMain.Manager.CreateEvaluationId(),
+                    ID = EvaluationDB.CreateEvaluationId(),
                     CourceID = Cource.ID,
                     CareerID = Career.ID,
                     StudentID = this.Student.CI,
@@ -100,7 +101,7 @@ namespace SKYNET.Controls
                     Semester = (Semester)CH_Semester.SelectedIndex,
                     Points = TB_Evaluation.Text.Replace(",", ".")
                 };
-                if (frmMain.Manager.RegisterOrUpdateEvaluation(evaluation))
+                if (EvaluationDB.RegisterOrUpdateEvaluation(evaluation))
                 {
                     MessageBox.Show($"Estudiante evaluado correctamente");
                     LB_StudentEvaluate.Text = "";
@@ -129,7 +130,7 @@ namespace SKYNET.Controls
 
             if (Student != null && Cource != null && Career != null && Group != null && Semester != Semester.Both && Subject != null)
             {
-                var evaluation = frmMain.Manager.GetEvaluation(student, cource, career, group, Semester, Subject);
+                var evaluation = EvaluationDB.GetEvaluation(student, cource, career, group, Semester, Subject);
                 if (evaluation != null)
                 {
                     TB_Evaluation.Text = evaluation.Points;
@@ -153,7 +154,7 @@ namespace SKYNET.Controls
 
             if (Cource != null && Career != null)
             {
-                var subjects = frmMain.Manager.GetSubjects(Cource, Career, Semester);
+                var subjects = SubjectDB.GetSubjects(Cource, Career, Semester);
                 foreach (var subject in subjects)
                 {
                     if (!Subjects.ContainsKey(subject.Name))

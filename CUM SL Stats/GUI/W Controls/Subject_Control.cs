@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SKYNET.DB;
 using SKYNET.Managers;
 using SKYNET.Models;
 
@@ -18,9 +19,9 @@ namespace SKYNET.Controls
         {
             InitializeComponent();
 
-            for (int i = 0; i < frmMain.Manager.SchoolCources.Count; i++)
+            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
             {
-                SchoolCource cource = frmMain.Manager.SchoolCources[i];
+                SchoolCource cource = SchoolCourceDB.SchoolCources[i];
                 CH_SchoolCource.Items.Add(cource.Name);
                 CH_SchoolCource.SelectedIndex = i;
             }
@@ -36,7 +37,7 @@ namespace SKYNET.Controls
                 return;
             }
 
-            if (!frmMain.Manager.GetCource(CH_SchoolCource.Text, out SchoolCource Cource))
+            if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out SchoolCource Cource))
             {
                 MessageBox.Show("Debe especificar un curso válido");
                 return;
@@ -56,11 +57,11 @@ namespace SKYNET.Controls
                 return;
             }
             
-            if (frmMain.Manager.GetCareer(CH_Career.Text, out Career career))
+            if (CareerDB.GetCareer(CH_Career.Text, out Career career))
             {
                 Semester Semester = (Semester)CH_Sem.SelectedIndex + 1;
 
-                if (frmMain.Manager.GetSubject(TB_SubjectName.Text, Cource.ID, career.ID, Semester, out _))
+                if (SubjectDB.GetSubject(TB_SubjectName.Text, Cource.ID, career.ID, Semester, out _))
                 {
                     MessageBox.Show($"La asignatura {TB_SubjectName.Text} existe.");
                     return;
@@ -68,7 +69,7 @@ namespace SKYNET.Controls
 
                 Subject subject = new Subject()
                 {
-                    ID = frmMain.Manager.CreateSubjectId(),
+                    ID = SubjectDB.CreateSubjectId(),
                     Name = TB_SubjectName.Text,
                     CareerID = career.ID,
                     CourceID = Cource.ID,
@@ -92,8 +93,8 @@ namespace SKYNET.Controls
             CH_Career.Items.Clear();
             CH_Career.Text = "";
 
-            var cource = frmMain.Manager.GetCource(CH_SchoolCource.Text);
-            var careers = frmMain.Manager.GetCareers(cource);
+            var cource = SchoolCourceDB.GetCource(CH_SchoolCource.Text);
+            var careers = CareerDB.GetCareers(cource);
 
             for (int i = 0; i < careers.Count; i++)
             {
@@ -108,9 +109,9 @@ namespace SKYNET.Controls
             CB_Year.Items.Clear();
             CB_Year.Text = "";
 
-            var cource = frmMain.Manager.GetCource(CH_SchoolCource.Text); 
-            var career = frmMain.Manager.GetCareer(CH_Career.Text);
-            var Years  = frmMain.Manager.GetYears(cource, career); 
+            var cource = SchoolCourceDB.GetCource(CH_SchoolCource.Text); 
+            var career = CareerDB.GetCareer(CH_Career.Text);
+            var Years  = SchoolCourceDB.GetYears(cource, career); 
 
             foreach (var year in Years)
             {

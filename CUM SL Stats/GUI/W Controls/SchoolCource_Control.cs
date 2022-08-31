@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using SKYNET.DB;
 using SKYNET.Models;
 
 namespace SKYNET.Controls
@@ -26,14 +20,14 @@ namespace SKYNET.Controls
                 return;
             }
 
-            if (!frmMain.Manager.IsValidCourceName(TB_CourseName.Text, out string CourceName))
+            if (!SchoolCourceDB.IsValidCourceName(TB_CourseName.Text, out string CourceName))
             {
                 MessageBox.Show("El nombre del curso no tiene un formato correcto");
                 return;
             }
             SchoolCource schoolCource = new SchoolCource()
             {
-                ID = frmMain.Manager.CreateCourceId(),
+                ID = SchoolCourceDB.CreateCourceId(),
                 Name = CourceName
             };
 

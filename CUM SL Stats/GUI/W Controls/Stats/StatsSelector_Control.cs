@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
+using SKYNET.DB;
 using SKYNET.Models;
 using static SKYNET.frmMain;
 
@@ -32,7 +33,7 @@ namespace SKYNET.GUI.W_Controls
         {
             ClearData();
 
-            foreach (var item in Manager.SchoolCources)
+            foreach (var item in SchoolCourceDB.SchoolCources)
             {
                 CH_SchoolCource.Items.Add(item.Name);
             }
@@ -87,8 +88,8 @@ namespace SKYNET.GUI.W_Controls
             // Careers
             ClearData(false);
 
-            var cource = Manager.GetCource(CH_SchoolCource.Text);
-            var careers = Manager.GetCareers(cource);
+            var cource = SchoolCourceDB.GetCource(CH_SchoolCource.Text);
+            var careers = CareerDB.GetCareers(cource);
 
             foreach (Career career in careers)
             {
@@ -100,7 +101,7 @@ namespace SKYNET.GUI.W_Controls
             CH_Subject.Items.Add("Todas");
             CH_Subject.SelectedIndex = 0;
 
-            var subjects = Manager.GetSubjects(cource);
+            var subjects = SubjectDB.GetSubjects(cource);
             foreach (Subject subject in subjects)
             {
                 CH_Subject.Items.Add(subject.Name);
@@ -116,11 +117,11 @@ namespace SKYNET.GUI.W_Controls
             CH_Group.Items.Add("Todos");
             CH_Group.SelectedIndex = 0;
 
-            if (!Manager.GetCource(CH_SchoolCource.Text, out Cource) || !Manager.GetCareer(CH_Career.Text, out Career))
+            if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out Cource) || !CareerDB.GetCareer(CH_Career.Text, out Career))
             {
                 return;
             }
-            var groups = Manager.GetGroups(Cource, Career);
+            var groups = GroupDB.GetGroups(Cource, Career);
             foreach (Group group in groups)
             {
                 CH_Group.Items.Add(group.Name);
@@ -147,13 +148,13 @@ namespace SKYNET.GUI.W_Controls
                 switch (CH_Semester.SelectedIndex)
                 {
                     case 0:     // All Subjects
-                        subjects = Manager.GetSubjects(Cource);
+                        subjects = SubjectDB.GetSubjects(Cource);
                         break;
                     case 1:     // First Semester Subjects
-                        subjects = Manager.GetSubjects(Cource, Semester.First);
+                        subjects = SubjectDB.GetSubjects(Cource, Semester.First);
                         break;
                     case 2:     // 2do Semester Subjects
-                        subjects = Manager.GetSubjects(Cource, Semester.Second);
+                        subjects = SubjectDB.GetSubjects(Cource, Semester.Second);
                         break;
                 }
             }
@@ -162,13 +163,13 @@ namespace SKYNET.GUI.W_Controls
                 switch (CH_Semester.SelectedIndex)
                 {
                     case 0:     // All Subjects
-                        subjects = Manager.GetSubjects(Cource, Career);
+                        subjects = SubjectDB.GetSubjects(Cource, Career);
                         break;
                     case 1:     // First Semester Subjects
-                        subjects = Manager.GetSubjects(Cource, Career, Semester.First);
+                        subjects = SubjectDB.GetSubjects(Cource, Career, Semester.First);
                         break;
                     case 2:     // 2do Semester Subjects
-                        subjects = Manager.GetSubjects(Cource, Career, Semester.Second);
+                        subjects = SubjectDB.GetSubjects(Cource, Career, Semester.Second);
                         break;
                 }
             }
@@ -182,7 +183,7 @@ namespace SKYNET.GUI.W_Controls
         {
             if (Career != null)
             {
-                Group = Manager.GetGroup(CH_Group.Text, Cource, Career);
+                Group = GroupDB.GetGroup(CH_Group.Text, Cource, Career);
             }
         }
         private void BT_Show_Click(object sender, EventArgs e)
@@ -196,19 +197,19 @@ namespace SKYNET.GUI.W_Controls
 
                 if (Cource == null && Career == null && Group == null)
                 {
-                    evaluations = Manager.GetEvaluations(Subject, Semester);
+                    evaluations = EvaluationDB.GetEvaluations(Subject, Semester);
                 }
                 else if (Cource == null && Career == null && Group != null)
                 {
-                    evaluations = Manager.GetEvaluations(Group, Subject, Semester);
+                    evaluations = EvaluationDB.GetEvaluations(Group, Subject, Semester);
                 }
                 else if (Cource == null && Career != null && Group != null)
                 {
-                    evaluations = Manager.GetEvaluations(Career, Group, Subject, Semester);
+                    evaluations = EvaluationDB.GetEvaluations(Career, Group, Subject, Semester);
                 }
                 else if (Cource != null && Career != null && Group == null)
                 {
-                    evaluations = Manager.GetEvaluations(Cource, Career, Group, Subject, Semester);
+                    evaluations = EvaluationDB.GetEvaluations(Cource, Career, Group, Subject, Semester);
                 }
 
             }

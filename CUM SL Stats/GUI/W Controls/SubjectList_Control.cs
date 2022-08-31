@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SKYNET.DB;
 using SKYNET.Models;
 
 namespace SKYNET.GUI.W_Controls
@@ -25,9 +26,9 @@ namespace SKYNET.GUI.W_Controls
 
         internal void LoadData()
         {
-            for (int i = 0; i < frmMain.Manager.SchoolCources.Count; i++)
+            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
             {
-                SchoolCource cource = frmMain.Manager.SchoolCources[i];
+                SchoolCource cource = SchoolCourceDB.SchoolCources[i];
                 CH_SchoolCource.Items.Add(cource.Name);
                 CH_SchoolCource.SelectedIndex = i;
             }
@@ -39,8 +40,8 @@ namespace SKYNET.GUI.W_Controls
             CH_Career.Items.Clear();
             CH_Career.Text = "";
 
-            var cource = frmMain.Manager.GetCource(CH_SchoolCource.Text);
-            var careers = frmMain.Manager.GetCareers(cource);
+            var cource = SchoolCourceDB.GetCource(CH_SchoolCource.Text);
+            var careers = CareerDB.GetCareers(cource);
 
             for (int i = 0; i < careers.Count; i++)
             {
@@ -48,16 +49,17 @@ namespace SKYNET.GUI.W_Controls
                 CH_Career.Items.Add(career.Name);
             }
         }
+
         private void BT_Show_Click(object sender, EventArgs e)
         {
             LV_Subjects.Items.Clear();
 
-            if (!frmMain.Manager.GetCource(CH_SchoolCource.Text, out SchoolCource cource))
+            if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out SchoolCource cource))
             {
                 modCommon.Show("El Curso seleccionado no es válido");
                 return;
             }
-            if (!frmMain.Manager.GetCareer(CH_Career.Text, out Career career))
+            if (!CareerDB.GetCareer(CH_Career.Text, out Career career))
             {
                 modCommon.Show("La carrera seleccionada no es válida");
                 return;
@@ -65,7 +67,7 @@ namespace SKYNET.GUI.W_Controls
 
             Semester semester = (Semester)CH_Semester.SelectedIndex;
 
-             var Subjects = frmMain.Manager.GetSubjects(cource, career, semester);
+             var Subjects = SubjectDB.GetSubjects(cource, career, semester);
             Subjects.Sort((s1, s2) => s1.Semester.CompareTo(s2.Semester));
 
             if (!Subjects.Any())
@@ -89,12 +91,12 @@ namespace SKYNET.GUI.W_Controls
 
         private void BT_AddSubject_Click(object sender, EventArgs e)
         {
-            if (!frmMain.Manager.GetCource(CH_SchoolCource.Text, out SchoolCource cource))
+            if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out SchoolCource cource))
             {
                 modCommon.Show("El Curso seleccionado no es válido");
                 return;
             }
-            if (!frmMain.Manager.GetCareer(CH_Career.Text, out Career career))
+            if (!CareerDB.GetCareer(CH_Career.Text, out Career career))
             {
                 modCommon.Show("La carrera seleccionada no es válida");
                 return;
@@ -105,20 +107,20 @@ namespace SKYNET.GUI.W_Controls
                 modCommon.Show("Debe seleccionar un semestre válido para agregar la asignatura." + Environment.NewLine + "Solo esta permitido agregarla en Primer semestre o Segundo semestre");
                 return;
             }
-            if (frmMain.Manager.GetSubject(TB_SubjectName.Text, cource.ID, career.ID, semester, out Subject subject))
+            if (SubjectDB.GetSubject(TB_SubjectName.Text, cource.ID, career.ID, semester, out Subject subject))
             {
                 modCommon.Show($"La asignatura \"{TB_SubjectName.Text}\" existe en el curso seleccionado");
                 return;
             }
             subject = new Subject()
             {
-                ID = frmMain.Manager.CreateSubjectId(),
+                ID = SubjectDB.CreateSubjectId(),
                 Name = TB_SubjectName.Text,
                 CourceID = cource.ID,
                 CareerID = career.ID,
                 Semester = semester
             };
-            if (!frmMain.Manager.RegisterSubject(subject))
+            if (!SubjectDB.RegisterSubject(subject))
             {
                 modCommon.Show($"Error agregando la asignatura \"{TB_SubjectName.Text}\"");
                 return;

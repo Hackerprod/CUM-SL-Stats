@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SKYNET.DB;
 using SKYNET.Models;
 
 namespace SKYNET.GUI.W_Controls
@@ -25,9 +26,9 @@ namespace SKYNET.GUI.W_Controls
 
         internal void LoadData()
         {
-            for (int i = 0; i < frmMain.Manager.SchoolCources.Count; i++)
+            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
             {
-                SchoolCource cource = frmMain.Manager.SchoolCources[i];
+                SchoolCource cource = SchoolCourceDB.SchoolCources[i];
                 CH_SchoolCource.Items.Add(cource.Name);
                 CH_SchoolCource.SelectedIndex = i;
             }
@@ -39,8 +40,8 @@ namespace SKYNET.GUI.W_Controls
             CH_Career.Items.Clear();
             CH_Career.Text = "";
 
-            var cource = frmMain.Manager.GetCource(CH_SchoolCource.Text);
-            var careers = frmMain.Manager.GetCareers(cource);
+            var cource = SchoolCourceDB.GetCource(CH_SchoolCource.Text);
+            var careers = CareerDB.GetCareers(cource);
 
             for (int i = 0; i < careers.Count; i++)
             {
@@ -54,11 +55,11 @@ namespace SKYNET.GUI.W_Controls
         {
             CH_Group.Items.Clear();
             CH_Group.Text = "";
-            if (!frmMain.Manager.GetCource(CH_SchoolCource.Text, out SchoolCource cource) || !frmMain.Manager.GetCareer(CH_Career.Text, out Career career))
+            if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out SchoolCource cource) || !CareerDB.GetCareer(CH_Career.Text, out Career career))
             {
                 return;
             }
-            var groups = frmMain.Manager.GetGroups(cource, career);
+            var groups = GroupDB.GetGroups(cource, career);
             for (int i = 0; i < groups.Count; i++)
             {
                 Group group = groups[i];
@@ -82,17 +83,17 @@ namespace SKYNET.GUI.W_Controls
         {
             LV_Students.Items.Clear();
 
-            if (!frmMain.Manager.GetCource(CH_SchoolCource.Text, out SchoolCource cource))
+            if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out SchoolCource cource))
             {
                 modCommon.Show("El Curso seleccionado no es válido");
                 return;
             }
-            if (!frmMain.Manager.GetCareer(CH_Career.Text, out Career career))
+            if (!CareerDB.GetCareer(CH_Career.Text, out Career career))
             {
                 modCommon.Show("La carrera seleccionada no es válida");
                 return;
             }
-            if (!frmMain.Manager.GetGroup(cource, career, CH_Group.Text, out Group group))
+            if (!GroupDB.GetGroup(cource, career, CH_Group.Text, out Group group))
             {
                 modCommon.Show("El Grupo seleccionado no es válido");
                 return;
@@ -100,7 +101,7 @@ namespace SKYNET.GUI.W_Controls
 
             Semester semester = (Semester)CH_Semester.SelectedIndex + 1;
 
-            var Evaluations = frmMain.Manager.GetEvaluations(cource, career, group, semester);
+            var Evaluations = EvaluationDB.GetEvaluations(cource, career, group, semester);
 
             // Separate Evaluations by Students 
             Dictionary<string, object> studentsEvaluation = new Dictionary<string, object>();
@@ -132,7 +133,7 @@ namespace SKYNET.GUI.W_Controls
                     var exist = subjects.Find(s => s.ID == i.SubjectID);
                     if (exist == null)
                     {
-                        var subject = frmMain.Manager.GetSubject(i.SubjectID, cource.ID, career.ID, semester);
+                        var subject = SubjectDB.GetSubject(i.SubjectID, cource.ID, career.ID, semester);
                         if (subject != null && !subjects.Contains(subject))
                         {
                             subjects.Add(subject);
@@ -171,7 +172,7 @@ namespace SKYNET.GUI.W_Controls
             foreach (var item in studentsEvaluation)
             {
                 List<Evaluation> evs = (List<Evaluation>)item.Value;
-                Student student = frmMain.Manager.GetStudent(item.Key);
+                Student student = StudentDB.GetStudent(item.Key);
 
                 var lvItem = CreateListViewItem(evs.Count + 1); 
                 lvItem.SubItems[0].Text = (student.Names);

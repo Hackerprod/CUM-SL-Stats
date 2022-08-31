@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SKYNET.DB;
+using SKYNET.Managers;
 using SKYNET.Models;
 using SQLite;
 using static SKYNET.frmMain;
@@ -39,9 +41,8 @@ namespace SKYNET
             {
                 Settings.DBPath = openDialog.FileName;
                 //Settings.Save();
-                DB = new SQLiteDatabase(openDialog.FileName);
-                Manager = new Managers.DBManager(DB);
-                Manager.Initialize();
+                var DB = new SQLiteDatabase(openDialog.FileName);
+                DBManager.Initialize(DB);
                 frm.LoadStats();
             }
         }
@@ -51,9 +52,9 @@ namespace SKYNET
             TB_Departament.Text = Settings.CurrentDepartament;
             LB_Path.Text = Settings.DBPath.Replace(@"\", "/");
 
-            for (int i = 0; i < Manager.SchoolCources.Count; i++)
+            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
             {
-                SchoolCource Cources = Manager.SchoolCources[i];
+                SchoolCource Cources = SchoolCourceDB.SchoolCources[i];
                 CH_SchoolCource.Items.Add(Cources.Name);
                 if (Cources.ID == Settings.CurrentCource)
                 {
@@ -82,7 +83,7 @@ namespace SKYNET
                 MessageBox.Show("Debes seleccionar el curso actual");
                 return;
             }
-            SchoolCource cource = Manager.GetCource(CH_SchoolCource.Text);
+            SchoolCource cource = SchoolCourceDB.GetCource(CH_SchoolCource.Text);
 
             if (cource == null)
             {
