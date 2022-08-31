@@ -48,11 +48,12 @@ namespace SKYNET
             this.addCareerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CareerStatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gráficaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mostrarGruposMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addGroupMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupStatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.asignaturaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addSubjectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showSubjectsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addSubjectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SubjectStatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.evaluacionesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showEvaluationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -172,6 +173,8 @@ namespace SKYNET
             this.statsSelector = new SKYNET.GUI.W_Controls.StatsSelector_Control();
             this.tabPage_Subjects = new System.Windows.Forms.TabPage();
             this.subjectList_Control1 = new SKYNET.GUI.W_Controls.SubjectList_Control();
+            this.tabPage_Groups = new System.Windows.Forms.TabPage();
+            this.groups_Control1 = new SKYNET.Controls.Groups_Control();
             this.menuStrip1.SuspendLayout();
             this.TabControl1.SuspendLayout();
             this.tabPage_Home.SuspendLayout();
@@ -211,6 +214,7 @@ namespace SKYNET
             this.tabPage_Import.SuspendLayout();
             this.tabPage_Stats.SuspendLayout();
             this.tabPage_Subjects.SuspendLayout();
+            this.tabPage_Groups.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -358,42 +362,43 @@ namespace SKYNET
             // gráficaToolStripMenuItem
             // 
             this.gráficaToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mostrarGruposMenuItem,
             this.addGroupMenuItem,
             this.groupStatsMenuItem});
             this.gráficaToolStripMenuItem.Name = "gráficaToolStripMenuItem";
             this.gráficaToolStripMenuItem.Size = new System.Drawing.Size(63, 21);
             this.gráficaToolStripMenuItem.Text = "Grupos";
             // 
+            // mostrarGruposMenuItem
+            // 
+            this.mostrarGruposMenuItem.Name = "mostrarGruposMenuItem";
+            this.mostrarGruposMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.mostrarGruposMenuItem.Text = "Mostrar Grupos";
+            this.mostrarGruposMenuItem.Click += new System.EventHandler(this.MostrarGruposMenuItem_Click);
+            // 
             // addGroupMenuItem
             // 
             this.addGroupMenuItem.Name = "addGroupMenuItem";
-            this.addGroupMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.addGroupMenuItem.Size = new System.Drawing.Size(170, 22);
             this.addGroupMenuItem.Text = "Añadir Grupo";
             this.addGroupMenuItem.Click += new System.EventHandler(this.addGroupMenuItem_Click);
             // 
             // groupStatsMenuItem
             // 
             this.groupStatsMenuItem.Name = "groupStatsMenuItem";
-            this.groupStatsMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.groupStatsMenuItem.Size = new System.Drawing.Size(170, 22);
             this.groupStatsMenuItem.Text = "Estadísticas";
             this.groupStatsMenuItem.Click += new System.EventHandler(this.groupStatsMenuItem_Click);
             // 
             // asignaturaToolStripMenuItem
             // 
             this.asignaturaToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addSubjectMenuItem,
             this.showSubjectsMenuItem,
+            this.addSubjectMenuItem,
             this.SubjectStatsMenuItem});
             this.asignaturaToolStripMenuItem.Name = "asignaturaToolStripMenuItem";
             this.asignaturaToolStripMenuItem.Size = new System.Drawing.Size(88, 21);
             this.asignaturaToolStripMenuItem.Text = "Asignaturas";
-            // 
-            // addSubjectMenuItem
-            // 
-            this.addSubjectMenuItem.Name = "addSubjectMenuItem";
-            this.addSubjectMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.addSubjectMenuItem.Text = "Añadir asignatura";
-            this.addSubjectMenuItem.Click += new System.EventHandler(this.addSubjectMenuItem_Click);
             // 
             // showSubjectsMenuItem
             // 
@@ -401,6 +406,13 @@ namespace SKYNET
             this.showSubjectsMenuItem.Size = new System.Drawing.Size(195, 22);
             this.showSubjectsMenuItem.Text = "Mostrar Asignaturas";
             this.showSubjectsMenuItem.Click += new System.EventHandler(this.showSubjectsMenuItem_Click);
+            // 
+            // addSubjectMenuItem
+            // 
+            this.addSubjectMenuItem.Name = "addSubjectMenuItem";
+            this.addSubjectMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.addSubjectMenuItem.Text = "Añadir asignatura";
+            this.addSubjectMenuItem.Click += new System.EventHandler(this.addSubjectMenuItem_Click);
             // 
             // SubjectStatsMenuItem
             // 
@@ -452,6 +464,7 @@ namespace SKYNET
             this.TabControl1.Controls.Add(this.tabPage_Import);
             this.TabControl1.Controls.Add(this.tabPage_Stats);
             this.TabControl1.Controls.Add(this.tabPage_Subjects);
+            this.TabControl1.Controls.Add(this.tabPage_Groups);
             this.TabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TabControl1.HideBorders = true;
             this.TabControl1.ItemSize = new System.Drawing.Size(1, 6);
@@ -1720,6 +1733,24 @@ namespace SKYNET
             this.subjectList_Control1.Size = new System.Drawing.Size(962, 549);
             this.subjectList_Control1.TabIndex = 0;
             // 
+            // tabPage_Groups
+            // 
+            this.tabPage_Groups.Controls.Add(this.groups_Control1);
+            this.tabPage_Groups.Location = new System.Drawing.Point(4, 4);
+            this.tabPage_Groups.Name = "tabPage_Groups";
+            this.tabPage_Groups.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_Groups.Size = new System.Drawing.Size(968, 555);
+            this.tabPage_Groups.TabIndex = 10;
+            this.tabPage_Groups.Text = "Groups";
+            this.tabPage_Groups.UseVisualStyleBackColor = true;
+            // 
+            // groups_Control1
+            // 
+            this.groups_Control1.Location = new System.Drawing.Point(22, 21);
+            this.groups_Control1.Name = "groups_Control1";
+            this.groups_Control1.Size = new System.Drawing.Size(920, 491);
+            this.groups_Control1.TabIndex = 0;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1781,6 +1812,7 @@ namespace SKYNET
             this.tabPage_Import.ResumeLayout(false);
             this.tabPage_Stats.ResumeLayout(false);
             this.tabPage_Subjects.ResumeLayout(false);
+            this.tabPage_Groups.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1930,6 +1962,9 @@ namespace SKYNET
         private System.Windows.Forms.ColumnHeader columnHeader19;
         private System.Windows.Forms.ColumnHeader columnGrupos;
         private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.ToolStripMenuItem mostrarGruposMenuItem;
+        private System.Windows.Forms.TabPage tabPage_Groups;
+        private Controls.Groups_Control groups_Control1;
     }
 }
 

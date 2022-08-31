@@ -109,6 +109,12 @@
     <Compile Include="GUI\Controls\SKYNET_SexSelector.Designer.cs">
       <DependentUpon>SKYNET_SexSelector.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\W Controls\Groups_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\Groups_Control.Designer.cs">
+      <DependentUpon>Groups_Control.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\W Controls\SubjectList_Control.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -219,6 +225,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Controls\SKYNET_SexSelector.resx">
       <DependentUpon>SKYNET_SexSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\Groups_Control.resx">
+      <DependentUpon>Groups_Control.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\W Controls\SubjectList_Control.resx">
       <DependentUpon>SubjectList_Control.cs</DependentUpon>

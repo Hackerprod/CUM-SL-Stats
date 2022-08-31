@@ -55,16 +55,12 @@ namespace SKYNET
             this.EnableBlur();
             BackColor = Color.Azure;
             TransparencyKey = Color.Azure;
-
-
         }
 
         private void frmMain_Load(object sender, EventArgs e)
         {
             ChartManager.LoadPieChart(pieChart1);
         }
-
-
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -81,6 +77,7 @@ namespace SKYNET
         {
             TabControl1.SelectTab(LastTab);
         }
+
         private void SelectTab(TabPage tabPage)
         {
             LastTab = TabControl1.SelectedTab;
@@ -316,8 +313,6 @@ namespace SKYNET
             LV_Students.Items.Clear();
         }
 
-
-
         private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             SchoolCource Cource = (SchoolCource)LV_Cources.SelectedItems[0].SubItems[0].Tag;
@@ -361,6 +356,7 @@ namespace SKYNET
 
             SelectTab(tabPage_CourceStats);
         }
+
         private void LV_Groups_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             LV_Students.Items.Clear();
@@ -429,6 +425,7 @@ namespace SKYNET
             {
             }
         }
+
         private void CustomizeItem(ListView LV, ListViewItem item, Color BackColor, Color ForeColor)
         {
             foreach (ListViewItem Item in LV.Items)
@@ -445,6 +442,7 @@ namespace SKYNET
                 }
             }
         }
+
         private void CustomizeItem(ListView LV, string comparer, int subitem, Color BackColor, Color ForeColor)
         {
             foreach (ListViewItem item in LV.Items)
@@ -474,7 +472,6 @@ namespace SKYNET
             printDialog.ShowDialog();
         }
 
-
         private void Document_PrintPage(object sender, PrintPageEventArgs e)
         {
             LV_Students.PrintData(e.MarginBounds.Location, e.Graphics, Brushes.Blue, Brushes.Black, Pens.Blue);
@@ -488,8 +485,6 @@ namespace SKYNET
                 item.Selected = CB_SelectStudents.Checked;
             }
         }
-
-
 
         private void BN_Evaluate_Click(object sender, EventArgs e)
         {
@@ -541,7 +536,6 @@ namespace SKYNET
             {
 
             }
-
         }
 
         private void LV_Evaluate_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -818,6 +812,12 @@ namespace SKYNET
         private void BT_CourceBack_Click(object sender, EventArgs e)
         {
             SelectTab(tabPage_CourceStats);
+        }
+
+        private void MostrarGruposMenuItem_Click(object sender, EventArgs e)
+        {
+            groups_Control1.LoadData();
+            SelectTab(tabPage_Groups);
         }
     }
 }
