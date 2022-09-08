@@ -40,6 +40,11 @@ namespace SKYNET.DB
             return Careers.Find(s => s.ID == ID);
         }
 
+        public static Career GetCareer(Group group)
+        {
+            return Careers.Find(s => s.ID == group.ID);
+        }
+
         public static Career GetCareer(string Name)
         {
             return Careers.Find(s => s.Name == Name);

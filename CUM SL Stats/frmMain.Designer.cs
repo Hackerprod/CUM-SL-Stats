@@ -1127,9 +1127,9 @@ namespace SKYNET
             this.label22.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.label22.Location = new System.Drawing.Point(842, 379);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(124, 13);
+            this.label22.Size = new System.Drawing.Size(99, 13);
             this.label22.TabIndex = 20;
-            this.label22.Text = "Estudiantes matriculados";
+            this.label22.Text = "Estudiantes activos";
             // 
             // panel28
             // 
@@ -1145,9 +1145,9 @@ namespace SKYNET
             this.label20.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.label20.Location = new System.Drawing.Point(842, 333);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(99, 13);
+            this.label20.Size = new System.Drawing.Size(124, 13);
             this.label20.TabIndex = 18;
-            this.label20.Text = "Estudiantes activos";
+            this.label20.Text = "Estudiantes matriculados";
             // 
             // panel27
             // 
@@ -1448,7 +1448,7 @@ namespace SKYNET
             // PN_RegisterContainer
             // 
             this.PN_RegisterContainer.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.PN_RegisterContainer.Location = new System.Drawing.Point(295, 113);
+            this.PN_RegisterContainer.Location = new System.Drawing.Point(297, 113);
             this.PN_RegisterContainer.Name = "PN_RegisterContainer";
             this.PN_RegisterContainer.Padding = new System.Windows.Forms.Padding(2);
             this.PN_RegisterContainer.Size = new System.Drawing.Size(376, 420);

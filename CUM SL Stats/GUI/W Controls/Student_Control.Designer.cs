@@ -260,6 +260,7 @@ namespace SKYNET.Controls
             this.TB_StudentName.ShowLogo = true;
             this.TB_StudentName.Size = new System.Drawing.Size(332, 35);
             this.TB_StudentName.TabIndex = 2;
+            this.TB_StudentName.TextChanged += TB_StudentName_TextChanged;
             // 
             // label10
             // 

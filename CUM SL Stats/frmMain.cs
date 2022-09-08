@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Printing;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 using SKYNET.Controls;
 using SKYNET.DB;
@@ -15,8 +11,6 @@ using SKYNET.Helpers;
 using SKYNET.Managers;
 using SKYNET.Models;
 using SQLite;
-using static SKYNET.BlurExtentions;
-using static SKYNET.ChartManager;
 
 namespace SKYNET
 {
@@ -80,8 +74,14 @@ namespace SKYNET
 
         private void SelectTab(TabPage tabPage)
         {
-            LastTab = TabControl1.SelectedTab;
-            TabControl1.SelectTab(tabPage);
+            try
+            {
+                LastTab = TabControl1.SelectedTab;
+                TabControl1.SelectTab(tabPage);
+            }
+            catch 
+            {
+            }
         }
 
         public void Register(RegisterType type)
@@ -278,18 +278,20 @@ namespace SKYNET
         public void LoadStats()
         {
             LV_Cources.Items.Clear();
-            List<CourceStats> stats = new List<CourceStats>();
+
+            var stats = new List<ChartManager.CourceStats>();
             foreach (var Cource in SchoolCourceDB.SchoolCources)
             {
                 StudentDB.GetEnrolledAndGraduates(Cource, out int Enrolleds, out int Graduates);
-                StudentDB.GetActiveStudents(Cource, out int students);
+                StudentDB.GetActiveStudents(Cource, out int Actives);
                 StudentDB.GetCourceEvaluations(Cource, out uint _5Points, out uint _4Points, out uint _3Points);
-                stats.Add(new CourceStats()
+
+                stats.Add(new ChartManager.CourceStats()
                 {
                     Cource = Cource,
                     Enrolled = Enrolleds,
                     Graduates = Graduates,
-                    Active = students,
+                    Active = Actives,
                 });
 
                 int Groups = 0;
@@ -303,12 +305,13 @@ namespace SKYNET
                 lvItem.SubItems.Add(CareerDB.GetCareers(Cource).Count.ToString());
                 lvItem.SubItems.Add(Groups.ToString());
                 lvItem.SubItems.Add(Enrolleds.ToString());
-                lvItem.SubItems.Add(students.ToString());
+                lvItem.SubItems.Add(Actives.ToString());
                 lvItem.SubItems[0].Tag = Cource;
 
                 LV_Cources.Items.Add(lvItem);
             }
-            LoadCartesianChart(cartesianChart1, stats);
+
+            ChartManager.LoadCartesianChart(cartesianChart1, stats);
             SelectTab(tabPage_MainStats);
             LV_Students.Items.Clear();
         }
@@ -496,7 +499,7 @@ namespace SKYNET
                 Group Group = (Group)LV_Groups.SelectedItems[0].SubItems[0].Tag;
                 if (Career != null)
                 {
-                    var Students = StudentDB.GetStudents(Cource, Career, Group);
+                    var Students = StudentDB.GetStudents(Group);
                     foreach (var student in Students)
                     {
                         var lvItem = new ListViewItem();
@@ -727,9 +730,8 @@ namespace SKYNET
             try
             {
                 Student Student = (Student)LV_Students.SelectedItems[0].SubItems[0].Tag;
-                Student_Control student = new Student_Control()
+                Student_Control student = new Student_Control(Student)
                 {
-                    Student = Student,
                     Dock = DockStyle.Fill
                 };
                 PN_RegisterContainer.Controls.Clear();
@@ -738,6 +740,7 @@ namespace SKYNET
             }
             catch 
             {
+                throw;
                 Common.Show("Seleccione el estudiante que desea editar");
             }
         }

@@ -23,6 +23,11 @@ namespace SKYNET.DB
             DB.DBConnection.CreateIndex("Group", "CareerID");
         }
 
+        private static void Reload()
+        {
+            
+        }
+
         public static bool RegisterGroup(Group source)
         {
             Group target = Groups.Find(s => s.Name == source.Name);
@@ -49,15 +54,20 @@ namespace SKYNET.DB
             return Groups.Find(g => g.Name == Name && g.CourceID == cource.ID && g.CareerID == career.ID);
         }
 
+        public static bool GetGroup(SchoolCource cource, Career career, string Name, out Group group)
+        {
+            group = Groups.Find(g => g.CourceID == cource.ID && g.CareerID == career.ID && g.Name == Name);
+            return group != null;
+        }
+
         public static List<Group> GetGroups(SchoolCource cource, Career career)
         {
             return Groups.FindAll(g => g.CourceID == cource.ID && g.CareerID == career.ID);
         }
 
-        public static bool GetGroup(SchoolCource cource, Career career, string Name, out Group group)
+        public static List<Group> GetGroups(SchoolCource cource)
         {
-            group = Groups.Find(g => g.CourceID == cource.ID && g.CareerID == career.ID && g.Name == Name);
-            return group != null;
+            return Groups.FindAll(g => g.CourceID == cource.ID);
         }
 
         public static List<Group> GetActiveGroups(uint ID)
@@ -94,9 +104,14 @@ namespace SKYNET.DB
             return Groups.Count == 0 ? 1 : Groups[Groups.Count - 1].ID + 1;
         }
 
-        internal static void UpdateGroup(Group group)
+        public static void UpdateGroup(Group group)
         {
             DB.InsertOrUpdate(group);
+        }
+
+        public static void Remove(Group group)
+        {
+            DB.Delete(group);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace SKYNET
             var barSeries = new ColumnSeries
             {
                 Values = new ChartValues<int>(),
-                Title = "Estudiantes Activos",
+                Title = "Estudiantes matriculados",
             };
             var lineSeries = new LineSeries
             {
@@ -33,7 +33,7 @@ namespace SKYNET
                 Fill = Brushes.Transparent,
                 StrokeThickness = 4,
                 PointGeometry = null,
-                Title = "Estudiantes matriculados",
+                Title = "Estudiantes Activos",
             };
             var lineSeries2 = new LineSeries
             {
@@ -71,8 +71,8 @@ namespace SKYNET
             bool isGraduated = false;
             foreach (var item in stats)
             {
-                barSeries.Values.Add(item.Active);
-                lineSeries.Values.Add(item.Enrolled);
+                barSeries.Values.Add(item.Enrolled);
+                lineSeries.Values.Add(item.Active);
                 lineSeries2.Values.Add(item.Graduates);
                 axis.Labels.Add(item.Cource.Name);
 

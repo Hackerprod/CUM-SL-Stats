@@ -317,8 +317,6 @@ namespace SKYNET.GUI.W_Controls
                 Student Student = KV.Value;
                 if (Student != null)
                 {
-                    Student.CourceID = Cource.ID;
-                    Student.CareerID = Career.ID;
                     Student.GroupID = Group.ID;
 
                     done = StudentDB.RegisterStudent(Student);

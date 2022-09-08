@@ -30,6 +30,7 @@ namespace SKYNET.Controls
         private void InitializeComponent()
         {
             this.PN_AddCareer = new System.Windows.Forms.Panel();
+            this.BT_RemoveGroup = new SKYNET_Button();
             this.BT_Register = new SKYNET_Button();
             this.panel4 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
@@ -72,6 +73,7 @@ namespace SKYNET.Controls
             // PN_AddCareer
             // 
             this.PN_AddCareer.BackColor = System.Drawing.Color.White;
+            this.PN_AddCareer.Controls.Add(this.BT_RemoveGroup);
             this.PN_AddCareer.Controls.Add(this.BT_Register);
             this.PN_AddCareer.Controls.Add(this.panel4);
             this.PN_AddCareer.Controls.Add(this.panel2);
@@ -87,6 +89,26 @@ namespace SKYNET.Controls
             this.PN_AddCareer.Size = new System.Drawing.Size(938, 491);
             this.PN_AddCareer.TabIndex = 14;
             // 
+            // BT_RemoveGroup
+            // 
+            this.BT_RemoveGroup.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.BT_RemoveGroup.BackColorMouseOver = System.Drawing.Color.Empty;
+            this.BT_RemoveGroup.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BT_RemoveGroup.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BT_RemoveGroup.ForeColor = System.Drawing.Color.White;
+            this.BT_RemoveGroup.ForeColorMouseOver = System.Drawing.Color.Empty;
+            this.BT_RemoveGroup.ImageAlignment = SKYNET_Button.ImgAlign.Left;
+            this.BT_RemoveGroup.ImageIcon = null;
+            this.BT_RemoveGroup.Location = new System.Drawing.Point(638, 297);
+            this.BT_RemoveGroup.MenuMode = false;
+            this.BT_RemoveGroup.Name = "BT_RemoveGroup";
+            this.BT_RemoveGroup.Rounded = false;
+            this.BT_RemoveGroup.Size = new System.Drawing.Size(140, 32);
+            this.BT_RemoveGroup.Style = SKYNET_Button._Style.TextOnly;
+            this.BT_RemoveGroup.TabIndex = 33;
+            this.BT_RemoveGroup.Text = "Eliminar grupo";
+            this.BT_RemoveGroup.Click += new System.EventHandler(this.BT_RemoveGroup_Click);
+            // 
             // BT_Register
             // 
             this.BT_Register.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(144)))), ((int)(((byte)(82)))));
@@ -97,11 +119,11 @@ namespace SKYNET.Controls
             this.BT_Register.ForeColorMouseOver = System.Drawing.Color.Empty;
             this.BT_Register.ImageAlignment = SKYNET_Button.ImgAlign.Left;
             this.BT_Register.ImageIcon = null;
-            this.BT_Register.Location = new System.Drawing.Point(800, 297);
+            this.BT_Register.Location = new System.Drawing.Point(784, 297);
             this.BT_Register.MenuMode = false;
             this.BT_Register.Name = "BT_Register";
             this.BT_Register.Rounded = false;
-            this.BT_Register.Size = new System.Drawing.Size(100, 32);
+            this.BT_Register.Size = new System.Drawing.Size(116, 32);
             this.BT_Register.Style = SKYNET_Button._Style.TextOnly;
             this.BT_Register.TabIndex = 32;
             this.BT_Register.Text = "Actualizar";
@@ -294,9 +316,10 @@ namespace SKYNET.Controls
             // 
             this.TB_Name.BackColor = System.Drawing.Color.WhiteSmoke;
             this.TB_Name.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.TB_Name.Location = new System.Drawing.Point(11, 11);
+            this.TB_Name.Font = new System.Drawing.Font("Segoe UI Emoji", 9.75F);
+            this.TB_Name.Location = new System.Drawing.Point(10, 9);
             this.TB_Name.Name = "TB_Name";
-            this.TB_Name.Size = new System.Drawing.Size(245, 13);
+            this.TB_Name.Size = new System.Drawing.Size(245, 18);
             this.TB_Name.TabIndex = 0;
             // 
             // label2
@@ -427,5 +450,6 @@ namespace SKYNET.Controls
         private SKYNET_Button BT_Register;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ColumnHeader columnStudents;
+        private SKYNET_Button BT_RemoveGroup;
     }
 }

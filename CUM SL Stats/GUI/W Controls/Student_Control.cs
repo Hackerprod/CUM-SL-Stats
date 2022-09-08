@@ -9,6 +9,8 @@ namespace SKYNET.Controls
 {
     public partial class Student_Control : UserControl
     {
+        private Student _student;
+
         public Student Student 
         {
             get => _student;
@@ -23,17 +25,17 @@ namespace SKYNET.Controls
                         TB_CI.Text = value.CI;
                         TB_CI.Enabled = false;
 
-                        SchoolCource cource = SchoolCourceDB.GetCource(value.CourceID);
-                        CB_SchoolCource.Text = cource?.Name;
-                        CB_SchoolCource.Tag = cource;
-
-                        Career career = CareerDB.GetCareer(value.CareerID);
-                        CB_Career.Text = career?.Name;
-                        CB_Career.Tag = career;
-
                         Group group = GroupDB.GetGroup(value.GroupID);
                         CB_Group.Text = group?.Name;
                         CB_Group.Tag = group;
+
+                        SchoolCource cource = SchoolCourceDB.GetCource(group);
+                        CB_SchoolCource.Text = cource?.Name;
+                        CB_SchoolCource.Tag = cource;
+
+                        Career career = CareerDB.GetCareer(group);
+                        CB_Career.Text = career?.Name;
+                        CB_Career.Tag = career;
 
                         CB_Status.SelectedIndex = (int)_student.Status;
 
@@ -51,11 +53,28 @@ namespace SKYNET.Controls
                 }
             }
         }
-        private Student _student;
 
         public Student_Control()
         {
             InitializeComponent();
+
+            TB_StudentName.TextChanged += TB_StudentName_TextChanged;
+
+            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
+            {
+                SchoolCource Cource = SchoolCourceDB.SchoolCources[i];
+                CB_SchoolCource.Items.Add(Cource.Name);
+                CB_SchoolCource.SelectedIndex = i;
+            }
+
+            CB_Status.SelectedIndex = 1;
+        }
+
+        public Student_Control(Student student)
+        {
+            InitializeComponent();
+
+            Student = student;
 
             TB_StudentName.TextChanged += TB_StudentName_TextChanged;
 
@@ -161,8 +180,6 @@ namespace SKYNET.Controls
                 {
                     CI = TB_CI.Text,
                     Names = TB_StudentName.Text,
-                    CareerID = career.ID,
-                    CourceID = cource.ID,
                     GroupID = group.ID,
                     Sex = SexSelector.Sex,
                     Status = status
@@ -176,8 +193,6 @@ namespace SKYNET.Controls
             else
             {
                 _student.Names = TB_StudentName.Text;
-                _student.CareerID = career.ID;
-                _student.CourceID = cource.ID;
                 _student.GroupID = group.ID;
                 _student.Status = status;
 
@@ -205,6 +220,7 @@ namespace SKYNET.Controls
         private void CB_Career_SelectedIndexChanged(object sender, EventArgs e)
         {
             CB_Group.Items.Clear();
+            CB_Group.Text = "";
             if (!SchoolCourceDB.GetCource(CB_SchoolCource.Text, out SchoolCource cource) || !CareerDB.GetCareer(CB_Career.Text, out Career career))
             {
                 return;

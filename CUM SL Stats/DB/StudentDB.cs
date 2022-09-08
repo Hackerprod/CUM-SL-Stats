@@ -46,23 +46,59 @@ namespace SKYNET.DB
             return DB.Delete(student) == 1;
         }
 
-        public static List<Student> GetStudents(SchoolCource Cource, Career Career)
+        public static void RemoveStudents(Group group)
         {
-            return Students.FindAll(c => c.CourceID == Cource.ID && c.CareerID == Career.ID);
+            foreach (var student in Students.FindAll(s => s.GroupID == group.ID))
+            {
+                DB.Delete(student);
+            }
         }
 
-        public static List<Student> GetStudents(SchoolCource Cource, Career Career, Group Group)
+        public static void RemoveStudents(SchoolCource Cource)
         {
-            return Students.FindAll(c => c.CourceID == Cource.ID && c.CareerID == Career.ID && c.GroupID == Group.ID);
+            foreach (var group in GroupDB.GetGroups(Cource))
+            {
+                foreach (var student in Students.FindAll(s => s.GroupID == group.ID))
+                {
+                    DB.Delete(student);
+                }
+            }
+        }
+
+        public static List<Student> GetStudents(SchoolCource Cource)
+        {
+            var students = new List<Student>();
+            var Groups = GroupDB.GetGroups(Cource);
+
+            foreach (var group in Groups)
+            {
+                students.AddRange(Students.FindAll(c => c.GroupID == group.ID));
+            }
+
+            return students;
+        }
+
+        public static List<Student> GetStudents(SchoolCource Cource, Career Career)
+        {
+            var students = new List<Student>();
+            var Groups = GroupDB.GetGroups(Cource, Career);
+
+            foreach (var group in Groups)
+            {
+                students.AddRange(Students.FindAll(c => c.GroupID == group.ID));
+            }
+
+            return students;
         }
 
         public static void GetActiveStudents(SchoolCource cource, out int students)
         {
             students = 0;
-            var cources = SchoolCourceDB.GetActiveCources(cource.ID);
-            foreach (var _cource in cources)
+
+            var Groups = GroupDB.GetGroups(cource);
+            foreach (var group in Groups)
             {
-                students += Students.FindAll(s => s.CourceID == _cource.ID && s.Status == Status.Active).Count;
+                students += Students.FindAll(s => s.GroupID == group.ID && s.Status == Status.Active).Count;
             }
         }
 
@@ -81,20 +117,10 @@ namespace SKYNET.DB
             Enrolleds = 0;
             Graduates = 0;
 
-            var careers = CareerDB.Careers;
+            var students = GetStudents(Cource);
+            Enrolleds = students.Count;
+            Graduates += students.FindAll(s => s.Status == Status.Graduated).Count;
 
-            if (careers.Any())
-            {
-                foreach (var career in careers)
-                {
-                    List<Student> students = Students.FindAll(s => s.CourceID == Cource.ID && s.CareerID == career.ID && s.Status == Status.Active);
-                    Enrolleds += students.Count;
-                    if (students.Any())
-                    {
-                        Graduates += students.FindAll(s => s.Status == Status.Graduated).Count;
-                    }
-                }
-            }
         }
 
         public static string GetCourceYear(SchoolCource Cource, uint currentCource)

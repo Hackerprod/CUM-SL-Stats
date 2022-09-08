@@ -39,6 +39,11 @@ namespace SKYNET.DB
             return SchoolCources.Find(s => s.ID == ID);
         }
 
+        public static SchoolCource GetCource(Group group)
+        {
+            return SchoolCources.Find(s => s.ID == group.CourceID);
+        }
+
         public static SchoolCource GetCource(string Name)
         {
             return SchoolCources.Find(s => s.Name == Name);
@@ -90,13 +95,13 @@ namespace SKYNET.DB
                 var groups = GroupDB.Groups.FindAll(g => g.CourceID == cource.ID);
                 foreach (var group in groups)
                 {
-                    DB.Delete(group);
-                }
+                    var students = StudentDB.Students.FindAll(g => g.GroupID == group.ID);
+                    foreach (var student in students)
+                    {
+                        DB.Delete(student);
+                    }
 
-                var students = StudentDB.Students.FindAll(g => g.CourceID == cource.ID);
-                foreach (var student in students)
-                {
-                    DB.Delete(student);
+                    DB.Delete(group);
                 }
 
                 return true;
