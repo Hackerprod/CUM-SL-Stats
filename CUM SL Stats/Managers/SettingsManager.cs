@@ -18,7 +18,7 @@ namespace SKYNET
         public SettingsManager()
         {
             dataPath = Path.Combine(Common.GetPath(), "Data");
-            settingsPath = Path.Combine(dataPath, "settings.json");
+            settingsPath = Path.Combine(dataPath, "Settings.json");
 
             if (!Directory.Exists(dataPath))
             {
@@ -30,6 +30,7 @@ namespace SKYNET
                 Empty = true;
             }
         }
+
         public void Load()
         {
             if (Empty)
@@ -45,19 +46,20 @@ namespace SKYNET
                 DBPath =             Instance.DBPath;
                 CurrentCource =      Instance.CurrentCource;
                 CurrentDepartament = Instance.CurrentDepartament;
-
             }
             catch
             {
                 ResetDefaults();
             }
         }
+
         public void Save()
         {
             string json = new JavaScriptSerializer().Serialize(this);
             if (!Directory.Exists(dataPath)) { Directory.CreateDirectory(dataPath); }
             File.WriteAllText(settingsPath, json);
         }
+
         private void ResetDefaults()
         {
             DBPath = Path.Combine(dataPath, "DB.db");

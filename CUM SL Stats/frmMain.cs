@@ -369,7 +369,7 @@ namespace SKYNET
             {
                 SchoolCource Cource = SchoolCourceDB.GetCource(group.CourceID);
                 var Students = StudentDB.GetStudents(group);
-                foreach (var item in Students)
+                foreach (var student in Students)
                 {
                     var lvItem = new ListViewItem();
                     lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
@@ -379,7 +379,7 @@ namespace SKYNET
                     lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
 
                     string status = "";
-                    switch (item.Status)
+                    switch (student.Status)
                     {
                         case Status.Unknown:    status = "Desconocido"; break;
                         case Status.Active:     status = "Activo"; break;
@@ -387,11 +387,11 @@ namespace SKYNET
                         case Status.Down:       status = "Baja"; break;
                     }
 
-                    lvItem.SubItems[0].Tag = item;
-                    lvItem.SubItems[1].Text = item.CI;
-                    lvItem.SubItems[2].Text = item.Names;
+                    lvItem.SubItems[0].Tag = student;
+                    lvItem.SubItems[1].Text = student.CI;
+                    lvItem.SubItems[2].Text = student.Names;
                     lvItem.SubItems[3].Text = Cource.Name;
-                    lvItem.SubItems[4].Text = item.Sex.ToString();
+                    lvItem.SubItems[4].Text = student.Sex.ToString();
                     lvItem.SubItems[5].Text = status;
 
                     LV_Students.Items.Add(lvItem);
@@ -467,8 +467,7 @@ namespace SKYNET
         {
             PrintDocument document = new PrintDocument();
             document.PrintPage += Document_PrintPage;
-            //PrintPageEventArgs
-            PrintDialog printDialog = new PrintDialog()
+            var printDialog = new PrintDialog()
             {
                 Document = document
             };
@@ -729,19 +728,27 @@ namespace SKYNET
         {
             try
             {
-                Student Student = (Student)LV_Students.SelectedItems[0].SubItems[0].Tag;
-                Student_Control student = new Student_Control(Student)
+                for (int i = 0; i < LV_Students.Items.Count; i++)
                 {
-                    Dock = DockStyle.Fill
-                };
-                PN_RegisterContainer.Controls.Clear();
-                PN_RegisterContainer.Controls.Add(student);
-                SelectTab(tabPage_Register);
+                    ListViewItem item = LV_Students.Items[i];
+                    if (item.Checked)
+                    {
+                        Student Student = (Student)item.SubItems[0].Tag;
+                        Student_Control student = new Student_Control(Student)
+                        {
+                            Dock = DockStyle.Fill,
+                        };
+                        PN_RegisterContainer.Controls.Clear();
+                        PN_RegisterContainer.Controls.Add(student);
+                        SelectTab(tabPage_Register);
+                        return;
+                    }
+                }
+                Common.Show("Seleccione el estudiante que desea editar");
             }
             catch 
             {
-                throw;
-                Common.Show("Seleccione el estudiante que desea editar");
+                //Common.Show("Seleccione el estudiante que desea editar");
             }
         }
 
@@ -821,6 +828,11 @@ namespace SKYNET
         {
             groups_Control1.LoadData();
             SelectTab(tabPage_Groups);
+        }
+
+        private void LV_Groups_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
