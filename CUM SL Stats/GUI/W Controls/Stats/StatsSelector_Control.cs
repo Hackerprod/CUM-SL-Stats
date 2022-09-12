@@ -101,7 +101,7 @@ namespace SKYNET.GUI.W_Controls
             CH_Subject.Items.Add("Todas");
             CH_Subject.SelectedIndex = 0;
 
-            var subjects = SubjectDB.GetSubjects(cource);
+            var subjects = SubjectDB.Subjects;
             foreach (Subject subject in subjects)
             {
                 CH_Subject.Items.Add(subject.Name);
@@ -148,13 +148,13 @@ namespace SKYNET.GUI.W_Controls
                 switch (CH_Semester.SelectedIndex)
                 {
                     case 0:     // All Subjects
-                        subjects = SubjectDB.GetSubjects(Cource);
+//                        subjects = SubjectDB.GetSubjects(Cource);
                         break;
                     case 1:     // First Semester Subjects
-                        subjects = SubjectDB.GetSubjects(Cource, Semester.First);
+//                        subjects = SubjectDB.GetSubjects(Cource, Semester.First);
                         break;
                     case 2:     // 2do Semester Subjects
-                        subjects = SubjectDB.GetSubjects(Cource, Semester.Second);
+//                        subjects = SubjectDB.GetSubjects(Cource, Semester.Second);
                         break;
                 }
             }
@@ -163,13 +163,13 @@ namespace SKYNET.GUI.W_Controls
                 switch (CH_Semester.SelectedIndex)
                 {
                     case 0:     // All Subjects
-                        subjects = SubjectDB.GetSubjects(Cource, Career);
+//                        subjects = SubjectDB.GetSubjects(Cource, Career);
                         break;
                     case 1:     // First Semester Subjects
-                        subjects = SubjectDB.GetSubjects(Cource, Career, Semester.First);
+//                        subjects = SubjectDB.GetSubjects(Cource, Career, Semester.First);
                         break;
                     case 2:     // 2do Semester Subjects
-                        subjects = SubjectDB.GetSubjects(Cource, Career, Semester.Second);
+//                        subjects = SubjectDB.GetSubjects(Cource, Career, Semester.Second);
                         break;
                 }
             }

@@ -146,15 +146,15 @@ namespace SKYNET.Controls
 
             if (Cource != null && Career != null)
             {
-                var subjects = SubjectDB.GetSubjects(Cource, Career, Semester);
-                foreach (var subject in subjects)
-                {
-                    if (!Subjects.ContainsKey(subject.Name))
-                    {
-                        Subjects.Add(subject.Name, subject);
-                        CH_Subjects.Items.Add(subject.Name);
-                    }
-                }
+                //var subjects = SubjectDB.GetSubjects(Cource, Career, Semester);
+                //foreach (var subject in subjects)
+                //{
+                //    if (!Subjects.ContainsKey(subject.Name))
+                //    {
+                //        Subjects.Add(subject.Name, subject);
+                //        CH_Subjects.Items.Add(subject.Name);
+                //    }
+                //}
             }
         }
 

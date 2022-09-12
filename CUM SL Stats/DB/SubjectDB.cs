@@ -1,10 +1,6 @@
 ﻿using SKYNET.Models;
 using SQLite;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SKYNET.DB
 {
@@ -34,55 +30,24 @@ namespace SKYNET.DB
             return false;
         }
 
-        public static List<Subject> GetSubjects(SchoolCource Cource)
+        public static bool Exists(string Name)
         {
-            if (Cource == null)
-            {
-                return new List<Subject>();
-            }
-            return Subjects.FindAll(c => c.CourceID == Cource.ID);
+            return Subjects.Find(c => c.Name == Name) != null;
         }
 
-        public static bool GetSubject(string Name, uint courceID, uint careerID, Semester Semester, out Subject subject)
+        public static Subject GetSubject(string Name)
         {
-            subject = Subjects.Find(c => c.Name == Name && c.CourceID == courceID && c.CareerID == careerID && c.Semester == Semester);
-            return subject != null;
+            return Subjects.Find(c => c.Name == Name);
         }
 
-        public static Subject GetSubject(uint subjectID, uint courceID, uint careerID, Semester Semester)
+        public static bool Exists(uint SubjectID)
         {
-            return Subjects.Find(c => c.ID == subjectID && c.CourceID == courceID && c.CareerID == careerID && c.Semester == Semester);
+            return Subjects.Find(c => c.ID == SubjectID) != null;
         }
 
-        public static bool GetSubject(uint courceID, uint careerID, Semester Semester, out Subject subject)
+        public static Subject GetSubject(uint SubjectID)
         {
-            subject = Subjects.Find(c => c.CourceID == courceID && c.CareerID == careerID && c.Semester == Semester);
-            return subject != null;
-        }
-
-        public static bool GetSubject(string Name, uint courceID, uint careerID, out Subject subject)
-        {
-            subject = Subjects.Find(c => c.Name == Name && c.CourceID == courceID && c.CareerID == careerID);
-            return subject != null;
-        }
-
-        public static List<Subject> GetSubjects(SchoolCource Cource, Career Career)
-        {
-            return Subjects.FindAll(c => c.CourceID == Cource.ID && c.CareerID == Career.ID);
-        }
-
-        public static List<Subject> GetSubjects(SchoolCource Cource, Semester Semester)
-        {
-            return Subjects.FindAll(c => c.CourceID == Cource.ID && c.Semester == Semester);
-        }
-
-        public static List<Subject> GetSubjects(SchoolCource Cource, Career Career, Semester Semester)
-        {
-            if (Semester == Semester.Both)
-            {
-                return Subjects.FindAll(c => c.CourceID == Cource.ID && c.CareerID == Career.ID);
-            }
-            return Subjects.FindAll(c => c.CourceID == Cource.ID && c.CareerID == Career.ID && c.Semester == Semester);
+            return Subjects.Find(c => c.ID == SubjectID);
         }
 
         public static uint CreateSubjectId()

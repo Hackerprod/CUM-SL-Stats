@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SKYNET.DB;
 using SKYNET.Models;
@@ -67,26 +61,26 @@ namespace SKYNET.GUI.W_Controls
 
             Semester semester = (Semester)CH_Semester.SelectedIndex;
 
-             var Subjects = SubjectDB.GetSubjects(cource, career, semester);
-            Subjects.Sort((s1, s2) => s1.Semester.CompareTo(s2.Semester));
+            // var Subjects = SubjectDB.GetSubjects(cource, career, semester);
+            //Subjects.Sort((s1, s2) => s1.Semester.CompareTo(s2.Semester));
 
-            if (!Subjects.Any())
-            {
-                Common.Show("No existen Asignaturas registradas");
-                return;
-            }
+            //if (!Subjects.Any())
+            //{
+            //    Common.Show("No existen Asignaturas registradas");
+            //    return;
+            //}
 
-            LV_Subjects.Items.Clear();
+            //LV_Subjects.Items.Clear();
 
-            foreach (var subject in Subjects)
-            {
-                string semesterString = subject.Semester == Semester.First ? "Primer semestre" : "Segundo semestre";
+            //foreach (var subject in Subjects)
+            //{
+            //    string semesterString = subject.Semester == Semester.First ? "Primer semestre" : "Segundo semestre";
 
-                var lvItem = new ListViewItem();
-                lvItem.SubItems.Add(subject.Name);
-                lvItem.SubItems.Add(semesterString);
-                LV_Subjects.Items.Add(lvItem);
-            }
+            //    var lvItem = new ListViewItem();
+            //    lvItem.SubItems.Add(subject.Name);
+            //    lvItem.SubItems.Add(semesterString);
+            //    LV_Subjects.Items.Add(lvItem);
+            //}
         }
 
         private void BT_AddSubject_Click(object sender, EventArgs e)
@@ -107,24 +101,21 @@ namespace SKYNET.GUI.W_Controls
                 Common.Show("Debe seleccionar un semestre válido para agregar la asignatura." + Environment.NewLine + "Solo esta permitido agregarla en Primer semestre o Segundo semestre");
                 return;
             }
-            if (SubjectDB.GetSubject(TB_SubjectName.Text, cource.ID, career.ID, semester, out Subject subject))
-            {
-                Common.Show($"La asignatura \"{TB_SubjectName.Text}\" existe en el curso seleccionado");
-                return;
-            }
-            subject = new Subject()
-            {
-                ID = SubjectDB.CreateSubjectId(),
-                Name = TB_SubjectName.Text,
-                CourceID = cource.ID,
-                CareerID = career.ID,
-                Semester = semester
-            };
-            if (!SubjectDB.RegisterSubject(subject))
-            {
-                Common.Show($"Error agregando la asignatura \"{TB_SubjectName.Text}\"");
-                return;
-            }
+            //if (SubjectDB.GetSubject(TB_SubjectName.Text, cource.ID, career.ID, semester, out Subject subject))
+            //{
+            //    Common.Show($"La asignatura \"{TB_SubjectName.Text}\" existe en el curso seleccionado");
+            //    return;
+            //}
+            //subject = new Subject()
+            //{
+            //    ID = SubjectDB.CreateSubjectId(),
+            //    Name = TB_SubjectName.Text
+            //};
+            //if (!SubjectDB.RegisterSubject(subject))
+            //{
+            //    Common.Show($"Error agregando la asignatura \"{TB_SubjectName.Text}\"");
+            //    return;
+            //}
 
             Common.Show($"La asignatura \"{TB_SubjectName.Text}\" se ha agregado correctamente");
             BT_Show_Click(null, null);

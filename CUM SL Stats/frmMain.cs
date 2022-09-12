@@ -830,9 +830,9 @@ namespace SKYNET
             SelectTab(tabPage_Groups);
         }
 
-        private void LV_Groups_SelectedIndexChanged(object sender, EventArgs e)
+        private void MostrarPlanesMenuItem_Click(object sender, EventArgs e)
         {
-
+            SelectTab(tabPage_StudyPlan); 
         }
     }
 }

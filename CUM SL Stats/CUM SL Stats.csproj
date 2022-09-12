@@ -205,12 +205,16 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Helpers\Common.cs" />
+    <Compile Include="Models\Graduate.cs" />
     <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\Semester.cs" />
+    <Compile Include="Models\StudyPlan.cs" />
     <Compile Include="Models\Subject.cs" />
     <Compile Include="Models\Career.cs" />
     <Compile Include="Models\Evaluation.cs" />
     <Compile Include="Models\RegisterType.cs" />
     <Compile Include="Models\Student.cs" />
+    <Compile Include="Models\Improvement.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\SchoolCource.cs" />

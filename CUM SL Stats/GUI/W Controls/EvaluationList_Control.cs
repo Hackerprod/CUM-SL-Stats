@@ -124,38 +124,38 @@ namespace SKYNET.GUI.W_Controls
             //*******************************************************************\\
 
             // Create Subjects Columns
-            List<Subject> subjects = new List<Subject>();
-            foreach (var item in studentsEvaluation)
-            {
-                List<Evaluation> evs = (List<Evaluation>)item.Value;
-                foreach (var i in evs)
-                {
-                    var exist = subjects.Find(s => s.ID == i.SubjectID);
-                    if (exist == null)
-                    {
-                        var subject = SubjectDB.GetSubject(i.SubjectID, cource.ID, career.ID, semester);
-                        if (subject != null && !subjects.Contains(subject))
-                        {
-                            subjects.Add(subject);
-                        }
-                    }
-                }
-            }
+            //List<Subject> subjects = new List<Subject>();
+            //foreach (var item in studentsEvaluation)
+            //{
+            //    List<Evaluation> evs = (List<Evaluation>)item.Value;
+            //    foreach (var i in evs)
+            //    {
+            //        var exist = subjects.Find(s => s.ID == i.SubjectID);
+            //        if (exist == null)
+            //        {
+            //            var subject = SubjectDB.Subjects;
+            //            if (subject != null)
+            //            {
+            //                subjects.Add(subject);
+            //            }
+            //        }
+            //    }
+            //}
 
             LV_Students.Clear();
             LV_Students.Columns.Add(columnName);
 
-            foreach (var subject in subjects)
-            {
-                var column = new ColumnHeader()
-                {
-                    Text = subject.Name,
-                    TextAlign = HorizontalAlignment.Center
-                };
-                column.Width = Common.GetTextSize(LV_Students, subject.Name) + 10;
-                column.Tag = subject;
-                LV_Students.Columns.Add(column);
-            }
+            //foreach (var subject in subjects)
+            //{
+            //    var column = new ColumnHeader()
+            //    {
+            //        Text = subject.Name,
+            //        TextAlign = HorizontalAlignment.Center
+            //    };
+            //    column.Width = Common.GetTextSize(LV_Students, subject.Name) + 10;
+            //    column.Tag = subject;
+            //    LV_Students.Columns.Add(column);
+            //}
 
             //*******************************************************************\\
 
