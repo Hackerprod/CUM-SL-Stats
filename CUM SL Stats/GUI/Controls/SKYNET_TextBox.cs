@@ -12,13 +12,19 @@ namespace SKYNET.Controls
 {
     public partial class SKYNET_TextBox : UserControl
     {
+        private bool isPassword;
+        private Color backColor;
+        private Color color;
+        private bool _ShowLogo = true;
+        private Color focused_BackColor;
+        private Color borderColor;
+
+
         [Category("SKYNET")]
         public event EventHandler OnLogoClicked;
 
         [Category("SKYNET")]
         public EventHandler OnReturnPressed { get; internal set; }
-
-        private bool isPassword;
 
         public SKYNET_TextBox()
         {
@@ -67,7 +73,7 @@ namespace SKYNET.Controls
                 textBox.Refresh();
             }
         }
-        private Color backColor;
+
         [Category("SKYNET")]
         public Color Color
         {
@@ -77,8 +83,6 @@ namespace SKYNET.Controls
                 color = value;
             }
         }
-        private Color color;
-
 
         [Category("SKYNET")]
         public override Color ForeColor
@@ -93,6 +97,7 @@ namespace SKYNET.Controls
                 base.ForeColor = value;
             }
         }
+
         [Category("SKYNET")]
         public bool ShowLogo
         {
@@ -106,7 +111,7 @@ namespace SKYNET.Controls
                 logo_box.Visible = value;
             }
         }
-        bool _ShowLogo = true;
+
         [Category("SKYNET")]
         public Image Logo
         {
@@ -136,7 +141,6 @@ namespace SKYNET.Controls
                 focused_BackColor = value;
             }
         }
-        private Color focused_BackColor;
 
         [Category("SKYNET")]
         public Color BorderColor
@@ -148,6 +152,7 @@ namespace SKYNET.Controls
                 PN_Container.BackColor = value;
             }
         }
+
         [Category("SKYNET")]
         public bool IsPassword
         {
@@ -165,9 +170,6 @@ namespace SKYNET.Controls
             }
         }
 
-
-        private Color borderColor;
-
         private void OnMouseClick(object sender, MouseEventArgs e)
         {
             textBox.Focus();
@@ -183,11 +185,13 @@ namespace SKYNET.Controls
             BackColor = ActivatedBackColor;
             base.OnGotFocus(e);
         }
+
         private void TextBox_LostFocus(object sender, EventArgs e)
         {
             BackColor = Color;
             base.OnLostFocus(e);
         }
+
         private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             base.OnKeyPress(e);
@@ -202,15 +206,21 @@ namespace SKYNET.Controls
         {
             base.OnKeyDown(e);
         }
+
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
             base.OnTextChanged(e);
         }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             BackColor = Color;
             base.OnPaint(e);
         }
 
+        public void Clear()
+        {
+            textBox.Clear();
+        }
     }
 }

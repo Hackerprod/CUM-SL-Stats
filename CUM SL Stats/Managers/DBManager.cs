@@ -21,6 +21,7 @@ namespace SKYNET.Managers
             StudentDB.Initialize(DB);
             SubjectDB.Initialize(DB);
             GroupDB.Initialize(DB);
+            StudyPlansDB.Initialize(DB);
         }
     }
 }

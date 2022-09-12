@@ -6,6 +6,7 @@
         Career,
         Student,
         Subject,
-        Group
+        Group,
+        StudyPlan
     }
 }

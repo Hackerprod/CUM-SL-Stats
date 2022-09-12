@@ -130,6 +130,14 @@ namespace SKYNET
                         });
                     }
                     break;
+                case RegisterType.StudyPlan:
+                    {
+                        PN_RegisterContainer.Controls.Add(new Plan_Control()
+                        {
+                            Dock = DockStyle.Fill
+                        });
+                    }
+                    break;
             }
             SelectTab(tabPage_Register);
         }
@@ -350,8 +358,8 @@ namespace SKYNET
 
                     lvItem.SubItems[0].Text = career.Name;
                     lvItem.SubItems[1].Text = StudentDB.GetCourceYear(cource, Settings.CurrentCource); 
-                    lvItem.SubItems[0].Tag = career;
-                    lvItem.SubItems[1].Tag = cource;
+                    lvItem.SubItems[0].Tag  = career;
+                    lvItem.SubItems[1].Tag  = cource;
 
                     LV_Careers.Items.Add(lvItem);
                 }
@@ -832,6 +840,7 @@ namespace SKYNET
 
         private void MostrarPlanesMenuItem_Click(object sender, EventArgs e)
         {
+            StudyPlanList.LoadData();
             SelectTab(tabPage_StudyPlan); 
         }
     }

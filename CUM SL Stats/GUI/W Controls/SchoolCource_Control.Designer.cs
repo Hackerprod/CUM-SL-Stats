@@ -34,12 +34,16 @@ namespace SKYNET.Controls
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.BT_Register = new SKYNET_Button();
+            this.skyneT_TextBox1 = new SKYNET.Controls.SKYNET_TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.PN_ScoolYear.SuspendLayout();
             this.SuspendLayout();
             // 
             // PN_ScoolYear
             // 
             this.PN_ScoolYear.BackColor = System.Drawing.Color.White;
+            this.PN_ScoolYear.Controls.Add(this.skyneT_TextBox1);
+            this.PN_ScoolYear.Controls.Add(this.label1);
             this.PN_ScoolYear.Controls.Add(this.TB_CourseName);
             this.PN_ScoolYear.Controls.Add(this.label8);
             this.PN_ScoolYear.Controls.Add(this.label9);
@@ -108,6 +112,32 @@ namespace SKYNET.Controls
             this.BT_Register.Text = "Añadir";
             this.BT_Register.Click += new System.EventHandler(this.BT_Register_Click);
             // 
+            // skyneT_TextBox1
+            // 
+            this.skyneT_TextBox1.ActivatedBackColor = System.Drawing.Color.WhiteSmoke;
+            this.skyneT_TextBox1.BorderColor = System.Drawing.Color.WhiteSmoke;
+            this.skyneT_TextBox1.Color = System.Drawing.Color.WhiteSmoke;
+            this.skyneT_TextBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.skyneT_TextBox1.IsPassword = false;
+            this.skyneT_TextBox1.Location = new System.Drawing.Point(21, 134);
+            this.skyneT_TextBox1.Logo = null;
+            this.skyneT_TextBox1.LogoCursor = System.Windows.Forms.Cursors.Default;
+            this.skyneT_TextBox1.Name = "skyneT_TextBox1";
+            this.skyneT_TextBox1.ShowLogo = true;
+            this.skyneT_TextBox1.Size = new System.Drawing.Size(332, 35);
+            this.skyneT_TextBox1.TabIndex = 4;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label1.Location = new System.Drawing.Point(18, 114);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(98, 17);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Plan de Estudio";
+            // 
             // SchoolCource_Control
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -129,5 +159,7 @@ namespace SKYNET.Controls
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private SKYNET_Button BT_Register;
+        private SKYNET_TextBox skyneT_TextBox1;
+        private System.Windows.Forms.Label label1;
     }
 }

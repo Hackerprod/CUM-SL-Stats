@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="DB\EvaluationDB.cs" />
     <Compile Include="DB\StudentDB.cs" />
+    <Compile Include="DB\StudyPlansDB.cs" />
     <Compile Include="DB\SubjectDB.cs" />
     <Compile Include="DB\GroupDB.cs" />
     <Compile Include="DB\SchoolCourceDB.cs" />
@@ -114,6 +115,18 @@
     </Compile>
     <Compile Include="GUI\W Controls\Groups_Control.Designer.cs">
       <DependentUpon>Groups_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\Plan_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\Plan_Control.Designer.cs">
+      <DependentUpon>Plan_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\StudyPlanList_Control .cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\StudyPlanList_Control .Designer.cs">
+      <DependentUpon>StudyPlanList_Control .cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\W Controls\SubjectList_Control.cs">
       <SubType>UserControl</SubType>
@@ -207,6 +220,7 @@
     <Compile Include="Helpers\Common.cs" />
     <Compile Include="Models\Graduate.cs" />
     <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\Plan.cs" />
     <Compile Include="Models\Semester.cs" />
     <Compile Include="Models\StudyPlan.cs" />
     <Compile Include="Models\Subject.cs" />
@@ -232,6 +246,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\W Controls\Groups_Control.resx">
       <DependentUpon>Groups_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\Plan_Control.resx">
+      <DependentUpon>Plan_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\StudyPlanList_Control .resx">
+      <DependentUpon>StudyPlanList_Control .cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\W Controls\SubjectList_Control.resx">
       <DependentUpon>SubjectList_Control.cs</DependentUpon>
