@@ -29,7 +29,6 @@ namespace SKYNET.GUI.W_Controls
                 var lvItem = new ListViewItem();
                 lvItem.SubItems.Add(plan.Name);
                 lvItem.Tag = plan;
-
                 LV_Plans.Items.Add(lvItem);
             }
         }
@@ -51,6 +50,7 @@ namespace SKYNET.GUI.W_Controls
                 }
                 else
                 {
+                    frmMain.frm.PN_RegisterContainer.Controls.Clear();
                     frmMain.frm.PN_RegisterContainer.Controls.Add(new Plan_Control(Plan)
                     {
                         Dock = DockStyle.Fill
