@@ -11,6 +11,7 @@ namespace SKYNET.Controls
         private Group GroupSelected;
         private SchoolCource SchoolCourceSelected;
         private Career CareerSelected;
+        private StudyPlan StudyPlanSelected;
         private bool Loaded;
 
         public Groups_Control()
@@ -26,12 +27,17 @@ namespace SKYNET.Controls
             {
                 foreach (var cource in SchoolCourceDB.SchoolCources)
                 {
-                    CH_SchoolCource.Items.Add(cource.Name);
+                    CB_SchoolCource.Items.Add(cource.Name);
                 }
 
                 foreach (var career in CareerDB.Careers)
                 {
-                    CH_Career.Items.Add(career.Name);
+                    CB_Career.Items.Add(career.Name);
+                }
+
+                foreach (var plan in StudyPlansDB.StudyPlans)
+                {
+                    CB_StudyPlan.Items.Add(plan.Name);
                 }
 
                 Loaded = true;
@@ -42,39 +48,39 @@ namespace SKYNET.Controls
             }
         }
 
-        public void LoadData()
+        public async Task LoadData()
         {
             LV_Groups.Items.Clear();
 
-            Task.Run(delegate 
+            LoadCourceAndCareer();
+
+            await Task.Delay(250);
+
+            var Groups = GroupDB.Groups;
+            Groups.Sort((s1, s2) => s2.Name.CompareTo(s1.Name));
+            Groups.Reverse();
+            foreach (var group in Groups)
             {
-                foreach (var group in GroupDB.Groups)
+                try
                 {
-                    try
-                    {
-                        var Cource = SchoolCourceDB.GetCource(group.CourceID);
-                        var Career = CareerDB.GetCareer(group.CareerID);
+                    //Common.Show(group == null);
+                    var Cource = SchoolCourceDB.GetCource(group.CourceID);
+                    var Career = CareerDB.GetCareer(group.CareerID);
 
-                        var lvItem = new ListViewItem();
-                        lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
-                        lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
-                        lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
-                        lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
-                        lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
+                    var lvItem = new ListViewItem();
+                    lvItem.SubItems.Add(Cource == null ? "Invalid" : Cource.Name);
+                    lvItem.SubItems.Add(Career == null ? "Invalid" : Career.Name);
+                    lvItem.SubItems.Add(group.Name);
+                    lvItem.SubItems.Add(StudentDB.GetCourceYear(Cource, frmMain.Settings.CurrentCource));
+                    lvItem.SubItems.Add(StudentDB.GetStudents(group).Count.ToString());
+                    lvItem.Tag = group;
 
-                        lvItem.SubItems[0].Tag = group;
-                        lvItem.SubItems[1].Text = Cource == null ? "Invalid" : Cource.Name;
-                        lvItem.SubItems[2].Text = Career == null ? "Invalid" : Career.Name;
-                        lvItem.SubItems[3].Text = group.Name;
-                        lvItem.SubItems[4].Text = StudentDB.GetCourceYear(Cource, frmMain.Settings.CurrentCource);
-                        lvItem.SubItems[5].Text = StudentDB.GetStudents(group).Count.ToString();
-                        LV_Groups.Items.Add(lvItem);
-                    }
-                    catch
-                    {
-                    }
+                    LV_Groups.Items.Add(lvItem);
                 }
-            });
+                catch
+                {
+                }
+            }
         }
 
         private void LV_Groups_SelectedIndexChanged(object sender, EventArgs e)
@@ -86,24 +92,43 @@ namespace SKYNET.Controls
 
             try
             {
-                GroupSelected = (Group)LV_Groups.SelectedItems[0].SubItems[0].Tag;
+                GroupSelected = (Group)LV_Groups.SelectedItems[0].Tag;
                 TB_Name.Text = GroupSelected.Name;
+                CB_StudyPlan.Text = "";
 
                 SchoolCourceSelected = SchoolCourceDB.GetCource(GroupSelected.CourceID);
-                for (int i = 0; i < CH_SchoolCource.Items.Count; i++)
+                if (SchoolCourceSelected != null)
                 {
-                    if (CH_SchoolCource.Items[i].ToString() == SchoolCourceSelected.Name)
+                    for (int i = 0; i < CB_SchoolCource.Items.Count; i++)
                     {
-                        CH_SchoolCource.SelectedIndex = i;
+                        if (CB_SchoolCource.Items[i].ToString() == SchoolCourceSelected?.Name)
+                        {
+                            CB_SchoolCource.SelectedIndex = i;
+                        }
                     }
                 }
 
                 CareerSelected = CareerDB.GetCareer(GroupSelected.CareerID);
-                for (int i = 0; i < CH_Career.Items.Count; i++)
+                if (CareerSelected != null)
                 {
-                    if (CH_Career.Items[i].ToString() == CareerSelected.Name)
+                    for (int i = 0; i < CB_Career.Items.Count; i++)
                     {
-                        CH_Career.SelectedIndex = i;
+                        if (CB_Career.Items[i].ToString() == CareerSelected?.Name)
+                        {
+                            CB_Career.SelectedIndex = i;
+                        }
+                    }
+                }
+
+                StudyPlanSelected = StudyPlansDB.Get(GroupSelected.StudyPlanID);
+                if (StudyPlanSelected != null)
+                {
+                    for (int i = 0; i < CB_StudyPlan.Items.Count; i++)
+                    {
+                        if (CB_StudyPlan.Items[i].ToString() == StudyPlanSelected?.Name)
+                        {
+                            CB_StudyPlan.SelectedIndex = i;
+                        }
                     }
                 }
             }
@@ -114,12 +139,17 @@ namespace SKYNET.Controls
 
         private void CH_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SchoolCourceSelected = SchoolCourceDB.GetCourceByName(CH_SchoolCource.Text);
+            SchoolCourceSelected = SchoolCourceDB.GetCourceByName(CB_SchoolCource.Text);
         }
 
         private void CH_Career_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CareerSelected = CareerDB.GetCareer(CH_Career.Text);
+            CareerSelected = CareerDB.GetCareer(CB_Career.Text);
+        }
+
+        private void CB_StudyPlan_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            StudyPlanSelected = StudyPlansDB.Get(CB_StudyPlan.Text);
         }
 
         private void BT_Register_Click(object sender, EventArgs e)
@@ -129,26 +159,52 @@ namespace SKYNET.Controls
                 MessageBox.Show($"El Nombre especificado no es válido");
                 return;
             }
-            if (string.IsNullOrEmpty(CH_SchoolCource.Text))
+
+            if (string.IsNullOrEmpty(CB_SchoolCource.Text))
             {
                 MessageBox.Show($"El Curso especificado no es válido");
                 return;
             }
-            if (string.IsNullOrEmpty(CH_Career.Text))
+
+            if (string.IsNullOrEmpty(CB_Career.Text))
             {
                 MessageBox.Show($"La Carrera especificada no es válida");
                 return;
             }
 
+            if (string.IsNullOrEmpty(CB_StudyPlan.Text))
+            {
+                MessageBox.Show($"El Plan de estudio especificado no es válido");
+                return;
+            }
+
+            if (StudyPlanSelected == null)
+            {
+                var Dialog = MessageBox.Show($"El Plan de estudio {CB_StudyPlan.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
+                if (Dialog == DialogResult.Yes)
+                {
+                    StudyPlanSelected = new StudyPlan()
+                    {
+                        ID = StudyPlansDB.CreateID(),
+                        Name = CB_StudyPlan.Text
+                    };
+                    StudyPlansDB.Register(StudyPlanSelected);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
             if (SchoolCourceSelected == null)
             {
-                var Dialog = MessageBox.Show($"El Curso {CH_SchoolCource.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
+                var Dialog = MessageBox.Show($"El Curso {CB_SchoolCource.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
                 if (Dialog == DialogResult.Yes)
                 {
                     SchoolCourceSelected = new SchoolCource()
                     {
-                        ID = SchoolCourceDB.CreateCourceId(),
-                        Name = CH_SchoolCource.Text
+                        ID = SchoolCourceDB.CreateID(),
+                        Name = CB_SchoolCource.Text
                     };
                     SchoolCourceDB.RegisterSchoolCource(SchoolCourceSelected);
                 }
@@ -159,15 +215,15 @@ namespace SKYNET.Controls
             }
             else
             {
-                if (SchoolCourceSelected.Name != CH_SchoolCource.Text)
+                if (SchoolCourceSelected.Name != CB_SchoolCource.Text)
                 {
-                    var Dialog = MessageBox.Show($"El Curso {CH_SchoolCource.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
+                    var Dialog = MessageBox.Show($"El Curso {CB_SchoolCource.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
                     if (Dialog == DialogResult.Yes)
                     {
                         SchoolCourceSelected = new SchoolCource()
                         {
-                            ID = SchoolCourceDB.CreateCourceId(),
-                            Name = CH_SchoolCource.Text
+                            ID = SchoolCourceDB.CreateID(),
+                            Name = CB_SchoolCource.Text
                         };
                         SchoolCourceDB.RegisterSchoolCource(SchoolCourceSelected);
                     }
@@ -180,13 +236,13 @@ namespace SKYNET.Controls
 
             if (CareerSelected == null)
             {
-                var Dialog = MessageBox.Show($"La carrera {CH_Career.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
+                var Dialog = MessageBox.Show($"La carrera {CB_Career.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
                 if (Dialog == DialogResult.Yes)
                 {
                     CareerSelected = new Career()
                     {
                         ID = CareerDB.CreateCareerId(),
-                        Name = CH_Career.Text,
+                        Name = CB_Career.Text,
                     };
                     frmMain.frm.RegisterData(RegisterType.Career, CareerSelected);
                 }
@@ -197,15 +253,15 @@ namespace SKYNET.Controls
             }
             else
             {
-                if (SchoolCourceSelected.Name != CH_SchoolCource.Text)
+                if (SchoolCourceSelected.Name != CB_SchoolCource.Text)
                 {
-                    var Dialog = MessageBox.Show($"La carrera {CH_Career.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
+                    var Dialog = MessageBox.Show($"La carrera {CB_Career.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
                     if (Dialog == DialogResult.Yes)
                     {
                         CareerSelected = new Career()
                         {
                             ID = CareerDB.CreateCareerId(),
-                            Name = CH_Career.Text,
+                            Name = CB_Career.Text,
                         };
                         frmMain.frm.RegisterData(RegisterType.Career, CareerSelected);
                     }
@@ -216,20 +272,21 @@ namespace SKYNET.Controls
                 }
             }
 
+            GroupSelected.StudyPlanID = StudyPlanSelected.ID;
             GroupSelected.CareerID = CareerSelected.ID;
             GroupSelected.CourceID = SchoolCourceSelected.ID;
             GroupSelected.Name = TB_Name.Text;
             GroupDB.UpdateGroup(GroupSelected);
 
             LV_Groups.Items.Clear();
-            CH_SchoolCource.Items.Clear();
-            CH_Career.Items.Clear();
+            CB_SchoolCource.Items.Clear();
+            CB_Career.Items.Clear();
 
             LoadData();
             LoadCourceAndCareer();
         }
 
-        private void BT_RemoveGroup_Click(object sender, EventArgs e)
+        private async void BT_RemoveGroup_Click(object sender, EventArgs e)
         {
             if (GroupSelected != null)
             {
@@ -238,12 +295,12 @@ namespace SKYNET.Controls
                 {
                     StudentDB.RemoveStudents(GroupSelected);
                     GroupDB.Remove(GroupSelected);
-                    LoadData();
+                    await LoadData();
                     LoadCourceAndCareer();
 
                     TB_Name.Clear();
-                    CH_SchoolCource.Items.Clear();
-                    CH_Career.Items.Clear();
+                    CB_SchoolCource.Items.Clear();
+                    CB_Career.Items.Clear();
                 }
             }
         }

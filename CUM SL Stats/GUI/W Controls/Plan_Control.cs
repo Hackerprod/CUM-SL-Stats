@@ -10,65 +10,50 @@ namespace SKYNET.Controls
 {
     public partial class Plan_Control : UserControl
     {
+        private StudyPlan Plan;
         public Plan_Control()
         {
             InitializeComponent();
-
-            TB_StudentName.TextChanged += TB_StudentName_TextChanged;
-
-            foreach (var item in CareerDB.Careers)
-            {
-                CB_Career.Items.Add(item.Name);
-            }
         }
 
-        private void TB_StudentName_TextChanged(object sender, EventArgs e)
+        public Plan_Control(StudyPlan plan)
         {
-            if (TB_StudentName.Text.Contains(","))
-            {
-                try
-                {
-                    string result = "";
-                    var parts = TB_StudentName.Text.Split(',');
-                    result = parts[1].Remove(0, 1) + " " + parts[0];
-                    TB_StudentName.Text = result;
-                }
-                catch
-                {
-                }
-            }
+            InitializeComponent();
+
+            Plan = plan;
+            TB_PlanName.Text = Plan.Name;
+            BT_Register.Text = "Actualizar";
         }
+
 
         private void BT_Register_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(TB_StudentName.Text))
+            if (string.IsNullOrEmpty(TB_PlanName.Text))
             {
                 Common.Show($"Debe especificar un nombre válido");
                 return;
             }
 
-            var Career = CareerDB.GetCareer(CB_Career.Text);
-            if (Career == null)
+            if (Plan == null)
             {
-                Common.Show($"La carrera {CB_Career.Text} no existe.");
-                return;
+                Plan = new StudyPlan()
+                {
+                    Name = TB_PlanName.Text,
+                    Plans = new List<uint>()
+                };
+                StudyPlansDB.Register(Plan);
+                Common.Show($"El plan {TB_PlanName.Text} se registró correctamente");
+            }
+            else
+            {
+                Plan.Name = TB_PlanName.Text;
+                StudyPlansDB.Update(Plan);
+                Common.Show($"El plan {TB_PlanName.Text} se actualizó correctamente");
+                frmMain.frm.StudyPlanList.LoadData();
+                frmMain.frm.SelectTab();
             }
 
-            var Plan = new StudyPlan()
-            {
-                CareerID = Career.ID,
-                Name = TB_StudentName.Text,
-                Plans = new List<uint>()
-            };
-
-            StudyPlansDB.Register(Plan);
-
-            Common.Show($"El plan {TB_StudentName.Text} se registró correctamente");
-            TB_StudentName.Clear();
-        }
-
-        private void Register()
-        {
+            TB_PlanName.Clear();
 
         }
     }

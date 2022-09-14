@@ -121,12 +121,12 @@
             this.panel1.TabIndex = 1;
             this.panel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnMouseClick);
             // 
-            // Container
+            // PN_Container
             // 
             this.PN_Container.Controls.Add(this.P_Container);
             this.PN_Container.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PN_Container.Location = new System.Drawing.Point(0, 0);
-            this.PN_Container.Name = "Container";
+            this.PN_Container.Name = "PN_Container";
             this.PN_Container.Padding = new System.Windows.Forms.Padding(1);
             this.PN_Container.Size = new System.Drawing.Size(220, 35);
             this.PN_Container.TabIndex = 94;

@@ -29,12 +29,33 @@ namespace SKYNET.DB
             StudyPlan target = StudyPlans.Find(s => s.ID == source.ID);
             if (target == null)
             {
-                source.ID = CreateSubjectId();
+                source.ID = CreateID();
                 DB.InsertOrUpdate(source);
                 return true;
             }
             Common.Show($"El Plan {source.Name} existe.");
             return false;
+        }
+
+        public static bool Register(Plan source)
+        {
+            if (Plans.Find(s => s.ID == source.ID) == null)
+            {
+                source.ID = CreatePlansID();
+                DB.InsertOrReplace(source);
+                return true;
+            }
+            return false;
+        }
+
+        public static void Update(StudyPlan source)
+        {
+            DB.InsertOrUpdate(source);
+        }
+
+        public static void Update(Plan source)
+        {
+            DB.InsertOrUpdate(source);
         }
 
         public static bool Exists(string Name)
@@ -43,8 +64,21 @@ namespace SKYNET.DB
         }
 
         public static List<StudyPlan> Get(Career career)
-        { 
-            return StudyPlans.FindAll(c => c.CareerID == career.ID);
+        {
+            var Plans = new List<StudyPlan>();
+            var Groups = GroupDB.GetGroups(career);
+            foreach (var group in Groups)
+            {
+                var plan = Plans.Find(p => p.ID == group.StudyPlanID);
+                if (plan == null)
+                {
+                    if (Get(group.StudyPlanID, out var targetPlan))
+                    {
+                        Plans.Add(targetPlan);
+                    }
+                }
+            }
+            return Plans;
         }
 
         public static List<Plan> GetPlans(uint StudyPlanID)
@@ -87,10 +121,22 @@ namespace SKYNET.DB
             return StudyPlans.Find(c => c.ID == SubjectID);
         }
 
-        public static uint CreateSubjectId()
+        public static bool Get(uint SubjectID, out StudyPlan Plan)
+        {
+            Plan = Get(SubjectID);
+            return Plan != null;
+        }
+
+        public static uint CreateID()
         {
             StudyPlans.Sort((s1, s2) => s2.ID.CompareTo(s1.ID));
             return StudyPlans.Count == 0 ? 1 : StudyPlans[StudyPlans.Count - 1].ID + 1;
+        }
+
+        public static uint CreatePlansID()
+        {
+            Plans.Sort((s1, s2) => s2.ID.CompareTo(s1.ID));
+            return Plans.Count == 0 ? 1 : Plans[Plans.Count - 1].ID + 1;
         }
     }
 }

@@ -18,10 +18,9 @@ namespace SKYNET.DB
             DB.DBConnection.CreateIndex("Subject", "CareerID");
         }
 
-        public static bool RegisterSubject(Subject source)
+        public static bool Register(Subject source)
         {
-            Subject target = Subjects.Find(s => s.ID == source.ID);
-            if (target == null)
+            if (Subjects.Find(s => s.ID == source.ID) == null)
             {
                 DB.InsertOrUpdate(source);
                 return true;
@@ -38,6 +37,12 @@ namespace SKYNET.DB
         public static Subject Get(string Name)
         {
             return Subjects.Find(c => c.Name == Name);
+        }
+
+        public static bool Get(uint ID, out Subject Subject)
+        {
+            Subject = Subjects.Find(c => c.ID == ID);
+            return Subject != null;
         }
 
         public static bool Exists(uint SubjectID)

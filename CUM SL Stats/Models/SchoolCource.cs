@@ -9,6 +9,5 @@ namespace SKYNET.Models
         [PrimaryKey]
         public uint ID { get; set; }
         public string Name { get; set; }
-        public uint StudyPlanID { get; set; }
     }
 }

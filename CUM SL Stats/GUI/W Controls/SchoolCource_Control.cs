@@ -27,7 +27,7 @@ namespace SKYNET.Controls
             }
             SchoolCource schoolCource = new SchoolCource()
             {
-                ID = SchoolCourceDB.CreateCourceId(),
+                ID = SchoolCourceDB.CreateID(),
                 Name = CourceName
             };
 

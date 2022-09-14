@@ -65,6 +65,11 @@ namespace SKYNET.DB
             return Groups.FindAll(g => g.CourceID == cource.ID && g.CareerID == career.ID);
         }
 
+        public static List<Group> GetGroups(Career career)
+        {
+            return Groups.FindAll(g => g.CareerID == career.ID);
+        }
+
         public static List<Group> GetGroups(SchoolCource cource)
         {
             return Groups.FindAll(g => g.CourceID == cource.ID);

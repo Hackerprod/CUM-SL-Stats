@@ -31,6 +31,9 @@ namespace SKYNET.Controls
         {
             this.BT_Register = new SKYNET_Button();
             this.PN_AddCareer = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.CB_StudyPlan = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel6 = new System.Windows.Forms.Panel();
             this.CB_SchoolCource = new System.Windows.Forms.ComboBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -41,6 +44,7 @@ namespace SKYNET.Controls
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.PN_AddCareer.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel3.SuspendLayout();
             this.SuspendLayout();
@@ -68,6 +72,8 @@ namespace SKYNET.Controls
             // PN_AddCareer
             // 
             this.PN_AddCareer.BackColor = System.Drawing.Color.White;
+            this.PN_AddCareer.Controls.Add(this.panel1);
+            this.PN_AddCareer.Controls.Add(this.label1);
             this.PN_AddCareer.Controls.Add(this.panel6);
             this.PN_AddCareer.Controls.Add(this.label12);
             this.PN_AddCareer.Controls.Add(this.TB_GroupName);
@@ -81,6 +87,37 @@ namespace SKYNET.Controls
             this.PN_AddCareer.Padding = new System.Windows.Forms.Padding(1);
             this.PN_AddCareer.Size = new System.Drawing.Size(376, 420);
             this.PN_AddCareer.TabIndex = 14;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.panel1.Controls.Add(this.CB_StudyPlan);
+            this.panel1.Location = new System.Drawing.Point(21, 258);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(332, 35);
+            this.panel1.TabIndex = 16;
+            // 
+            // CB_StudyPlan
+            // 
+            this.CB_StudyPlan.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.CB_StudyPlan.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CB_StudyPlan.Font = new System.Drawing.Font("Segoe UI Emoji", 9.75F);
+            this.CB_StudyPlan.FormattingEnabled = true;
+            this.CB_StudyPlan.Location = new System.Drawing.Point(3, 7);
+            this.CB_StudyPlan.Name = "CB_StudyPlan";
+            this.CB_StudyPlan.Size = new System.Drawing.Size(326, 25);
+            this.CB_StudyPlan.TabIndex = 7;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label1.Location = new System.Drawing.Point(15, 238);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(98, 17);
+            this.label1.TabIndex = 15;
+            this.label1.Text = "Plan de estudio";
             // 
             // panel6
             // 
@@ -193,6 +230,7 @@ namespace SKYNET.Controls
             this.Size = new System.Drawing.Size(376, 420);
             this.PN_AddCareer.ResumeLayout(false);
             this.PN_AddCareer.PerformLayout();
+            this.panel1.ResumeLayout(false);
             this.panel6.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -211,5 +249,8 @@ namespace SKYNET.Controls
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.ComboBox CB_SchoolCource;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ComboBox CB_StudyPlan;
+        private System.Windows.Forms.Label label1;
     }
 }

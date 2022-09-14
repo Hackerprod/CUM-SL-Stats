@@ -11,5 +11,6 @@ namespace SKYNET.Models
         public string Name { get; set; }
         public uint CourceID { get; set; }
         public uint CareerID { get; set; }
+        public uint StudyPlanID { get; set; }
     }
 }

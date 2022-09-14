@@ -32,7 +32,7 @@ namespace SKYNET.GUI.W_Controls
             this.BT_Import = new SKYNET_Button();
             this.label21 = new System.Windows.Forms.Label();
             this.panel29 = new System.Windows.Forms.Panel();
-            this.CH_SchoolCource = new System.Windows.Forms.ComboBox();
+            this.CB_SchoolCource = new System.Windows.Forms.ComboBox();
             this.label23 = new System.Windows.Forms.Label();
             this.label28 = new System.Windows.Forms.Label();
             this.panel31 = new System.Windows.Forms.Panel();
@@ -54,6 +54,9 @@ namespace SKYNET.GUI.W_Controls
             this.CH_Career = new SKYNET.Controls.SKYNET_TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.LB_Info = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.CB_StudyPlan = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel29.SuspendLayout();
             this.panel31.SuspendLayout();
             this.panel32.SuspendLayout();
@@ -61,6 +64,7 @@ namespace SKYNET.GUI.W_Controls
             this.panel34.SuspendLayout();
             this.panel35.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // BT_Import
@@ -73,7 +77,7 @@ namespace SKYNET.GUI.W_Controls
             this.BT_Import.ForeColorMouseOver = System.Drawing.Color.Empty;
             this.BT_Import.ImageAlignment = SKYNET_Button.ImgAlign.Left;
             this.BT_Import.ImageIcon = null;
-            this.BT_Import.Location = new System.Drawing.Point(262, 218);
+            this.BT_Import.Location = new System.Drawing.Point(259, 276);
             this.BT_Import.MenuMode = false;
             this.BT_Import.Name = "BT_Import";
             this.BT_Import.Rounded = false;
@@ -97,23 +101,23 @@ namespace SKYNET.GUI.W_Controls
             // panel29
             // 
             this.panel29.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.panel29.Controls.Add(this.CH_SchoolCource);
+            this.panel29.Controls.Add(this.CB_SchoolCource);
             this.panel29.Location = new System.Drawing.Point(30, 49);
             this.panel29.Name = "panel29";
             this.panel29.Size = new System.Drawing.Size(332, 35);
             this.panel29.TabIndex = 48;
             // 
-            // CH_SchoolCource
+            // CB_SchoolCource
             // 
-            this.CH_SchoolCource.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.CH_SchoolCource.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CH_SchoolCource.Font = new System.Drawing.Font("Segoe UI Emoji", 9.75F);
-            this.CH_SchoolCource.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.CH_SchoolCource.FormattingEnabled = true;
-            this.CH_SchoolCource.Location = new System.Drawing.Point(6, 5);
-            this.CH_SchoolCource.Name = "CH_SchoolCource";
-            this.CH_SchoolCource.Size = new System.Drawing.Size(323, 25);
-            this.CH_SchoolCource.TabIndex = 7;
+            this.CB_SchoolCource.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.CB_SchoolCource.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CB_SchoolCource.Font = new System.Drawing.Font("Segoe UI Emoji", 9.75F);
+            this.CB_SchoolCource.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.CB_SchoolCource.FormattingEnabled = true;
+            this.CB_SchoolCource.Location = new System.Drawing.Point(6, 5);
+            this.CB_SchoolCource.Name = "CB_SchoolCource";
+            this.CB_SchoolCource.Size = new System.Drawing.Size(323, 25);
+            this.CB_SchoolCource.TabIndex = 7;
             // 
             // label23
             // 
@@ -183,6 +187,7 @@ namespace SKYNET.GUI.W_Controls
             this.LV_Students.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.LV_Students.FullRowSelect = true;
             this.LV_Students.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.LV_Students.HideSelection = false;
             this.LV_Students.Location = new System.Drawing.Point(10, 0);
             this.LV_Students.Name = "LV_Students";
             this.LV_Students.Size = new System.Drawing.Size(533, 399);
@@ -326,11 +331,44 @@ namespace SKYNET.GUI.W_Controls
             this.LB_Info.Text = "label1";
             this.LB_Info.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.panel2.Controls.Add(this.CB_StudyPlan);
+            this.panel2.Location = new System.Drawing.Point(30, 226);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(329, 35);
+            this.panel2.TabIndex = 55;
+            // 
+            // CB_StudyPlan
+            // 
+            this.CB_StudyPlan.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.CB_StudyPlan.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CB_StudyPlan.Font = new System.Drawing.Font("Segoe UI Emoji", 9.75F);
+            this.CB_StudyPlan.FormattingEnabled = true;
+            this.CB_StudyPlan.Location = new System.Drawing.Point(3, 7);
+            this.CB_StudyPlan.Name = "CB_StudyPlan";
+            this.CB_StudyPlan.Size = new System.Drawing.Size(323, 25);
+            this.CB_StudyPlan.TabIndex = 7;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label1.Location = new System.Drawing.Point(27, 204);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(98, 17);
+            this.label1.TabIndex = 56;
+            this.label1.Text = "Plan de estudio";
+            // 
             // Import_Control
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.CH_Career);
             this.Controls.Add(this.CH_Group);
@@ -350,6 +388,7 @@ namespace SKYNET.GUI.W_Controls
             this.panel34.PerformLayout();
             this.panel35.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -360,7 +399,7 @@ namespace SKYNET.GUI.W_Controls
         private SKYNET_Button BT_Import;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Panel panel29;
-        private System.Windows.Forms.ComboBox CH_SchoolCource;
+        private System.Windows.Forms.ComboBox CB_SchoolCource;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Panel panel31;
@@ -382,5 +421,8 @@ namespace SKYNET.GUI.W_Controls
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label LB_Info;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.ComboBox CB_StudyPlan;
+        private System.Windows.Forms.Label label1;
     }
 }

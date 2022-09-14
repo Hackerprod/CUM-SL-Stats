@@ -522,7 +522,7 @@ namespace SKYNET
             this.TB_Departament.Name = "TB_Departament";
             this.TB_Departament.Size = new System.Drawing.Size(962, 25);
             this.TB_Departament.TabIndex = 11;
-            this.TB_Departament.Text = "CUM SAN LUIS";
+            this.TB_Departament.Text = "SIGPU";
             this.TB_Departament.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label1
@@ -534,7 +534,7 @@ namespace SKYNET
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(962, 25);
             this.label1.TabIndex = 10;
-            this.label1.Text = "PROGRAMA ESTADÍSTICO DEL PROCESO DE FORMACIÓN";
+            this.label1.Text = "SISTEMA DE GESTION DE PROCESOS UNIVERSITARIOS";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // BN_Start
@@ -1883,12 +1883,12 @@ namespace SKYNET
         private System.Windows.Forms.TabPage tabPage_PieChart;
         private LiveCharts.WinForms.PieChart pieChart1;
         private System.Windows.Forms.TabPage tabPage_MainStats;
-        private System.Windows.Forms.TabPage tabPage_Register;
+        public System.Windows.Forms.TabPage tabPage_Register;
         private System.Windows.Forms.TabPage tabPage_Evaluation;
         private SKYNET_Button BN_Start;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Panel PN_RegisterContainer;
+        public System.Windows.Forms.Panel PN_RegisterContainer;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.ToolStripMenuItem asignaturaToolStripMenuItem;
@@ -2011,7 +2011,7 @@ namespace SKYNET
         private System.Windows.Forms.ToolStripMenuItem planDeEstudioToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mostrarPlanesMenuItem;
         private System.Windows.Forms.TabPage tabPage_StudyPlan;
-        private GUI.W_Controls.StudyPlanList_Control StudyPlanList;
+        public GUI.W_Controls.StudyPlanList_Control StudyPlanList;
     }
 }
 

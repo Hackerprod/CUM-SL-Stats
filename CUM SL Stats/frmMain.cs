@@ -72,7 +72,7 @@ namespace SKYNET
             TabControl1.SelectTab(LastTab);
         }
 
-        private void SelectTab(TabPage tabPage)
+        public void SelectTab(TabPage tabPage)
         {
             try
             {
@@ -197,7 +197,7 @@ namespace SKYNET
                 case RegisterType.Subject:
                     {
                         Subject subject = (Subject)Data;
-                        if (SubjectDB.RegisterSubject(subject))
+                        if (SubjectDB.Register(subject))
                         {
                             if (notify)
                             {

@@ -30,23 +30,17 @@ namespace SKYNET.Controls
         private void InitializeComponent()
         {
             this.PN_Student = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.CB_Career = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.TB_StudentName = new SKYNET.Controls.SKYNET_TextBox();
+            this.TB_PlanName = new SKYNET.Controls.SKYNET_TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.BT_Register = new SKYNET_Button();
             this.PN_Student.SuspendLayout();
-            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // PN_Student
             // 
             this.PN_Student.BackColor = System.Drawing.Color.White;
-            this.PN_Student.Controls.Add(this.panel3);
-            this.PN_Student.Controls.Add(this.label7);
-            this.PN_Student.Controls.Add(this.TB_StudentName);
+            this.PN_Student.Controls.Add(this.TB_PlanName);
             this.PN_Student.Controls.Add(this.label10);
             this.PN_Student.Controls.Add(this.label11);
             this.PN_Student.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -56,51 +50,20 @@ namespace SKYNET.Controls
             this.PN_Student.Size = new System.Drawing.Size(376, 420);
             this.PN_Student.TabIndex = 14;
             // 
-            // panel3
-            // 
-            this.panel3.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.panel3.Controls.Add(this.CB_Career);
-            this.panel3.Location = new System.Drawing.Point(21, 111);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(332, 35);
-            this.panel3.TabIndex = 9;
-            // 
-            // CB_Career
-            // 
-            this.CB_Career.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.CB_Career.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CB_Career.Font = new System.Drawing.Font("Segoe UI Emoji", 9.75F);
-            this.CB_Career.FormattingEnabled = true;
-            this.CB_Career.Location = new System.Drawing.Point(3, 7);
-            this.CB_Career.Name = "CB_Career";
-            this.CB_Career.Size = new System.Drawing.Size(326, 25);
-            this.CB_Career.TabIndex = 7;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label7.Location = new System.Drawing.Point(18, 92);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(52, 17);
-            this.label7.TabIndex = 3;
-            this.label7.Text = "Carrera";
-            // 
             // TB_StudentName
             // 
-            this.TB_StudentName.ActivatedBackColor = System.Drawing.Color.WhiteSmoke;
-            this.TB_StudentName.BorderColor = System.Drawing.Color.WhiteSmoke;
-            this.TB_StudentName.Color = System.Drawing.Color.WhiteSmoke;
-            this.TB_StudentName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.TB_StudentName.IsPassword = false;
-            this.TB_StudentName.Location = new System.Drawing.Point(21, 52);
-            this.TB_StudentName.Logo = null;
-            this.TB_StudentName.LogoCursor = System.Windows.Forms.Cursors.Default;
-            this.TB_StudentName.Name = "TB_StudentName";
-            this.TB_StudentName.ShowLogo = true;
-            this.TB_StudentName.Size = new System.Drawing.Size(332, 35);
-            this.TB_StudentName.TabIndex = 2;
+            this.TB_PlanName.ActivatedBackColor = System.Drawing.Color.WhiteSmoke;
+            this.TB_PlanName.BorderColor = System.Drawing.Color.WhiteSmoke;
+            this.TB_PlanName.Color = System.Drawing.Color.WhiteSmoke;
+            this.TB_PlanName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.TB_PlanName.IsPassword = false;
+            this.TB_PlanName.Location = new System.Drawing.Point(21, 52);
+            this.TB_PlanName.Logo = null;
+            this.TB_PlanName.LogoCursor = System.Windows.Forms.Cursors.Default;
+            this.TB_PlanName.Name = "TB_StudentName";
+            this.TB_PlanName.ShowLogo = true;
+            this.TB_PlanName.Size = new System.Drawing.Size(332, 35);
+            this.TB_PlanName.TabIndex = 2;
             // 
             // label10
             // 
@@ -111,7 +74,7 @@ namespace SKYNET.Controls
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(374, 32);
             this.label10.TabIndex = 1;
-            this.label10.Text = "AÑADIR ESTUDIANTE";
+            this.label10.Text = "AÑADIR PLAN DE ESTUDIO";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label11
@@ -155,7 +118,6 @@ namespace SKYNET.Controls
             this.Size = new System.Drawing.Size(376, 420);
             this.PN_Student.ResumeLayout(false);
             this.PN_Student.PerformLayout();
-            this.panel3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -163,10 +125,7 @@ namespace SKYNET.Controls
         #endregion
         private SKYNET_Button BT_Register;
         private System.Windows.Forms.Panel PN_Student;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.ComboBox CB_Career;
-        private System.Windows.Forms.Label label7;
-        private SKYNET_TextBox TB_StudentName;
+        private SKYNET_TextBox TB_PlanName;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
     }

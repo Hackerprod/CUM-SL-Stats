@@ -23,170 +23,178 @@ namespace SKYNET.GUI.W_Controls
             Count = 0;
         }
 
-        public void ProcessPdfFile(string pdfFile)
+        public async Task ProcessPdfFile(string pdfFile)
         {
             LV_Students.Items.Clear();
-            CH_SchoolCource.Items.Clear();
+            CB_SchoolCource.Items.Clear();
+            CB_SchoolCource.Text = "";
+            CB_StudyPlan.Items.Clear();
+            CB_StudyPlan.Text = "";
             Students.Clear();
 
-            Task.Run(delegate 
+            PdfReader reader = new PdfReader(pdfFile);
+            List<string> pdfLines = new List<string>();
+
+            string pdfContent = "";
+            for (int page = 1; page <= reader.NumberOfPages; page++)
             {
-                PdfReader reader = new PdfReader(pdfFile);
-                List<string> pdfLines = new List<string>();
+                pdfContent += PdfTextExtractor.GetTextFromPage(reader, page, new SimpleTextExtractionStrategy()) + Environment.NewLine;
+            }
+            reader.Close();
+            pdfLines = SplitLines(pdfContent);
 
-                string pdfContent = "";
-                for (int page = 1; page <= reader.NumberOfPages; page++)
+            // Get SchoolCource ///////////////////////////////////////////////////////////
+
+            string CourceName = "";
+            var stringCources = pdfLines.FindAll(s => s.Contains("-"));
+            foreach (var stringCource in stringCources)
+            {
+                if (SchoolCourceDB.IsValidCourceName(stringCource, out string _courceName))
                 {
-                    pdfContent = PdfTextExtractor.GetTextFromPage(reader, page, new SimpleTextExtractionStrategy());
+                    CourceName = _courceName;
                 }
-                reader.Close();
-                pdfLines = SplitLines(pdfContent);
-                File.WriteAllText("d:/reporte.txt", pdfContent);
-                Sex sex = Sex.Unknown;
+            }
 
-                // Get SchoolCource ///////////////////////////////////////////////////////////
+            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
+            {
+                SchoolCource cource = SchoolCourceDB.SchoolCources[i];
+                CB_SchoolCource.Items.Add(cource.Name);
+                CB_SchoolCource.SelectedIndex = i;
+            }
 
-                string CourceName = "";
-                var stringCources = pdfLines.FindAll(s => s.Contains("-"));
-                foreach (var stringCource in stringCources)
+            for (int i = 0; i < CB_SchoolCource.Items.Count; i++)
+            {
+                object item = CB_SchoolCource.Items[i];
+                if (item.ToString() == CourceName)
                 {
-                    if (SchoolCourceDB.IsValidCourceName(stringCource, out string _courceName))
+                    CB_SchoolCource.SelectedIndex = i;
+                }
+            }
+
+            if (CB_SchoolCource.Text != CourceName)
+            {
+                CB_SchoolCource.Text = CourceName;
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////
+
+            // Get Career /////////////////////////////////////////////////////////////////
+
+            string stringCareer = pdfLines.Find(s => s.Contains("Carrera:"));
+            if (!string.IsNullOrEmpty(stringCareer))
+            {
+                string[] parts = stringCareer.Split(':');
+                string career = parts[1].Contains(" Grupo") ? parts[1].Replace(" Grupo", "") : parts[1];
+
+                CH_Career.Text = career;
+
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////
+
+            // Get Group name /////////////////////////////////////////////////////////////
+
+            string stringGroup = pdfLines.Find(s => s.Contains("Tipo de Curso:"));
+            if (!string.IsNullOrEmpty(stringGroup))
+            {
+                string[] parts = stringGroup.Split(new string[] { "Tipo de Curso:" }, StringSplitOptions.None);
+                string Name = parts[0];
+                while (Name.EndsWith(" "))
+                {
+                    string name = "";
+                    for (int i = 0; i < Name.Length; i++)
                     {
-                        CourceName = _courceName;
-                    }
-                }
-
-                for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
-                {
-                    SchoolCource cource = SchoolCourceDB.SchoolCources[i];
-                    CH_SchoolCource.Items.Add(cource.Name);
-                    CH_SchoolCource.SelectedIndex = i;
-                }
-
-                for (int i = 0; i < CH_SchoolCource.Items.Count; i++)
-                {
-                    object item = CH_SchoolCource.Items[i];
-                    if (item.ToString() == CourceName)
-                    {
-                        CH_SchoolCource.SelectedIndex = i;
-                    }
-                }
-
-                if (CH_SchoolCource.Text != CourceName)
-                {
-                    CH_SchoolCource.Text = CourceName;
-                }
-
-                ///////////////////////////////////////////////////////////////////////////////
-
-                // Get Career /////////////////////////////////////////////////////////////////
-
-                string stringCareer = pdfLines.Find(s => s.Contains("Carrera:"));
-                if (!string.IsNullOrEmpty(stringCareer))
-                {
-                    string[] parts = stringCareer.Split(':');
-                    string career = parts[1].Contains(" Grupo") ? parts[1].Replace(" Grupo", "") : parts[1];
-
-                    CH_Career.Text = career;
-
-                }
-
-                ///////////////////////////////////////////////////////////////////////////////
-
-                // Get Group name /////////////////////////////////////////////////////////////
-
-                string stringGroup = pdfLines.Find(s => s.Contains("Tipo de Curso:"));
-                if (!string.IsNullOrEmpty(stringGroup))
-                {
-                    string[] parts = stringGroup.Split(new string[] { "Tipo de Curso:" }, StringSplitOptions.None);
-                    string Name = parts[0];
-                    while (Name.EndsWith(" "))
-                    {
-                        string name = "";
-                        for (int i = 0; i < Name.Length; i++)
+                        if (i != Name.Length - 1)
                         {
-                            if (i != Name.Length - 1)
-                            {
-                                name += Name[i];
-                            }
-                        }
-                        Name = name;
-                    }
-                    CH_Group.Text = Name;
-                }
-
-                ///////////////////////////////////////////////////////////////////////////////
-
-                //Students Count //////////////////////////////////////////////////////////////
-
-                string studentsCount = pdfLines.Find(s => s.Contains(" Total de estudiantes:"));
-                if (!string.IsNullOrEmpty(studentsCount))
-                {
-                    string[] parts = studentsCount.Split(new string[] { " Total de estudiantes:" }, StringSplitOptions.None);
-                    string count = parts[0];
-                    int.TryParse(count, out Count);
-                }
-                if (Count > 0)
-                {
-                    for (int i = 1; i < Count + 1; i++)
-                    {
-                        string student = pdfLines.Find(s => s.EndsWith(i.ToString()));
-                        if (!string.IsNullOrEmpty(student) && student.Contains(" " + i.ToString()))
-                        {
-                            Student Student = GetStudent(student, i);
-                            if (Student == null)
-                            {
-                                string ProcessedLine = ProcessWrongLine(pdfLines, student);
-                                Student = GetStudent(ProcessedLine, i);
-                            }
-                            Students.Add(i, Student);
-                        }
-                        else
-                        {
-                            string wrongStudent = pdfLines.Find(s => s == i.ToString() && s.Length == i.ToString().Length);
-                            if (!string.IsNullOrEmpty(wrongStudent))
-                            {
-                                string ProcessedLine = ProcessWrongLine(pdfLines, wrongStudent);
-                                Student Student = GetStudent(ProcessedLine, i);
-                                Students.Add(i, Student);
-                            }
+                            name += Name[i];
                         }
                     }
+                    Name = name;
                 }
+                CH_Group.Text = Name;
+            }
 
-                ///////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////////////
 
-                int goodStudents = 0;
-                foreach (var KV in Students)
+            // Fill Study plans ///////////////////////////////////////////////////////////
+
+            foreach (var Plan in StudyPlansDB.StudyPlans)
+            {
+                CB_StudyPlan.Items.Add(Plan.Name);
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////
+
+            //Students Count //////////////////////////////////////////////////////////////
+
+            string studentsCount = pdfLines.Find(s => s.Contains(" Total de estudiantes:"));
+            if (!string.IsNullOrEmpty(studentsCount))
+            {
+                string[] parts = studentsCount.Split(new string[] { " Total de estudiantes:" }, StringSplitOptions.None);
+                string count = parts[0];
+                int.TryParse(count, out Count);
+            }
+            if (Count > 0)
+            {
+                for (int i = 1; i < Count + 1; i++)
                 {
-                    Student Student = KV.Value;
-
-                    var lvItem = new ListViewItem();
-                    lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
-                    lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
-                    lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
-                    lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
-
-                    if (Student == null)
+                    string student = pdfLines.Find(s => s.EndsWith(i.ToString()));
+                    if (!string.IsNullOrEmpty(student) && student.Contains(" " + i.ToString()))
                     {
-                        lvItem.SubItems[0].BackColor = Color.FromArgb(255, 232, 233);
-                        lvItem.SubItems[1].Text = KV.Key.ToString();
+                        Student Student = GetStudent(student, i);
+                        if (Student == null)
+                        {
+                            string ProcessedLine = ProcessWrongLine(pdfLines, student);
+                            Student = GetStudent(ProcessedLine, i);
+                        }
+                        Students.Add(i, Student);
                     }
                     else
                     {
-                        lvItem.SubItems[0].Tag = Student;
-                        lvItem.SubItems[0].Text = "";
-                        lvItem.SubItems[1].Text = KV.Key.ToString();
-                        lvItem.SubItems[2].Text = Student.CI;
-                        lvItem.SubItems[3].Text = Student.Names;
-                        lvItem.SubItems[4].Text = Student.Sex.ToString();
-                        goodStudents++;
+                        string wrongStudent = pdfLines.Find(s => s == i.ToString() && s.Length == i.ToString().Length);
+                        if (!string.IsNullOrEmpty(wrongStudent))
+                        {
+                            string ProcessedLine = ProcessWrongLine(pdfLines, wrongStudent);
+                            Student Student = GetStudent(ProcessedLine, i);
+                            Students.Add(i, Student);
+                        }
                     }
-
-                    LV_Students.Items.Add(lvItem);
                 }
-                LB_Info.Text = $"Mostrando {goodStudents} de {Count} estudiantes en el archivo";
-            });
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////
+
+            int goodStudents = 0;
+            foreach (var KV in Students)
+            {
+                Student Student = KV.Value;
+
+                var lvItem = new ListViewItem();
+                lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
+                lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
+                lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
+                lvItem.SubItems.Add(new ListViewItem.ListViewSubItem());
+
+                if (Student == null)
+                {
+                    lvItem.SubItems[0].BackColor = Color.FromArgb(255, 232, 233);
+                    lvItem.SubItems[1].Text = KV.Key.ToString();
+                }
+                else
+                {
+                    lvItem.SubItems[0].Tag = Student;
+                    lvItem.SubItems[0].Text = "";
+                    lvItem.SubItems[1].Text = KV.Key.ToString();
+                    lvItem.SubItems[2].Text = Student.CI;
+                    lvItem.SubItems[3].Text = Student.Names;
+                    lvItem.SubItems[4].Text = Student.Sex.ToString();
+                    goodStudents++;
+                }
+
+                LV_Students.Items.Add(lvItem);
+            }
+            LB_Info.Text = $"Mostrando {goodStudents} de {Count} estudiantes en el archivo";
+
         }
 
         private Student GetStudent(string student, int i)
@@ -259,77 +267,102 @@ namespace SKYNET.GUI.W_Controls
 
         private void BT_Import_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(CH_SchoolCource.Text))
+            BT_Import.Enabled = false;
+
+            Task.Run(delegate 
             {
-                MessageBox.Show($"Introduzca el nombre del Curso");
-                return;
-            }
-            if (!SchoolCourceDB.IsValidCourceName(CH_SchoolCource.Text, out _))
-            {
-                MessageBox.Show($"En nombre del Curso no es válido, el nombre tiene que seguir el siguiente formato: 2020-2021");
-                return;
-            }
-            SchoolCource Cource = SchoolCourceDB.GetCource(CH_SchoolCource.Text);
-            if (Cource == null)
-            {
-                var Dialog = MessageBox.Show($"El Curso {CH_SchoolCource.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
-                if (Dialog == DialogResult.Yes)
+                if (string.IsNullOrEmpty(CB_SchoolCource.Text))
                 {
-                    Cource = new SchoolCource()
-                    {
-                        ID = SchoolCourceDB.CreateCourceId(),
-                        Name = CH_SchoolCource.Text
-                    };
-                    SchoolCourceDB.RegisterSchoolCource(Cource);
-                }
-                else
-                {
+                    MessageBox.Show($"Introduzca el nombre del Curso");
                     return;
                 }
-            }
 
-            if (!CareerDB.GetCareer(CH_Career.Text, out Career Career))
-            {
-                Career = new Career()
+                if (!SchoolCourceDB.IsValidCourceName(CB_SchoolCource.Text, out _))
                 {
-                    ID = CareerDB.CreateCareerId(),
-                    Name = CH_Career.Text
-                };
-                CareerDB.RegisterCareer(Career);
-            }
-
-            if (!GroupDB.GetGroup(Cource, Career, CH_Group.Text, out Group Group))
-            {
-                Group = new Group()
-                {
-                    ID = GroupDB.CreateGroupId(),
-                    CourceID = Cource.ID,
-                    CareerID = Career.ID,
-                    Name = CH_Group.Text
-                };
-                GroupDB.RegisterGroup(Group);
-            }
-
-            int registered = 0;
-            bool done = false;
-            foreach (var KV in Students)
-            {
-                Student Student = KV.Value;
-                if (Student != null)
-                {
-                    Student.GroupID = Group.ID;
-
-                    done = StudentDB.RegisterStudent(Student);
-                    registered += done ? 1 : 0;
+                    MessageBox.Show($"En nombre del Curso no es válido, el nombre tiene que seguir el siguiente formato: 2020-2021");
+                    return;
                 }
-            }
 
-            Common.Show($"Se han importado {registered} estudiantes de {Count} en el archivo");
+                if (string.IsNullOrEmpty(CB_StudyPlan.Text))
+                {
+                    MessageBox.Show($"El Plan de estudio especificado no es válido");
+                    return;
+                }
 
-            if (done)
-            {
-                frmMain.frm.SelectTab();
-            }
+                SchoolCource Cource = SchoolCourceDB.GetCource(CB_SchoolCource.Text);
+                if (Cource == null)
+                {
+                    var Dialog = MessageBox.Show($"El Curso {CB_SchoolCource.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
+                    if (Dialog == DialogResult.Yes)
+                    {
+                        Cource = new SchoolCource()
+                        {
+                            ID = SchoolCourceDB.CreateID(),
+                            Name = CB_SchoolCource.Text
+                        };
+                        SchoolCourceDB.RegisterSchoolCource(Cource);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
+                var StudyPlan = StudyPlansDB.Get(CB_StudyPlan.Text);
+                if (StudyPlan == null)
+                {
+                    MessageBox.Show($"El Plan de estudio {CB_StudyPlan.Text} no existe" + Environment.NewLine + "Por favor cree un plan de estudio antes de continuar", "", MessageBoxButtons.YesNo);
+                    return;
+                }
+
+                LB_Info.Text = $"Importando grupo desde archivo, por favor espere.";
+
+                if (!CareerDB.GetCareer(CH_Career.Text, out Career Career))
+                {
+                    Career = new Career()
+                    {
+                        ID = CareerDB.CreateCareerId(),
+                        Name = CH_Career.Text
+                    };
+                    CareerDB.RegisterCareer(Career);
+                }
+
+                if (!GroupDB.GetGroup(Cource, Career, CH_Group.Text, out Group Group))
+                {
+                    Group = new Group()
+                    {
+                        ID = GroupDB.CreateGroupId(),
+                        CourceID = Cource.ID,
+                        CareerID = Career.ID,
+                        StudyPlanID = StudyPlan.ID,
+                        Name = CH_Group.Text
+                    };
+                    GroupDB.RegisterGroup(Group);
+                }
+
+                int registered = 0;
+                bool done = false;
+                foreach (var KV in Students)
+                {
+                    Student Student = KV.Value;
+                    if (Student != null)
+                    {
+                        Student.GroupID = Group.ID;
+
+                        done = StudentDB.RegisterStudent(Student);
+                        registered += done ? 1 : 0;
+                    }
+                }
+
+                Common.Show($"Se han importado {registered} estudiantes de {Count} en el archivo");
+                LB_Info.Text = $"";
+
+                if (done)
+                {
+                    frmMain.frm.SelectTab();
+                }
+            });
+            BT_Import.Enabled = true;
         }
 
         public static List<string> SplitLines(string content)
