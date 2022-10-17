@@ -39,7 +39,7 @@ namespace SKYNET.Controls
                 Plan = new StudyPlan()
                 {
                     Name = TB_PlanName.Text,
-                    Plans = new List<uint>()
+                    Plans = new List<Plan>()
                 };
                 StudyPlansDB.Register(Plan);
                 Common.Show($"El plan {TB_PlanName.Text} se registró correctamente");

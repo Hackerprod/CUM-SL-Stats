@@ -1,64 +1,75 @@
-﻿using SKYNET.Models;
-using SQLite;
-using System;
+﻿using MongoDB.Driver;
+using SKYNET.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SKYNET.DB
 {
     public static class SchoolCourceDB
     {
-        private static SQLiteDatabase DB;
-        public static List<SchoolCource> SchoolCources => DB.GetTables<SchoolCource>();
+        private static MongoDbCollection<SchoolCource> DB;
 
-        public static void Initialize(SQLiteDatabase dB)
+        public static List<SchoolCource> SchoolCources
         {
-            DB = dB;
-
-            DB.CreateTable<SchoolCource>();
-            DB.DBConnection.CreateIndex("SchoolCource", "ID");
-            DB.DBConnection.CreateIndex("SchoolCource", "Name");
+            get
+            {
+                try
+                {
+                    return DB.Collection.Find(s => s != null).ToList();
+                }
+                catch (System.Exception)
+                {
+                    return new List<SchoolCource>();
+                }
+            }
         }
 
-        public static bool RegisterSchoolCource(SchoolCource source)
+        public static void Initialize()
         {
-            SchoolCource target = SchoolCources.Find(s => s.Name == source.Name);
+            DB = new MongoDbCollection<SchoolCource>("SIGPU_SchoolCource");
+
+            DB.CreateIndex(Builders<SchoolCource>.IndexKeys.Ascending((SchoolCource i) => i.ID));
+            DB.CreateIndex(Builders<SchoolCource>.IndexKeys.Ascending((SchoolCource i) => i.Name));
+        }
+
+        public static bool Register(SchoolCource source)
+        {
+            var target = Get(source.ID);
             if (target == null)
             {
-                DB.InsertOrUpdate(source);
+                source.ID = CreateID();
+                DB.Collection.InsertOne(source);
                 return true;
             }
             Common.Show($"El curso {source.Name} existe.");
             return false;
         }
 
-        public static SchoolCource GetCource(uint ID)
+        public static SchoolCource Get(uint ID)
         {
-            return SchoolCources.Find(s => s.ID == ID);
+            return DB.Collection.Find((SchoolCource usr) => usr.ID == ID, null).FirstOrDefault();
         }
 
-        public static SchoolCource GetCource(Group group)
+        public static SchoolCource Get(Group group)
         {
-            return SchoolCources.Find(s => s.ID == group.CourceID);
+            return Get(group.CourceID);
         }
 
-        public static SchoolCource GetCource(string Name)
+        public static SchoolCource Get(string Name)
         {
-            return SchoolCources.Find(s => s.Name == Name);
+            return DB.Collection.Find((SchoolCource usr) => usr.Name == Name, null).FirstOrDefault();
         }
 
-        public static bool GetCource(string Name, out SchoolCource cource)
+        public static bool Get(string Name, out SchoolCource cource)
         {
-            cource = SchoolCources.Find(s => s.Name == Name);
+            cource = Get(Name);
             return cource != null; ;
         }
 
         public static List<SchoolCource> GetActiveCources(uint iD)
         {
             var cources = new List<SchoolCource>();
-            var cource = GetCource(iD);
+            var cource = Get(iD);
 
             int minYear = 0;
             int maxYear = 0;
@@ -79,7 +90,7 @@ namespace SKYNET.DB
             for (int i = 1; i < 5; i++)
             {
                 var tempName = $"{(minYear - i)}-{((minYear - i) + 1)}";
-                var tempCource = GetCource(tempName);
+                var tempCource = Get(tempName);
                 if (tempCource != null)
                 {
                     cources.Add(tempCource);
@@ -88,21 +99,22 @@ namespace SKYNET.DB
             return cources;
         }
 
-        public static bool RemoveCource(SchoolCource cource)
+        public static bool Remove(SchoolCource cource)
         {
-            if (DB.Delete(cource) == 1)
+            var Result = DB.Collection.DeleteOne(c => c.ID == cource.ID);
+            if (Result.DeletedCount == 1)
             {
-                var groups = GroupDB.Groups.FindAll(g => g.CourceID == cource.ID);
-                foreach (var group in groups)
-                {
-                    var students = StudentDB.Students.FindAll(g => g.GroupID == group.ID);
-                    foreach (var student in students)
-                    {
-                        DB.Delete(student);
-                    }
+                //var groups = GroupDB.GetGroups(cource);
+                //foreach (var group in groups)
+                //{
+                //    var students = StudentDB.Students.FindAll(g => g.GroupID == group.ID);
+                //    foreach (var student in students)
+                //    {
+                //        DB.Delete(student);
+                //    }
 
-                    DB.Delete(group);
-                }
+                //    DB.Delete(group);
+                //}
 
                 return true;
             }
@@ -131,7 +143,7 @@ namespace SKYNET.DB
 
             foreach (var Cource in Cources)
             {
-                if (GroupDB.ExistGroup(Cource, career))
+                if (GroupDB.Exist(Cource, career))
                 {
                     var name = StudentDB.GetCourceYear(Cource, (uint)frmMain.Settings.CurrentCource);
                     Years.Add(name);
@@ -140,15 +152,10 @@ namespace SKYNET.DB
             return Years;
         }
 
-        public static SchoolCource GetCourceByName(string name)
-        {
-            return SchoolCources.Find(g => g.Name == name);
-        }
-
         public static uint CreateID()
         {
-            SchoolCources.Sort((s1, s2) => s1.ID.CompareTo(s2.ID));
-            return SchoolCources.Count == 0 ? 1 : SchoolCources[SchoolCources.Count - 1].ID + 1;
+            uint ID = DB.Collection.Find(FilterDefinition<SchoolCource>.Empty, null).SortByDescending((SchoolCource u) => (object)u.ID).Project((SchoolCource u) => u.ID).FirstOrDefault();
+            return ID <= 0U ? 1 : ID + 1;
         }
     }
 }

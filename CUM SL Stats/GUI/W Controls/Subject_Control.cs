@@ -36,7 +36,7 @@ namespace SKYNET.Controls
 
             Subject subject = new Subject()
             {
-                ID = SubjectDB.CreateSubjectId(),
+                ID = SubjectDB.CreateID(),
                 Name = TB_SubjectName.Text,
             };
 

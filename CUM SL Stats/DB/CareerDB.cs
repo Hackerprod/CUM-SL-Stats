@@ -1,58 +1,70 @@
-﻿using SKYNET.Models;
-using SQLite;
-using System;
+﻿using MongoDB.Driver;
+using SKYNET.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace SKYNET.DB
 {
     public static class CareerDB
     {
-        public static SQLiteDatabase DB;
-        public static List<Career> Careers => DB.GetTables<Career>();
+        private static MongoDbCollection<Career> DB;
 
-        public static void Initialize(SQLiteDatabase dB)
+        public static List<Career> Careers
         {
-            DB = dB;
-
-            DB.CreateTable<Career>();
-            DB.DBConnection.CreateIndex("Career", "ID");
-            DB.DBConnection.CreateIndex("Career", "Name");
-            DB.DBConnection.CreateIndex("Career", "CourceID");
+            get
+            {
+                try
+                {
+                    return DB.Collection.Find(c => c != null).ToList();
+                }
+                catch (System.Exception)
+                {
+                    return new List<Career>();
+                }
+            }
         }
 
-        public static bool RegisterCareer(Career source)
+        public static void Initialize()
         {
-            Career target = Careers.Find(s => s.Name == source.Name);
+            DB = new MongoDbCollection<Career>("SIGPU_Career");
+
+            DB.CreateIndex(Builders<Career>.IndexKeys.Ascending((Career i) => i.ID));
+            DB.CreateIndex(Builders<Career>.IndexKeys.Ascending((Career i) => i.Name));
+            DB.CreateIndex(Builders<Career>.IndexKeys.Ascending((Career i) => i.StudyPlanID));
+        }
+
+        public static bool Register(Career source)
+        {
+            var target = Get(source.ID);
             if (target == null)
             {
-                DB.InsertOrUpdate(source);
+                source.ID = CreateID();
+                DB.Collection.InsertOne(source);
                 return true;
             }
-            Common.Show($"La carrera {source.Name} existe.");
+            Common.Show($"La Carrera {source.Name} existe.");
             return false;
         }
 
-        public static Career GetCareer(uint ID)
+        public static Career Get(uint ID)
         {
-            return Careers.Find(s => s.ID == ID);
+            return DB.Collection.Find((Career c) => c.ID == ID, null).FirstOrDefault();
         }
 
-        public static Career GetCareer(Group group)
+        public static Career Get(Group group)
         {
-            return Careers.Find(c => c.ID == group.CareerID);
+            return DB.Collection.Find((Career c) => c.ID == group.CareerID, null).FirstOrDefault();
         }
 
-        public static Career GetCareer(string Name)
+        public static Career Get(string Name)
         {
-            return Careers.Find(s => s.Name == Name);
+            return DB.Collection.Find((Career c) => c.Name == Name, null).FirstOrDefault();
         }
 
-        public static bool GetCareer(string Name, out Career career)
+        public static bool Get(string Name, out Career career)
         {
-            career = GetCareer(Name);
+            career = Get(Name);
             return career != null;
         }
 
@@ -75,7 +87,7 @@ namespace SKYNET.DB
 
                 foreach (var group in groups)
                 {
-                    var Career = GetCareer(group.CareerID);
+                    var Career = Get(group.CareerID);
                     if (Career != null && careers.Find(c => c.ID == Career.ID || c.Name == Career.Name) == null)
                     {
                         careers.Add(Career);
@@ -88,10 +100,10 @@ namespace SKYNET.DB
             return careers;
         }
 
-        public static uint CreateCareerId()
+        public static uint CreateID()
         {
-            Careers.Sort((s1, s2) => s2.ID.CompareTo(s1.ID));
-            return Careers.Count == 0 ? 1 : Careers[Careers.Count - 1].ID + 1;
+            uint ID = DB.Collection.Find(FilterDefinition<Career>.Empty, null).SortByDescending((Career u) => (object)u.ID).Project((Career u) => u.ID).FirstOrDefault(default(CancellationToken));
+            return ID <= 0U ? 1 : ID + 1;
         }
     }
 }

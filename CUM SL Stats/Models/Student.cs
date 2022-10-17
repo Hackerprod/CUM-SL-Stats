@@ -1,13 +1,11 @@
 ﻿using System;
-using SQLite;
 
 namespace SKYNET.Models
 {
     [Serializable]
     public class Student
     {
-        [PrimaryKey]
-        public string CI { get; set; }
+        public ulong CI { get; set; }
         public string Names { get; set; }
         public uint GroupID { get; set; }
         public Status Status { get; set; }

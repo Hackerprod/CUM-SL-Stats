@@ -10,7 +10,6 @@ using SKYNET.DB;
 using SKYNET.Helpers;
 using SKYNET.Managers;
 using SKYNET.Models;
-using SQLite;
 
 namespace SKYNET
 {
@@ -18,7 +17,6 @@ namespace SKYNET
     {
         public static frmMain frm;
         public static SettingsManager Settings;
-        public static SQLiteDatabase DB;
 
         public RegisterType CurrentRegisterType;
         public TabPage LastTab;
@@ -28,32 +26,39 @@ namespace SKYNET
             InitializeComponent();
             CheckForIllegalCrossThreadCalls = false;
             frm = this;
+        }
+
+        private async void frmMain_Load(object sender, EventArgs e)
+        {
+            SetEnabledControls(false);
 
             Settings = new SettingsManager();
             Settings.Load();
 
             TB_Departament.Text = Settings.CurrentDepartament;
 
-            if (!string.IsNullOrEmpty(Settings.DBPath))
+            var DBConnected = await DBManager.Initialize();
+
+            if (!DBConnected)
             {
-                DB = new SQLiteDatabase(Settings.DBPath);
-            }
-            else
-            {
-                DB = new SQLiteDatabase(System.IO.Path.Combine("Data", "DB.db"));
+                SetEnabledControls(false);
+                return;
             }
 
-            DBManager.Initialize(DB);
             LastTab = tabPage_Home;
 
             this.EnableBlur();
             BackColor = Color.Azure;
             TransparencyKey = Color.Azure;
+
+            ChartManager.LoadPieChart(pieChart1);
+
+            SetEnabledControls(true);
         }
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private void SetEnabledControls(bool v)
         {
-            ChartManager.LoadPieChart(pieChart1);
+            BN_Start.Enabled = true;
         }
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -149,7 +154,7 @@ namespace SKYNET
                 case RegisterType.SchoolCource:
                     {
                         SchoolCource schoolCource = (SchoolCource)Data;
-                        if (SchoolCourceDB.RegisterSchoolCource(schoolCource))
+                        if (SchoolCourceDB.Register(schoolCource))
                         {
                             if (notify)
                             {
@@ -164,7 +169,7 @@ namespace SKYNET
                 case RegisterType.Career:
                     {
                         Career Career = (Career)Data;
-                        if (CareerDB.RegisterCareer(Career))
+                        if (CareerDB.Register(Career))
                         {
                             if (notify)
                             {
@@ -178,7 +183,7 @@ namespace SKYNET
                 case RegisterType.Student:
                     {
                         Student student = (Student)Data;
-                        bool registered = StudentDB.RegisterStudent(student);
+                        bool registered = StudentDB.Register(student);
                         if (registered && !other)
                         {
                             if (notify)
@@ -212,7 +217,7 @@ namespace SKYNET
                     {
                         Group group = (Group)Data;
 
-                        bool registered = GroupDB.RegisterGroup(group);
+                        bool registered = GroupDB.Register(group);
                         if (registered)
                         {
                             if (notify)
@@ -255,7 +260,7 @@ namespace SKYNET
                                     else
                                     {
                                         item.SubItems[0].Tag = student;
-                                        item.SubItems[1].Text = student.CI;
+                                        item.SubItems[1].Text = student.CI.ToString();
                                         item.SubItems[2].Text = student.Names;
 
                                         string status = "";
@@ -375,7 +380,7 @@ namespace SKYNET
 
             if (group != null)
             {
-                SchoolCource Cource = SchoolCourceDB.GetCource(group.CourceID);
+                SchoolCource Cource = SchoolCourceDB.Get(group.CourceID);
                 var Students = StudentDB.GetStudents(group);
                 foreach (var student in Students)
                 {
@@ -396,7 +401,7 @@ namespace SKYNET
                     }
 
                     lvItem.SubItems[0].Tag = student;
-                    lvItem.SubItems[1].Text = student.CI;
+                    lvItem.SubItems[1].Text = student.CI.ToString();
                     lvItem.SubItems[2].Text = student.Names;
                     lvItem.SubItems[3].Text = Cource.Name;
                     lvItem.SubItems[4].Text = student.Sex.ToString();
@@ -520,7 +525,7 @@ namespace SKYNET
                         lvItem.SubItems[2].Tag = Career;
                         lvItem.SubItems[3].Tag = Group;
 
-                        lvItem.SubItems[1].Text = student.CI;
+                        lvItem.SubItems[1].Text = student.CI.ToString();
                         lvItem.SubItems[2].Text = student.Names;
                         lvItem.SubItems[3].Text = Cource.Name;
 
@@ -557,7 +562,7 @@ namespace SKYNET
 
             evaluation_Control.LoadData(student, Cource, Career, Group);
 
-            CustomizeItem(LV_Evaluate, student.CI, 1, Color.FromArgb(0, 120, 215), Color.White);
+            CustomizeItem(LV_Evaluate, student.CI.ToString(), 1, Color.FromArgb(0, 120, 215), Color.White);
         }
 
         private void BT_StudentGraphics_Click(object sender, EventArgs e)
@@ -593,26 +598,6 @@ namespace SKYNET
         {
             subjectList_Control1.LoadData();
             SelectTab(tabPage_Subjects);
-        }
-
-        private void localizarDBMenuItem_Click(object sender, EventArgs e)
-        {
-            var openDialog = new OpenFileDialog
-            {
-                Title = "Seleccione la base de datos",
-                Filter = "Database File | *.DB",
-                Multiselect = false,
-            };
-            var fileOK = openDialog.ShowDialog();
-
-            if (fileOK == DialogResult.OK)
-            {
-                Settings.DBPath = openDialog.FileName;
-                //Settings.Save();
-                DB = new SQLiteDatabase(openDialog.FileName);
-                DBManager.Initialize(DB);
-                LoadStats();
-            }
         }
 
         private void addStudentMenuItem_Click(object sender, EventArgs e)
@@ -772,7 +757,7 @@ namespace SKYNET
                 if (item.Selected)
                 {
                     SchoolCource Cource = (SchoolCource)item.SubItems[0].Tag;
-                    if (SchoolCourceDB.RemoveCource(Cource))
+                    if (SchoolCourceDB.Remove(Cource))
                     {
                         Common.Show($"El Curso {Cource.Name} se ha eliminado correctamente");
                     }
@@ -809,7 +794,7 @@ namespace SKYNET
                 {
                     foreach (var KV in toRemove)
                     {
-                        if (StudentDB.RemoveStudent(KV.Key))
+                        if (StudentDB.Remove(KV.Key))
                         {
                             LV_Students.Items.Remove(KV.Value);
                         }
@@ -842,6 +827,20 @@ namespace SKYNET
         {
             StudyPlanList.LoadData();
             SelectTab(tabPage_StudyPlan); 
+        }
+
+        private void AcercaDeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SchoolCourceDB.Register(new SchoolCource()
+            {
+                 ID = SchoolCourceDB.CreateID(),
+                 Name = "2020-2021"
+            });
+            foreach (var item in SchoolCourceDB.SchoolCources)
+            {
+                Common.Show(item.Name);
+            }
+            
         }
     }
 }

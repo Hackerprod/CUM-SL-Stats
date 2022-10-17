@@ -1,68 +1,80 @@
-﻿using SKYNET.Models;
-using SQLite;
+﻿using MongoDB.Driver;
+using SKYNET.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SKYNET.DB
 {
     public static class StudentDB
     {
-        private static SQLiteDatabase DB;
-        public static List<Student> Students => DB.GetTables<Student>();
+        private static MongoDbCollection<Student> DB;
 
-        public static void Initialize(SQLiteDatabase dB)
+        public static void Initialize()
         {
-            DB = dB;
+            DB = new MongoDbCollection<Student>("SIGPU_Student");
 
-            DB.CreateTable<Student>();
-            DB.DBConnection.CreateIndex("Student", "Names");
-            DB.DBConnection.CreateIndex("Student", "CI");
-            DB.DBConnection.CreateIndex("Student", "CareerID");
+            DB.CreateIndex(Builders<Student>.IndexKeys.Ascending((Student i) => i.CI));
+            DB.CreateIndex(Builders<Student>.IndexKeys.Ascending((Student i) => i.Names));
+            DB.CreateIndex(Builders<Student>.IndexKeys.Ascending((Student i) => i.GroupID));
+            DB.CreateIndex(Builders<Student>.IndexKeys.Ascending((Student i) => i.Status));
         }
 
-        public static bool RegisterStudent(Student source)
+        public static bool Register(Student source)
         {
-            Student target = Students.Find(s => s.CI == source.CI);
+            var target = Get(source.CI);
             if (target == null)
             {
-                DB.InsertOrUpdate(source);
+                DB.Collection.InsertOne(source);
                 return true;
             }
             return false;
         }
 
-        public static void UpdateStudent(Student source)
+        public static void Update(Student source)
         {
-            var target = Students.Find(s => s.CI == source.CI);
-            target = source;
-            DB.InsertOrUpdate(source);
+            DB.Collection.FindOneAndUpdate((Student user) => user.CI == source.CI, DB.Ub
+            .Set((Student a) => a.Names, source.Names)
+            .Set((Student a) => a.Sex, source.Sex)
+            .Set((Student a) => a.Status, source.Status)
+            .Set((Student a) => a.GroupID, source.GroupID));
         }
 
-        public static bool RemoveStudent(Student student)
+        public static bool Remove(Student student)
         {
-            return DB.Delete(student) == 1;
+            return DB.Collection.DeleteOne(s => s.CI == student.CI).DeletedCount != 0;
         }
 
-        public static void RemoveStudents(Group group)
+        public static void Remove(Group group)
         {
-            foreach (var student in Students.FindAll(s => s.GroupID == group.ID))
+            foreach (var student in GetStudents(group))
             {
-                DB.Delete(student);
+                Remove(student);
             }
         }
 
-        public static void RemoveStudents(SchoolCource Cource)
+        public static void Remove(SchoolCource Cource)
         {
-            foreach (var group in GroupDB.GetGroups(Cource))
+            foreach (var student in Get(Cource))
             {
-                foreach (var student in Students.FindAll(s => s.GroupID == group.ID))
-                {
-                    DB.Delete(student);
-                }
+                Remove(student);
             }
+        }
+
+        public static List<Student> Get(SchoolCource Cource)
+        {
+            var group = GroupDB.Get(Cource);
+            return GetStudents(group);
+        }
+
+        public static Student Get(ulong CI)
+        {
+            return DB.Collection.Find(user => user.CI == CI, null).FirstOrDefault();
+        }
+
+        public static List<Student> GetStudents(Group group)
+        {
+            return DB.Collection.Find(user => user.GroupID == group.ID, null).ToList();
         }
 
         public static List<Student> GetStudents(SchoolCource Cource)
@@ -72,7 +84,7 @@ namespace SKYNET.DB
 
             foreach (var group in Groups)
             {
-                students.AddRange(Students.FindAll(c => c.GroupID == group.ID));
+                students.AddRange(GetStudents(group));
             }
 
             return students;
@@ -85,7 +97,7 @@ namespace SKYNET.DB
 
             foreach (var group in Groups)
             {
-                students.AddRange(Students.FindAll(c => c.GroupID == group.ID));
+                students.AddRange(GetStudents(group));
             }
 
             return students;
@@ -98,18 +110,8 @@ namespace SKYNET.DB
             var Groups = GroupDB.GetGroups(cource);
             foreach (var group in Groups)
             {
-                students += Students.FindAll(s => s.GroupID == group.ID && s.Status == Status.Active).Count;
+                students += (int)DB.Collection.CountDocuments(s => s.GroupID == group.ID && s.Status == Status.Active);
             }
-        }
-
-        public static List<Student> GetStudents(Group group)
-        {
-            return Students.FindAll(c => c.GroupID == group.ID);
-        }
-
-        public static Student GetStudent(string studentID)
-        {
-            return Students.Find(c => c.CI == studentID);
         }
 
         public static void GetEnrolledAndGraduates(SchoolCource Cource, out int Enrolleds, out int Graduates)
@@ -137,7 +139,7 @@ namespace SKYNET.DB
 
             if (currentCource != 0)
             {
-                var Current = SchoolCourceDB.GetCource(currentCource);
+                var Current = SchoolCourceDB.Get(currentCource);
                 if (Current != null && Current.Name.Contains("-"))
                 {
                     var parts = Current.Name.Split('-');

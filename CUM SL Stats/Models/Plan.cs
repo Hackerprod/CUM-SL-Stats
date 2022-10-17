@@ -1,10 +1,7 @@
-﻿using SQLite;
-
-namespace SKYNET.Models
+﻿namespace SKYNET.Models
 {
     public class Plan
     {
-        [PrimaryKey]
         public uint ID { get; set; }
         public SchoolYear Year { get; set; }
         public Semester Semester { get; set; }

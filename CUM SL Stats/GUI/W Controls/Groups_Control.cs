@@ -64,8 +64,8 @@ namespace SKYNET.Controls
                 try
                 {
                     //Common.Show(group == null);
-                    var Cource = SchoolCourceDB.GetCource(group.CourceID);
-                    var Career = CareerDB.GetCareer(group.CareerID);
+                    var Cource = SchoolCourceDB.Get(group.CourceID);
+                    var Career = CareerDB.Get(group.CareerID);
 
                     var lvItem = new ListViewItem();
                     lvItem.SubItems.Add(Cource == null ? "Invalid" : Cource.Name);
@@ -96,7 +96,7 @@ namespace SKYNET.Controls
                 TB_Name.Text = GroupSelected.Name;
                 CB_StudyPlan.Text = "";
 
-                SchoolCourceSelected = SchoolCourceDB.GetCource(GroupSelected.CourceID);
+                SchoolCourceSelected = SchoolCourceDB.Get(GroupSelected.CourceID);
                 if (SchoolCourceSelected != null)
                 {
                     for (int i = 0; i < CB_SchoolCource.Items.Count; i++)
@@ -108,7 +108,7 @@ namespace SKYNET.Controls
                     }
                 }
 
-                CareerSelected = CareerDB.GetCareer(GroupSelected.CareerID);
+                CareerSelected = CareerDB.Get(GroupSelected.CareerID);
                 if (CareerSelected != null)
                 {
                     for (int i = 0; i < CB_Career.Items.Count; i++)
@@ -139,12 +139,12 @@ namespace SKYNET.Controls
 
         private void CH_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SchoolCourceSelected = SchoolCourceDB.GetCourceByName(CB_SchoolCource.Text);
+            SchoolCourceSelected = SchoolCourceDB.Get(CB_SchoolCource.Text);
         }
 
         private void CH_Career_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CareerSelected = CareerDB.GetCareer(CB_Career.Text);
+            CareerSelected = CareerDB.Get(CB_Career.Text);
         }
 
         private void CB_StudyPlan_SelectedIndexChanged(object sender, EventArgs e)
@@ -206,7 +206,7 @@ namespace SKYNET.Controls
                         ID = SchoolCourceDB.CreateID(),
                         Name = CB_SchoolCource.Text
                     };
-                    SchoolCourceDB.RegisterSchoolCource(SchoolCourceSelected);
+                    SchoolCourceDB.Register(SchoolCourceSelected);
                 }
                 else
                 {
@@ -225,7 +225,7 @@ namespace SKYNET.Controls
                             ID = SchoolCourceDB.CreateID(),
                             Name = CB_SchoolCource.Text
                         };
-                        SchoolCourceDB.RegisterSchoolCource(SchoolCourceSelected);
+                        SchoolCourceDB.Register(SchoolCourceSelected);
                     }
                     else
                     {
@@ -241,7 +241,7 @@ namespace SKYNET.Controls
                 {
                     CareerSelected = new Career()
                     {
-                        ID = CareerDB.CreateCareerId(),
+                        ID = CareerDB.CreateID(),
                         Name = CB_Career.Text,
                     };
                     frmMain.frm.RegisterData(RegisterType.Career, CareerSelected);
@@ -260,7 +260,7 @@ namespace SKYNET.Controls
                     {
                         CareerSelected = new Career()
                         {
-                            ID = CareerDB.CreateCareerId(),
+                            ID = CareerDB.CreateID(),
                             Name = CB_Career.Text,
                         };
                         frmMain.frm.RegisterData(RegisterType.Career, CareerSelected);
@@ -276,7 +276,7 @@ namespace SKYNET.Controls
             GroupSelected.CareerID = CareerSelected.ID;
             GroupSelected.CourceID = SchoolCourceSelected.ID;
             GroupSelected.Name = TB_Name.Text;
-            GroupDB.UpdateGroup(GroupSelected);
+            GroupDB.Update(GroupSelected);
 
             LV_Groups.Items.Clear();
             CB_SchoolCource.Items.Clear();
@@ -293,7 +293,7 @@ namespace SKYNET.Controls
                 var Dialog = MessageBox.Show($"Esta a punto de eliminar el grupo {GroupSelected.Name}, junto con el grupo se eliminarán los estudiantes asociados a ese grupo." + Environment.NewLine + "Desea continuar?", "", MessageBoxButtons.YesNo);
                 if (Dialog == DialogResult.Yes)
                 {
-                    StudentDB.RemoveStudents(GroupSelected);
+                    StudentDB.Remove(GroupSelected);
                     GroupDB.Remove(GroupSelected);
                     await LoadData();
                     LoadCourceAndCareer();

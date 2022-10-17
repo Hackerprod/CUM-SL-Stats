@@ -88,7 +88,7 @@ namespace SKYNET.GUI.W_Controls
             // Careers
             ClearData(false);
 
-            var cource = SchoolCourceDB.GetCource(CH_SchoolCource.Text);
+            var cource = SchoolCourceDB.Get(CH_SchoolCource.Text);
             var careers = CareerDB.GetCareers(cource);
 
             foreach (Career career in careers)
@@ -117,7 +117,7 @@ namespace SKYNET.GUI.W_Controls
             CH_Group.Items.Add("Todos");
             CH_Group.SelectedIndex = 0;
 
-            if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out Cource) || !CareerDB.GetCareer(CH_Career.Text, out Career))
+            if (!SchoolCourceDB.Get(CH_SchoolCource.Text, out Cource) || !CareerDB.Get(CH_Career.Text, out Career))
             {
                 return;
             }

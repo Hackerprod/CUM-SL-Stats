@@ -77,7 +77,7 @@ namespace SKYNET.GUI.W_Controls
             StudyPlan studyPlan = (StudyPlan)LV_Plans.SelectedItems[0].Tag;
             if (studyPlan != null)
             {
-                var Plans = StudyPlansDB.GetPlans(studyPlan);
+                var Plans = studyPlan.Plans;
                 Plans.Sort((s1, s2) => s2.Year.CompareTo(s1.Year));
 
                 foreach (var plan in Plans)

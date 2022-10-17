@@ -1,10 +1,7 @@
-﻿using SQLite;
-
-namespace SKYNET.Models
+﻿namespace SKYNET.Models
 {
     public class Improvement
     {
-        [PrimaryKey]
         public uint ID { get; set; }
         public string ImprovementName { get; set; }
         public string StudentID { get; set; }

@@ -34,7 +34,6 @@ namespace SKYNET
             this.archivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.homeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configuraciónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.localizarDBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salirMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.matrículaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -246,7 +245,6 @@ namespace SKYNET
             this.archivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.homeMenuItem,
             this.configuraciónToolStripMenuItem,
-            this.localizarDBMenuItem,
             this.salirMenuItem});
             this.archivoToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI Emoji", 9.75F);
             this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
@@ -256,28 +254,21 @@ namespace SKYNET
             // homeMenuItem
             // 
             this.homeMenuItem.Name = "homeMenuItem";
-            this.homeMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.homeMenuItem.Size = new System.Drawing.Size(157, 22);
             this.homeMenuItem.Text = "Inicio";
             this.homeMenuItem.Click += new System.EventHandler(this.homeMenuItem_Click);
             // 
             // configuraciónToolStripMenuItem
             // 
             this.configuraciónToolStripMenuItem.Name = "configuraciónToolStripMenuItem";
-            this.configuraciónToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.configuraciónToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.configuraciónToolStripMenuItem.Text = "Configuración";
             this.configuraciónToolStripMenuItem.Click += new System.EventHandler(this.SettingsMenuItem_Click);
-            // 
-            // localizarDBMenuItem
-            // 
-            this.localizarDBMenuItem.Name = "localizarDBMenuItem";
-            this.localizarDBMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.localizarDBMenuItem.Text = "Localizar base de datos";
-            this.localizarDBMenuItem.Click += new System.EventHandler(this.localizarDBMenuItem_Click);
             // 
             // salirMenuItem
             // 
             this.salirMenuItem.Name = "salirMenuItem";
-            this.salirMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.salirMenuItem.Size = new System.Drawing.Size(157, 22);
             this.salirMenuItem.Text = "Salir";
             this.salirMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
             // 
@@ -464,11 +455,12 @@ namespace SKYNET
             this.acercaDeToolStripMenuItem.Name = "acercaDeToolStripMenuItem";
             this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(87, 21);
             this.acercaDeToolStripMenuItem.Text = "Acerca de...";
+            this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.AcercaDeToolStripMenuItem_Click);
             // 
             // aboutUsMenuItem
             // 
             this.aboutUsMenuItem.Name = "aboutUsMenuItem";
-            this.aboutUsMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.aboutUsMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutUsMenuItem.Text = "Sobre nosotros";
             this.aboutUsMenuItem.Click += new System.EventHandler(this.aboutUsMenuItem_Click);
             // 
@@ -1873,7 +1865,6 @@ namespace SKYNET
         private System.Windows.Forms.ToolStripMenuItem salirMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gráficaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addGroupMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem localizarDBMenuItem;
         private Controls.SKYNET_TabControl TabControl1;
         private System.Windows.Forms.TabPage tabPage_Home;
         private System.Windows.Forms.TabPage tabPage_CourceStats;

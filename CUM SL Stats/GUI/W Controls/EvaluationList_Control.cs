@@ -40,7 +40,7 @@ namespace SKYNET.GUI.W_Controls
             CH_Career.Items.Clear();
             CH_Career.Text = "";
 
-            var cource = SchoolCourceDB.GetCource(CH_SchoolCource.Text);
+            var cource = SchoolCourceDB.Get(CH_SchoolCource.Text);
             var careers = CareerDB.GetCareers(cource);
 
             for (int i = 0; i < careers.Count; i++)
@@ -55,7 +55,7 @@ namespace SKYNET.GUI.W_Controls
         {
             CH_Group.Items.Clear();
             CH_Group.Text = "";
-            if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out SchoolCource cource) || !CareerDB.GetCareer(CH_Career.Text, out Career career))
+            if (!SchoolCourceDB.Get(CH_SchoolCource.Text, out SchoolCource cource) || !CareerDB.Get(CH_Career.Text, out Career career))
             {
                 return;
             }
@@ -83,12 +83,12 @@ namespace SKYNET.GUI.W_Controls
         {
             LV_Students.Items.Clear();
 
-            if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out SchoolCource cource))
+            if (!SchoolCourceDB.Get(CH_SchoolCource.Text, out SchoolCource cource))
             {
                 Common.Show("El Curso seleccionado no es válido");
                 return;
             }
-            if (!CareerDB.GetCareer(CH_Career.Text, out Career career))
+            if (!CareerDB.Get(CH_Career.Text, out Career career))
             {
                 Common.Show("La carrera seleccionada no es válida");
                 return;
@@ -104,7 +104,7 @@ namespace SKYNET.GUI.W_Controls
             var Evaluations = EvaluationDB.GetEvaluations(cource, career, group, semester);
 
             // Separate Evaluations by Students 
-            Dictionary<string, object> studentsEvaluation = new Dictionary<string, object>();
+            var studentsEvaluation = new Dictionary<ulong, object>();
             foreach (var ev in Evaluations)
             {
                 if (!studentsEvaluation.ContainsKey(ev.StudentID))
@@ -172,7 +172,7 @@ namespace SKYNET.GUI.W_Controls
             foreach (var item in studentsEvaluation)
             {
                 List<Evaluation> evs = (List<Evaluation>)item.Value;
-                Student student = StudentDB.GetStudent(item.Key);
+                Student student = StudentDB.Get(item.Key);
 
                 var lvItem = CreateListViewItem(evs.Count + 1); 
                 lvItem.SubItems[0].Text = (student.Names);

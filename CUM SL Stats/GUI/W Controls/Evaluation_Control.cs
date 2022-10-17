@@ -84,7 +84,7 @@ namespace SKYNET.Controls
             {
                 Evaluation evaluation = new Evaluation()
                 {
-                    ID = EvaluationDB.CreateEvaluationId(),
+                    ID = EvaluationDB.CreateID(),
                     CourceID = Cource.ID,
                     CareerID = Career.ID,
                     StudentID = this.Student.CI,
@@ -93,7 +93,7 @@ namespace SKYNET.Controls
                     Semester = (Semester)CH_Semester.SelectedIndex,
                     Points = TB_Evaluation.Text.Replace(",", ".")
                 };
-                if (EvaluationDB.RegisterOrUpdateEvaluation(evaluation))
+                if (EvaluationDB.RegisterOrUpdate(evaluation))
                 {
                     MessageBox.Show($"Estudiante evaluado correctamente");
                     LB_StudentEvaluate.Text = "";

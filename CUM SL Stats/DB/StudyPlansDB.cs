@@ -1,66 +1,62 @@
-﻿using SKYNET.Models;
-using SQLite;
+﻿using MongoDB.Driver;
+using SKYNET.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace SKYNET.DB
 {
     public static class StudyPlansDB
     {
-        private static SQLiteDatabase DB;
-        public static List<StudyPlan> StudyPlans => DB.GetTables<StudyPlan>();
-        public static List<Plan> Plans => DB.GetTables<Plan>();
+        private static MongoDbCollection<StudyPlan> DB;
+        private static MongoDbCollection<Plan> PlanDB;
 
-        public static void Initialize(SQLiteDatabase dB)
+        public static List<StudyPlan> StudyPlans
         {
-            DB = dB;
+            get
+            {
+                try
+                {
+                    return DB.Collection.Find(s => s != null).ToList();
+                }
+                catch (System.Exception)
+                {
+                    return new List<StudyPlan>();
+                }
+            }
+        }
 
-            DB.CreateTable<StudyPlan>();
-            DB.DBConnection.CreateIndex("StudyPlan", "ID");
-            DB.DBConnection.CreateIndex("StudyPlan", "Name");
+        public static void Initialize()
+        {
+            DB = new MongoDbCollection<StudyPlan>("SIGPU_StudyPlan");
 
-            DB.CreateTable<Plan>();
-            DB.DBConnection.CreateIndex("Plan", "ID");
-            DB.DBConnection.CreateIndex("Plan", "SubjectID");
+            DB.CreateIndex(Builders<StudyPlan>.IndexKeys.Ascending((StudyPlan i) => i.ID));
+            DB.CreateIndex(Builders<StudyPlan>.IndexKeys.Ascending((StudyPlan i) => i.Name));
         }
 
         public static bool Register(StudyPlan source)
         {
-            StudyPlan target = StudyPlans.Find(s => s.ID == source.ID);
+            var target = Get(source.ID);
             if (target == null)
             {
                 source.ID = CreateID();
-                DB.InsertOrUpdate(source);
+                DB.Collection.InsertOne(source);
                 return true;
             }
             Common.Show($"El Plan {source.Name} existe.");
             return false;
         }
 
-        public static bool Register(Plan source)
-        {
-            if (Plans.Find(s => s.ID == source.ID) == null)
-            {
-                source.ID = CreatePlansID();
-                DB.InsertOrReplace(source);
-                return true;
-            }
-            return false;
-        }
-
         public static void Update(StudyPlan source)
         {
-            DB.InsertOrUpdate(source);
-        }
-
-        public static void Update(Plan source)
-        {
-            DB.InsertOrUpdate(source);
+            DB.Collection.FindOneAndUpdate((StudyPlan plan) => plan.ID == source.ID, DB.Ub
+                .Set((StudyPlan a) => a.Name, source.Name)
+                .Set((StudyPlan a) => a.Plans, source.Plans));
         }
 
         public static bool Exists(string Name)
         {
-            return StudyPlans.Find(c => c.Name == Name) != null;
+            return Get(Name) != null;
         }
 
         public static List<StudyPlan> Get(Career career)
@@ -83,60 +79,44 @@ namespace SKYNET.DB
 
         public static List<Plan> GetPlans(uint StudyPlanID)
         {
-            var plans = new List<Plan>();
             var StudyPlan = Get(StudyPlanID);
             if (StudyPlan != null)
             {
-                return GetPlans(StudyPlan);
+                return StudyPlan.Plans;
             }
             return new List<Plan>();
         }
 
-        public static List<Plan> GetPlans(StudyPlan StudyPlan)
-        {
-            var plans = new List<Plan>();
-            foreach (var plan in StudyPlan.Plans)
-            {
-                var targetPlan = Plans.Find(p => p.ID == plan);
-                if (targetPlan != null)
-                {
-                    plans.Add(targetPlan);
-                }
-            }
-            return plans;
-        }
-
         public static StudyPlan Get(string Name)
         {
-            return StudyPlans.Find(c => c.Name == Name);
+            return DB.Collection.Find((StudyPlan s) => s.Name == Name, null).FirstOrDefault();
         }
 
-        public static bool Exists(uint SubjectID)
+        public static Plan GetPlan(uint ID)
         {
-            return StudyPlans.Find(c => c.ID == SubjectID) != null;
+            return PlanDB.Collection.Find((Plan s) => s.ID == ID, null).FirstOrDefault();
         }
 
-        public static StudyPlan Get(uint SubjectID)
+        public static bool Exists(uint ID)
         {
-            return StudyPlans.Find(c => c.ID == SubjectID);
+            return Get(ID) != null;
         }
 
-        public static bool Get(uint SubjectID, out StudyPlan Plan)
+        public static StudyPlan Get(uint ID)
         {
-            Plan = Get(SubjectID);
+            return DB.Collection.Find((StudyPlan s) => s.ID == ID, null).FirstOrDefault();
+        }
+
+        public static bool Get(uint ID, out StudyPlan Plan)
+        {
+            Plan = Get(ID);
             return Plan != null;
         }
 
         public static uint CreateID()
         {
-            StudyPlans.Sort((s1, s2) => s2.ID.CompareTo(s1.ID));
-            return StudyPlans.Count == 0 ? 1 : StudyPlans[StudyPlans.Count - 1].ID + 1;
-        }
-
-        public static uint CreatePlansID()
-        {
-            Plans.Sort((s1, s2) => s2.ID.CompareTo(s1.ID));
-            return Plans.Count == 0 ? 1 : Plans[Plans.Count - 1].ID + 1;
+            uint ID = DB.Collection.Find(FilterDefinition<StudyPlan>.Empty, null).SortByDescending((StudyPlan u) => (object)u.ID).Project((StudyPlan u) => u.ID).FirstOrDefault(default(CancellationToken));
+            return ID <= 0U ? 1 : ID + 1;
         }
     }
 }

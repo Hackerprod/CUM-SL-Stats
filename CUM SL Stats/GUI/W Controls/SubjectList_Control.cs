@@ -34,7 +34,7 @@ namespace SKYNET.GUI.W_Controls
             CH_Career.Items.Clear();
             CH_Career.Text = "";
 
-            var cource = SchoolCourceDB.GetCource(CH_SchoolCource.Text);
+            var cource = SchoolCourceDB.Get(CH_SchoolCource.Text);
             var careers = CareerDB.GetCareers(cource);
 
             for (int i = 0; i < careers.Count; i++)
@@ -48,12 +48,12 @@ namespace SKYNET.GUI.W_Controls
         {
             LV_Subjects.Items.Clear();
 
-            if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out SchoolCource cource))
+            if (!SchoolCourceDB.Get(CH_SchoolCource.Text, out SchoolCource cource))
             {
                 Common.Show("El Curso seleccionado no es válido");
                 return;
             }
-            if (!CareerDB.GetCareer(CH_Career.Text, out Career career))
+            if (!CareerDB.Get(CH_Career.Text, out Career career))
             {
                 Common.Show("La carrera seleccionada no es válida");
                 return;
@@ -85,12 +85,12 @@ namespace SKYNET.GUI.W_Controls
 
         private void BT_AddSubject_Click(object sender, EventArgs e)
         {
-            if (!SchoolCourceDB.GetCource(CH_SchoolCource.Text, out SchoolCource cource))
+            if (!SchoolCourceDB.Get(CH_SchoolCource.Text, out SchoolCource cource))
             {
                 Common.Show("El Curso seleccionado no es válido");
                 return;
             }
-            if (!CareerDB.GetCareer(CH_Career.Text, out Career career))
+            if (!CareerDB.Get(CH_Career.Text, out Career career))
             {
                 Common.Show("La carrera seleccionada no es válida");
                 return;

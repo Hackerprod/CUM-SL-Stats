@@ -22,15 +22,15 @@ namespace SKYNET.Controls
                     try
                     {
                         TB_StudentName.Text = value.Names;
-                        TB_CI.Text = value.CI;
+                        TB_CI.Text = value.CI.ToString();
                         TB_CI.Enabled = false;
 
-                        Group currentGroup = GroupDB.GetGroup(value.GroupID);
+                        Group currentGroup = GroupDB.Get(value.GroupID);
                         SchoolCource currentCource = null;
                         Career currentCareer = null;
 
                         {
-                            currentCource = SchoolCourceDB.GetCource(currentGroup);
+                            currentCource = SchoolCourceDB.Get(currentGroup);
                             CB_SchoolCource.Text = currentCource?.Name;
                             CB_SchoolCource.Tag = currentCource;
 
@@ -46,7 +46,7 @@ namespace SKYNET.Controls
                         }
 
                         {
-                            currentCareer = CareerDB.GetCareer(currentGroup);
+                            currentCareer = CareerDB.Get(currentGroup);
                             CB_Career.Text = currentCareer?.Name;
                             CB_Career.Tag = currentCareer;
 
@@ -167,13 +167,13 @@ namespace SKYNET.Controls
                 MessageBox.Show("Debe seleccionar el curso para continuar");
                 return;
             }
-            if (!SchoolCourceDB.GetCource(CB_SchoolCource.Text, out SchoolCource cource))
+            if (!SchoolCourceDB.Get(CB_SchoolCource.Text, out SchoolCource cource))
             {
                 MessageBox.Show($"El curso {CB_SchoolCource.Text} no existe.");
                 return;
             }
 
-            if (!CareerDB.GetCareer(CB_Career.Text, out Career career))
+            if (!CareerDB.Get(CB_Career.Text, out Career career))
             {
                 MessageBox.Show($"La carrera {CB_Career.Text} no existe.");
                 return;
@@ -185,17 +185,17 @@ namespace SKYNET.Controls
                 return;
             }
 
-            Group group = GroupDB.GetGroup(CB_Group.Text);
+            Group group = GroupDB.Get(CB_Group.Text);
             if (group == null)
             {
                 group = new Group()
                 { 
-                    ID = GroupDB.CreateGroupId(),
+                    ID = GroupDB.CreateID(),
                     CourceID = cource.ID,
                     CareerID = career.ID, 
                     Name = CB_Group.Text
                 };
-                if (!GroupDB.RegisterGroup(group))
+                if (!GroupDB.Register(group))
                 {
                     Common.Show($"Error creando el grupo {CB_Group.Text}");
                     return;
@@ -208,7 +208,7 @@ namespace SKYNET.Controls
             {
                 var student = new Student()
                 {
-                    CI = TB_CI.Text,
+                    CI = ulong.Parse(TB_CI.Text),
                     Names = TB_StudentName.Text,
                     GroupID = group.ID,
                     Sex = SexSelector.Sex, 
@@ -226,7 +226,7 @@ namespace SKYNET.Controls
                 _student.GroupID = group.ID;
                 _student.Status = status;
 
-                StudentDB.UpdateStudent(_student);
+                StudentDB.Update(_student);
                 frmMain.frm.RefreshUpdated(RegisterType.Student, _student);
                 frmMain.frm.SelectTab();
             }
@@ -236,7 +236,7 @@ namespace SKYNET.Controls
         {
             CB_Career.Items.Clear();
 
-            var cource = SchoolCourceDB.GetCource(CB_SchoolCource.Text);
+            var cource = SchoolCourceDB.Get(CB_SchoolCource.Text);
             var careers = CareerDB.GetCareers(cource);
 
             for (int i = 0; i < careers.Count; i++)
@@ -251,7 +251,7 @@ namespace SKYNET.Controls
         {
             CB_Group.Items.Clear();
             CB_Group.Text = "";
-            if (!SchoolCourceDB.GetCource(CB_SchoolCource.Text, out SchoolCource cource) || !CareerDB.GetCareer(CB_Career.Text, out Career career))
+            if (!SchoolCourceDB.Get(CB_SchoolCource.Text, out SchoolCource cource) || !CareerDB.Get(CB_Career.Text, out Career career))
             {
                 return;
             }

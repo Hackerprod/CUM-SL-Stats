@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SKYNET.DB;
 using SKYNET.Managers;
 using SKYNET.Models;
-using SQLite;
+
 using static SKYNET.frmMain;
 
 namespace SKYNET
@@ -37,14 +31,14 @@ namespace SKYNET
             };
             var fileOK = openDialog.ShowDialog();
 
-            if (fileOK == DialogResult.OK)
-            {
-                Settings.DBPath = openDialog.FileName;
-                //Settings.Save();
-                var DB = new SQLiteDatabase(openDialog.FileName);
-                DBManager.Initialize(DB);
-                frm.LoadStats();
-            }
+            //if (fileOK == DialogResult.OK)
+            //{
+            //    Settings.DBPath = openDialog.FileName;
+            //    //Settings.Save();
+            //    var DB = new SQLiteDatabase(openDialog.FileName);
+            //    DBManager.Initialize();
+            //    frm.LoadStats();
+            //}
         }
 
         private void frmSettings_Load(object sender, EventArgs e)
@@ -83,7 +77,7 @@ namespace SKYNET
                 MessageBox.Show("Debes seleccionar el curso actual");
                 return;
             }
-            SchoolCource cource = SchoolCourceDB.GetCource(CH_SchoolCource.Text);
+            SchoolCource cource = SchoolCourceDB.Get(CH_SchoolCource.Text);
 
             if (cource == null)
             {

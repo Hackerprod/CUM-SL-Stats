@@ -185,7 +185,7 @@ namespace SKYNET.GUI.W_Controls
                     lvItem.SubItems[0].Tag = Student;
                     lvItem.SubItems[0].Text = "";
                     lvItem.SubItems[1].Text = KV.Key.ToString();
-                    lvItem.SubItems[2].Text = Student.CI;
+                    lvItem.SubItems[2].Text = Student.CI.ToString();
                     lvItem.SubItems[3].Text = Student.Names;
                     lvItem.SubItems[4].Text = Student.Sex.ToString();
                     goodStudents++;
@@ -239,7 +239,7 @@ namespace SKYNET.GUI.W_Controls
             {
                 Student Student = new Student()
                 {
-                    CI = CI,
+                    CI = ulong.Parse(CI),
                     Names = Names.Replace("  ", " "),
                     Status = Status.Active,
                     Sex = sex
@@ -289,7 +289,7 @@ namespace SKYNET.GUI.W_Controls
                     return;
                 }
 
-                SchoolCource Cource = SchoolCourceDB.GetCource(CB_SchoolCource.Text);
+                SchoolCource Cource = SchoolCourceDB.Get(CB_SchoolCource.Text);
                 if (Cource == null)
                 {
                     var Dialog = MessageBox.Show($"El Curso {CB_SchoolCource.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
@@ -300,7 +300,7 @@ namespace SKYNET.GUI.W_Controls
                             ID = SchoolCourceDB.CreateID(),
                             Name = CB_SchoolCource.Text
                         };
-                        SchoolCourceDB.RegisterSchoolCource(Cource);
+                        SchoolCourceDB.Register(Cource);
                     }
                     else
                     {
@@ -317,27 +317,27 @@ namespace SKYNET.GUI.W_Controls
 
                 LB_Info.Text = $"Importando grupo desde archivo, por favor espere.";
 
-                if (!CareerDB.GetCareer(CH_Career.Text, out Career Career))
+                if (!CareerDB.Get(CH_Career.Text, out Career Career))
                 {
                     Career = new Career()
                     {
-                        ID = CareerDB.CreateCareerId(),
+                        ID = CareerDB.CreateID(),
                         Name = CH_Career.Text
                     };
-                    CareerDB.RegisterCareer(Career);
+                    CareerDB.Register(Career);
                 }
 
                 if (!GroupDB.GetGroup(Cource, Career, CH_Group.Text, out Group Group))
                 {
                     Group = new Group()
                     {
-                        ID = GroupDB.CreateGroupId(),
+                        ID = GroupDB.CreateID(),
                         CourceID = Cource.ID,
                         CareerID = Career.ID,
                         StudyPlanID = StudyPlan.ID,
                         Name = CH_Group.Text
                     };
-                    GroupDB.RegisterGroup(Group);
+                    GroupDB.Register(Group);
                 }
 
                 int registered = 0;
@@ -349,7 +349,7 @@ namespace SKYNET.GUI.W_Controls
                     {
                         Student.GroupID = Group.ID;
 
-                        done = StudentDB.RegisterStudent(Student);
+                        done = StudentDB.Register(Student);
                         registered += done ? 1 : 0;
                     }
                 }

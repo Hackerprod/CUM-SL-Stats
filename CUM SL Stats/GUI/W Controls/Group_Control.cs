@@ -35,19 +35,19 @@ namespace SKYNET.Controls
                 return;
             }
 
-            if (!SchoolCourceDB.GetCource(CB_SchoolCource.Text, out SchoolCource Cource))
+            if (!SchoolCourceDB.Get(CB_SchoolCource.Text, out SchoolCource Cource))
             {
                 MessageBox.Show("Debe especificar un curso válido");
                 return;
             }
             
-            if (!CareerDB.GetCareer(CB_Career.Text, out Career career))
+            if (!CareerDB.Get(CB_Career.Text, out Career career))
             {
                 MessageBox.Show($"La carrera {CB_Career.Text} no existe.");
                 return;
             }
 
-            Group target = GroupDB.GetGroup(TB_GroupName.Text);
+            Group target = GroupDB.Get(TB_GroupName.Text);
             if (target != null)
             {
                 MessageBox.Show($"El grupo {TB_GroupName.Text} ya existe.");
@@ -57,7 +57,7 @@ namespace SKYNET.Controls
             Group group = new Group()
             {
                 Name = TB_GroupName.Text,
-                ID = GroupDB.CreateGroupId(),
+                ID = GroupDB.CreateID(),
                 CareerID = career.ID,
                 CourceID = Cource.ID
             };
@@ -68,7 +68,7 @@ namespace SKYNET.Controls
         {
             CB_Career.Items.Clear();
 
-            var cource = SchoolCourceDB.GetCource(CB_SchoolCource.Text);
+            var cource = SchoolCourceDB.Get(CB_SchoolCource.Text);
             var careers = CareerDB.GetCareers(cource);
 
             for (int i = 0; i < careers.Count; i++)

@@ -19,7 +19,7 @@ namespace SKYNET.Controls
                 MessageBox.Show("Debe especificar el nombre de la carrera para continuar");
                 return;
             }
-            Career Career = CareerDB.GetCareer(TB_Career.Text);
+            Career Career = CareerDB.Get(TB_Career.Text);
 
             if (Career != null)
             {
@@ -29,7 +29,7 @@ namespace SKYNET.Controls
 
             Career = new Career()
             {
-                ID = CareerDB.CreateCareerId(),
+                ID = CareerDB.CreateID(),
                 Name = TB_Career.Text,
             };
             frmMain.frm.RegisterData(RegisterType.Career, Career);
