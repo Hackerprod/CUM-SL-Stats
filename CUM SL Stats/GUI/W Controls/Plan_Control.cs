@@ -26,7 +26,7 @@ namespace SKYNET.Controls
         }
 
 
-        private void BT_Register_Click(object sender, EventArgs e)
+        private async void BT_Register_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(TB_PlanName.Text))
             {
@@ -39,15 +39,15 @@ namespace SKYNET.Controls
                 Plan = new StudyPlan()
                 {
                     Name = TB_PlanName.Text,
-                    Plans = new List<Plan>()
+                    Plans = new List<uint>()
                 };
-                StudyPlansDB.Register(Plan);
+                await StudyPlanDB.Register(Plan);
                 Common.Show($"El plan {TB_PlanName.Text} se registró correctamente");
             }
             else
             {
                 Plan.Name = TB_PlanName.Text;
-                StudyPlansDB.Update(Plan);
+                await StudyPlanDB.Update(Plan);
                 Common.Show($"El plan {TB_PlanName.Text} se actualizó correctamente");
                 frmMain.frm.StudyPlanList.LoadData();
                 frmMain.frm.SelectTab();

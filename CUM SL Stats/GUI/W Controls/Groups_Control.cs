@@ -21,21 +21,21 @@ namespace SKYNET.Controls
             LoadCourceAndCareer();
         }
 
-        private void LoadCourceAndCareer()
+        private async void LoadCourceAndCareer()
         {
             try
             {
-                foreach (var cource in SchoolCourceDB.SchoolCources)
+                foreach (var cource in await SchoolCourceDB.Get())
                 {
                     CB_SchoolCource.Items.Add(cource.Name);
                 }
 
-                foreach (var career in CareerDB.Careers)
+                foreach (var career in await CareerDB.Get())
                 {
                     CB_Career.Items.Add(career.Name);
                 }
 
-                foreach (var plan in StudyPlansDB.StudyPlans)
+                foreach (var plan in await StudyPlanDB.Get())
                 {
                     CB_StudyPlan.Items.Add(plan.Name);
                 }
@@ -56,7 +56,7 @@ namespace SKYNET.Controls
 
             await Task.Delay(250);
 
-            var Groups = GroupDB.Groups;
+            var Groups = await GroupDB.Get();
             Groups.Sort((s1, s2) => s2.Name.CompareTo(s1.Name));
             Groups.Reverse();
             foreach (var group in Groups)
@@ -64,15 +64,15 @@ namespace SKYNET.Controls
                 try
                 {
                     //Common.Show(group == null);
-                    var Cource = SchoolCourceDB.Get(group.CourceID);
-                    var Career = CareerDB.Get(group.CareerID);
+                    var Cource = await SchoolCourceDB.Get(group.CourceID);
+                    var Career = await CareerDB.Get(group.CareerID);
 
                     var lvItem = new ListViewItem();
                     lvItem.SubItems.Add(Cource == null ? "Invalid" : Cource.Name);
                     lvItem.SubItems.Add(Career == null ? "Invalid" : Career.Name);
                     lvItem.SubItems.Add(group.Name);
-                    lvItem.SubItems.Add(StudentDB.GetCourceYear(Cource, frmMain.Settings.CurrentCource));
-                    lvItem.SubItems.Add(StudentDB.GetStudents(group).Count.ToString());
+                    lvItem.SubItems.Add(await StudentDB.GetCourceYear(Cource, frmMain.Settings.CurrentCource));
+                    lvItem.SubItems.Add((await StudentDB.Get(group)).Count.ToString());
                     lvItem.Tag = group;
 
                     LV_Groups.Items.Add(lvItem);
@@ -83,7 +83,7 @@ namespace SKYNET.Controls
             }
         }
 
-        private void LV_Groups_SelectedIndexChanged(object sender, EventArgs e)
+        private async void LV_Groups_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!Loaded)
             {
@@ -96,7 +96,7 @@ namespace SKYNET.Controls
                 TB_Name.Text = GroupSelected.Name;
                 CB_StudyPlan.Text = "";
 
-                SchoolCourceSelected = SchoolCourceDB.Get(GroupSelected.CourceID);
+                SchoolCourceSelected = await SchoolCourceDB.Get(GroupSelected.CourceID);
                 if (SchoolCourceSelected != null)
                 {
                     for (int i = 0; i < CB_SchoolCource.Items.Count; i++)
@@ -108,7 +108,7 @@ namespace SKYNET.Controls
                     }
                 }
 
-                CareerSelected = CareerDB.Get(GroupSelected.CareerID);
+                CareerSelected = await CareerDB.Get(GroupSelected.CareerID);
                 if (CareerSelected != null)
                 {
                     for (int i = 0; i < CB_Career.Items.Count; i++)
@@ -120,7 +120,7 @@ namespace SKYNET.Controls
                     }
                 }
 
-                StudyPlanSelected = StudyPlansDB.Get(GroupSelected.StudyPlanID);
+                StudyPlanSelected = await StudyPlanDB.Get(GroupSelected.StudyPlanID);
                 if (StudyPlanSelected != null)
                 {
                     for (int i = 0; i < CB_StudyPlan.Items.Count; i++)
@@ -137,22 +137,22 @@ namespace SKYNET.Controls
             }
         }
 
-        private void CH_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CH_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SchoolCourceSelected = SchoolCourceDB.Get(CB_SchoolCource.Text);
+            SchoolCourceSelected = await SchoolCourceDB.Get(CB_SchoolCource.Text);
         }
 
-        private void CH_Career_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CH_Career_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CareerSelected = CareerDB.Get(CB_Career.Text);
+            CareerSelected = await CareerDB.Get(CB_Career.Text);
         }
 
-        private void CB_StudyPlan_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CB_StudyPlan_SelectedIndexChanged(object sender, EventArgs e)
         {
-            StudyPlanSelected = StudyPlansDB.Get(CB_StudyPlan.Text);
+            StudyPlanSelected = await StudyPlanDB.Get(CB_StudyPlan.Text);
         }
 
-        private void BT_Register_Click(object sender, EventArgs e)
+        private async void BT_Register_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(TB_Name.Text))
             {
@@ -185,10 +185,9 @@ namespace SKYNET.Controls
                 {
                     StudyPlanSelected = new StudyPlan()
                     {
-                        ID = StudyPlansDB.CreateID(),
                         Name = CB_StudyPlan.Text
                     };
-                    StudyPlansDB.Register(StudyPlanSelected);
+                    await StudyPlanDB.Register(StudyPlanSelected);
                 }
                 else
                 {
@@ -203,10 +202,9 @@ namespace SKYNET.Controls
                 {
                     SchoolCourceSelected = new SchoolCource()
                     {
-                        ID = SchoolCourceDB.CreateID(),
                         Name = CB_SchoolCource.Text
                     };
-                    SchoolCourceDB.Register(SchoolCourceSelected);
+                    await SchoolCourceDB.Register(SchoolCourceSelected);
                 }
                 else
                 {
@@ -222,10 +220,9 @@ namespace SKYNET.Controls
                     {
                         SchoolCourceSelected = new SchoolCource()
                         {
-                            ID = SchoolCourceDB.CreateID(),
                             Name = CB_SchoolCource.Text
                         };
-                        SchoolCourceDB.Register(SchoolCourceSelected);
+                        await SchoolCourceDB.Register(SchoolCourceSelected);
                     }
                     else
                     {
@@ -241,10 +238,9 @@ namespace SKYNET.Controls
                 {
                     CareerSelected = new Career()
                     {
-                        ID = CareerDB.CreateID(),
                         Name = CB_Career.Text,
                     };
-                    frmMain.frm.RegisterData(RegisterType.Career, CareerSelected);
+                    await frmMain.frm.RegisterData(RegisterType.Career, CareerSelected);
                 }
                 else
                 {
@@ -260,10 +256,9 @@ namespace SKYNET.Controls
                     {
                         CareerSelected = new Career()
                         {
-                            ID = CareerDB.CreateID(),
                             Name = CB_Career.Text,
                         };
-                        frmMain.frm.RegisterData(RegisterType.Career, CareerSelected);
+                        await frmMain.frm.RegisterData(RegisterType.Career, CareerSelected);
                     }
                     else
                     {

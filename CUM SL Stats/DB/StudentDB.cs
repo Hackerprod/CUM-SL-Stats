@@ -1,145 +1,150 @@
-﻿using MongoDB.Driver;
-using SKYNET.Models;
+﻿using SKYNET.Models;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SKYNET.DB
 {
     public static class StudentDB
     {
-        private static MongoDbCollection<Student> DB;
+        private static SQLiteAsyncConnection DB;
+        private static AsyncTableQuery<Student> Table;
 
-        public static void Initialize()
+        public async static Task Initialize(SQLiteAsyncConnection dB)
         {
-            DB = new MongoDbCollection<Student>("SIGPU_Student");
+            DB = dB;
 
-            DB.CreateIndex(Builders<Student>.IndexKeys.Ascending((Student i) => i.CI));
-            DB.CreateIndex(Builders<Student>.IndexKeys.Ascending((Student i) => i.Names));
-            DB.CreateIndex(Builders<Student>.IndexKeys.Ascending((Student i) => i.GroupID));
-            DB.CreateIndex(Builders<Student>.IndexKeys.Ascending((Student i) => i.Status));
+            await DB.CreateTableAsync<Student>();
+            Table = DB.Table<Student>();
         }
 
-        public static bool Register(Student source)
+        public static async Task<bool> Register(Student source)
         {
-            var target = Get(source.CI);
+            Student target = await Get(source.CI);
             if (target == null)
             {
-                DB.Collection.InsertOne(source);
+                await DB.InsertOrReplaceAsync(source);
                 return true;
             }
             return false;
         }
 
-        public static void Update(Student source)
+        public static async void Update(Student source)
         {
-            DB.Collection.FindOneAndUpdate((Student user) => user.CI == source.CI, DB.Ub
-            .Set((Student a) => a.Names, source.Names)
-            .Set((Student a) => a.Sex, source.Sex)
-            .Set((Student a) => a.Status, source.Status)
-            .Set((Student a) => a.GroupID, source.GroupID));
+            var target = await Get(source.CI);
+            target = source;
+            await DB.InsertOrReplaceAsync(source);
         }
 
-        public static bool Remove(Student student)
+        public static async Task<List<Student>> Get()
         {
-            return DB.Collection.DeleteOne(s => s.CI == student.CI).DeletedCount != 0;
+            return await Table.ToListAsync();
         }
 
-        public static void Remove(Group group)
+        public static async Task<bool> Remove(Student student)
         {
-            foreach (var student in GetStudents(group))
+            return await DB.DeleteAsync(student) == 1;
+        }
+
+        public static async Task Remove(Group group)
+        {
+            var students = await Get(group);
+            foreach (var student in students)
             {
-                Remove(student);
+                await DB.DeleteAsync(student);
             }
         }
 
-        public static void Remove(SchoolCource Cource)
+        public static async void Remove(SchoolCource Cource)
         {
-            foreach (var student in Get(Cource))
+            foreach (var group in await GroupDB.Get(Cource))
             {
-                Remove(student);
+                foreach (var student in await Table.Where(s => s.GroupID == group.ID).ToListAsync())
+                {
+                    await DB.DeleteAsync(student);
+                }
             }
         }
 
-        public static List<Student> Get(SchoolCource Cource)
-        {
-            var group = GroupDB.Get(Cource);
-            return GetStudents(group);
-        }
-
-        public static Student Get(ulong CI)
-        {
-            return DB.Collection.Find(user => user.CI == CI, null).FirstOrDefault();
-        }
-
-        public static List<Student> GetStudents(Group group)
-        {
-            return DB.Collection.Find(user => user.GroupID == group.ID, null).ToList();
-        }
-
-        public static List<Student> GetStudents(SchoolCource Cource)
+        public static async Task<List<Student>> Get(SchoolCource Cource)
         {
             var students = new List<Student>();
-            var Groups = GroupDB.GetGroups(Cource);
+            var Groups = await GroupDB.Get(Cource);
 
             foreach (var group in Groups)
             {
-                students.AddRange(GetStudents(group));
+                students.AddRange(await Get(group));
             }
 
             return students;
         }
 
-        public static List<Student> GetStudents(SchoolCource Cource, Career Career)
+        public static async Task<List<Student>> Get(SchoolCource Cource, Career Career)
         {
             var students = new List<Student>();
-            var Groups = GroupDB.GetGroups(Cource, Career);
+            var Groups = await GroupDB.Get(Cource, Career);
 
             foreach (var group in Groups)
             {
-                students.AddRange(GetStudents(group));
+                students.AddRange(await Get(group));
             }
 
             return students;
         }
 
-        public static void GetActiveStudents(SchoolCource cource, out int students)
+        public static async Task<int> GetActiveStudents(SchoolCource cource)
         {
-            students = 0;
+            var students = 0;
 
-            var Groups = GroupDB.GetGroups(cource);
-            foreach (var group in Groups)
+            var Groups = await GroupDB.Get(cource);
+            for (int i = 0; i < Groups.Count; i++)
             {
-                students += (int)DB.Collection.CountDocuments(s => s.GroupID == group.ID && s.Status == Status.Active);
+                Group group = Groups[i];
+                students += (await Table.Where(s => s.GroupID == group.ID && s.Status == Status.Active).ToListAsync()).Count;
             }
+            return students;
         }
 
-        public static void GetEnrolledAndGraduates(SchoolCource Cource, out int Enrolleds, out int Graduates)
+        public static async Task<List<Student>> Get(Group group)
         {
-            Enrolleds = 0;
-            Graduates = 0;
+            return await Table.Where(c => c.GroupID == group.ID).ToListAsync();
+        }
 
-            var students = GetStudents(Cource);
+        public static async Task<Student> Get(string studentID)
+        {
+            return await Table.Where(c => c.CI == studentID).FirstOrDefaultAsync();
+        }
+
+        public static async Task<Tuple<int, int>> GetEnrolledAndGraduates(SchoolCource Cource)
+        {
+            var Enrolleds = 0;
+            var Graduates = 0;
+
+            var students = await Get(Cource);
             Enrolleds = students.Count;
-            Graduates += students.FindAll(s => s.Status == Status.Graduated).Count;
+            Graduates += (await Table.Where(s => s.Status == Status.Graduated).ToListAsync()).Count;
 
+            return Tuple.Create<int, int>(Enrolleds,Graduates);
         }
 
-        public static string GetCourceYear(SchoolCource Cource, uint currentCource)
+        public static async Task<string> GetCourceYear(SchoolCource Cource, uint currentCource)
         {
-            GetCourceYear(Cource, currentCource, out int Year, out string stringYear);
-            return stringYear;
+            var format = await GetCourceYearFormats(Cource, currentCource);
+            return format.Item2;
         }
 
-        public static void GetCourceYear(SchoolCource Cource, uint currentCource, out int Year, out string stringYear)
+        public static async Task<Tuple<int, string>> GetCourceYearFormats(SchoolCource Cource, uint currentCource)
         {
-            Year = 0;
-            stringYear = "-";
+            var Year = 0;
+            var stringYear = "-";
             int currentYear = DateTime.Now.Year;
 
             if (currentCource != 0)
             {
-                var Current = SchoolCourceDB.Get(currentCource);
+                var Current = await SchoolCourceDB.Get(currentCource);
                 if (Current != null && Current.Name.Contains("-"))
                 {
                     var parts = Current.Name.Split('-');
@@ -171,15 +176,17 @@ namespace SKYNET.DB
                     }
                 }
             }
+
+            return Tuple.Create<int, string>(Year, stringYear);
         }
 
-        public static void GetCourceEvaluations(SchoolCource cource, out uint _5Points, out uint _4Points, out uint _3Points)
+        public static async Task<Tuple<int, int, int>> GetCourceEvaluations(SchoolCource cource)
         {
-            _5Points = 0;
-            _4Points = 0;
-            _3Points = 0;
+            var _5Points = 0;
+            var _4Points = 0;
+            var _3Points = 0;
 
-            var evaluations = EvaluationDB.GetEvaluations(cource);
+            var evaluations = await EvaluationDB.Get(cource);
             foreach (var evaluation in evaluations)
             {
                 if (float.TryParse(evaluation.Points, out float Points))
@@ -198,6 +205,7 @@ namespace SKYNET.DB
                     }
                 }
             }
+            return Tuple.Create<int, int, int>(_5Points, _4Points, _3Points); 
         }
     }
 }

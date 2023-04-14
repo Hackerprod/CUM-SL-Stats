@@ -1,12 +1,14 @@
-﻿using System;
+﻿using SQLite.Net.Attributes;
+using System;
 
 namespace SKYNET.Models
 {
     [Serializable]
-    public class Career 
+    public class Career : DBModel
     {
-        public uint ID { get; set; }
+        [Indexed]
         public string Name { get; set; }
+        [Indexed]
         public uint StudyPlanID { get; set; }
     }
 }

@@ -1,80 +1,62 @@
-﻿using MongoDB.Driver;
-using SKYNET.Models;
+﻿using SKYNET.Models;
+using SQLite;
 using System.Collections.Generic;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace SKYNET.DB
 {
     public static class SubjectDB
     {
-        private static MongoDbCollection<Subject> DB;
+        private static SQLiteAsyncConnection DB;
+        private static AsyncTableQuery<Subject> Table;
 
-        public static List<Subject> Subjects
+        public async static Task Initialize(SQLiteAsyncConnection dB)
         {
-            get
-            {
-                try
-                {
-                    return DB.Collection.Find(s => s != null).ToList();
-                }
-                catch (System.Exception)
-                {
-                    return new List<Subject>();
-                }
-            }
+            DB = dB;
+            await DB.CreateTableAsync<Subject>();
+            Table = DB.Table<Subject>();
         }
 
-        public static void Initialize()
+        public static async Task<bool> Register(Subject source)
         {
-            DB = new MongoDbCollection<Subject>("SIGPU_Subject");
-
-            DB.CreateIndex(Builders<Subject>.IndexKeys.Ascending((Subject i) => i.ID));
-            DB.CreateIndex(Builders<Subject>.IndexKeys.Ascending((Subject i) => i.Name));
-        }
-
-        public static bool Register(Subject source)
-        {
-            var subject = Get(source.ID);
-            if (subject == null)
+            if (Table.Where(s => s.ID == source.ID) == null)
             {
-                source.ID = CreateID();
-                DB.Collection.InsertOne(source);
+                await DB.InsertOrReplaceAsync(source);
                 return true;
             }
-            Common.Show($"El Plan {source.Name} existe.");
+            Common.Show($"La asignatura {source.Name} existe.");
             return false;
         }
 
-        public static bool Exists(string Name)
+        public static async Task<List<Subject>> Get()
         {
-            return Get(Name) != null;
+            return await Table.ToListAsync();
         }
 
-        public static Subject Get(string Name)
+        public static async Task<Subject> Get(string Name)
         {
-            return DB.Collection.Find((Subject usr) => usr.Name == Name, null).FirstOrDefault();
+            return await Table.Where(c => c.Name == Name).FirstOrDefaultAsync();
         }
 
-        public static bool Get(uint ID, out Subject Subject)
+        public static async Task<Subject> Get(uint subjectID)
         {
-            Subject = DB.Collection.Find((Subject usr) => usr.ID == ID, null).FirstOrDefault();
-            return Subject != null;
+            return await Table.Where(c => c.ID == subjectID).FirstOrDefaultAsync();
         }
 
-        public static bool Exists(uint SubjectID)
+        public static async Task<bool> Exists(uint subjectID)
         {
-            return Get(SubjectID) != null;
+            return await Get(subjectID) != null;
         }
 
-        public static Subject Get(uint SubjectID)
+        public static async Task<bool> Exists(string Name)
         {
-            return DB.Collection.Find((Subject usr) => usr.ID == SubjectID, null).FirstOrDefault(default(CancellationToken));
+            return await Table.Where(c => c.Name == Name).FirstOrDefaultAsync() != null;
         }
 
-        public static uint CreateID()
-        {
-            uint ID = DB.Collection.Find(FilterDefinition<Subject>.Empty, null).SortByDescending((Subject u) => (object)u.ID).Project((Subject u) => u.ID).FirstOrDefault(default(CancellationToken));
-            return ID <= 0U ? 1 : ID + 1;
-        }
+        //public static uint CreateID()
+        //{
+        //    Task<Subject>s.Sort((s1, s2) => s2.ID.CompareTo(s1.ID));
+        //    return Task<Subject>s.Count == 0 ? 1 : Task<Subject>s[Task<Subject>s.Count - 1].ID + 1;
+        //}
     }
 }

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using SKYNET.DB;
+using SKYNET.Models;
+using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 using static SKYNET.frmMain;
@@ -10,13 +13,6 @@ namespace SKYNET
         public frmAbout()
         {
             InitializeComponent();
-
-            
-        }
-
-        private void frmAbout_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

@@ -1,11 +1,15 @@
-﻿namespace SKYNET.Models
+﻿using SQLite.Net.Attributes;
+using SQLiteNetExtensions.Attributes;
+
+namespace SKYNET.Models
 {
-    public class Plan
+    [Table("Plan")]
+    public class Plan : DBModel
     {
-        public uint ID { get; set; }
+        //[ForeignKey(typeof(Subject))]
+        public uint SubjectID { get; set; }
         public SchoolYear Year { get; set; }
         public Semester Semester { get; set; }
-        public uint SubjectID { get; set; }
     }
 
     public enum SchoolYear : int

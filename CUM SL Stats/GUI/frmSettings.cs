@@ -41,16 +41,17 @@ namespace SKYNET
             //}
         }
 
-        private void frmSettings_Load(object sender, EventArgs e)
+        private async void frmSettings_Load(object sender, EventArgs e)
         {
             TB_Departament.Text = Settings.CurrentDepartament;
             LB_Path.Text = Settings.DBPath.Replace(@"\", "/");
 
-            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
+            var SchoolCources = await SchoolCourceDB.Get();
+            for (int i = 0; i < SchoolCources.Count; i++)
             {
-                SchoolCource Cources = SchoolCourceDB.SchoolCources[i];
-                CH_SchoolCource.Items.Add(Cources.Name);
-                if (Cources.ID == Settings.CurrentCource)
+                var Cource = SchoolCources[i];
+                CH_SchoolCource.Items.Add(Cource.Name);
+                if (Cource.ID == Settings.CurrentCource)
                 {
                     CH_SchoolCource.SelectedIndex = i;
                 }
@@ -65,7 +66,7 @@ namespace SKYNET
             textBox1.Focus();
         }
 
-        private void BT_Save_Click(object sender, EventArgs e)
+        private async void BT_Save_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(LB_Path.Text) || !File.Exists(LB_Path.Text))
             {
@@ -77,7 +78,7 @@ namespace SKYNET
                 MessageBox.Show("Debes seleccionar el curso actual");
                 return;
             }
-            SchoolCource cource = SchoolCourceDB.Get(CH_SchoolCource.Text);
+            var cource = await SchoolCourceDB.Get(CH_SchoolCource.Text);
 
             if (cource == null)
             {

@@ -1,75 +1,62 @@
-﻿using MongoDB.Driver;
-using SKYNET.Models;
+﻿using SKYNET.Models;
+using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SKYNET.DB
 {
     public static class SchoolCourceDB
     {
-        private static MongoDbCollection<SchoolCource> DB;
+        private static SQLiteAsyncConnection DB;
+        private static AsyncTableQuery<SchoolCource> Table;
 
-        public static List<SchoolCource> SchoolCources
+        public async static Task Initialize(SQLiteAsyncConnection dB)
         {
-            get
-            {
-                try
-                {
-                    return DB.Collection.Find(s => s != null).ToList();
-                }
-                catch (System.Exception)
-                {
-                    return new List<SchoolCource>();
-                }
-            }
+            DB = dB;
+            await DB.CreateTableAsync<SchoolCource>();
+
+            Table = DB.Table<SchoolCource>();
         }
 
-        public static void Initialize()
+        public static async Task<bool> Register(SchoolCource source)
         {
-            DB = new MongoDbCollection<SchoolCource>("SIGPU_SchoolCource");
-
-            DB.CreateIndex(Builders<SchoolCource>.IndexKeys.Ascending((SchoolCource i) => i.ID));
-            DB.CreateIndex(Builders<SchoolCource>.IndexKeys.Ascending((SchoolCource i) => i.Name));
-        }
-
-        public static bool Register(SchoolCource source)
-        {
-            var target = Get(source.ID);
+            SchoolCource target = await Table.Where(s => s.Name == source.Name).FirstOrDefaultAsync();
             if (target == null)
             {
-                source.ID = CreateID();
-                DB.Collection.InsertOne(source);
+                await DB.InsertAsync(source);
                 return true;
             }
             Common.Show($"El curso {source.Name} existe.");
             return false;
         }
 
-        public static SchoolCource Get(uint ID)
+        public static async Task<List<SchoolCource>> Get()
         {
-            return DB.Collection.Find((SchoolCource usr) => usr.ID == ID, null).FirstOrDefault();
+            return await Table.ToListAsync();
         }
 
-        public static SchoolCource Get(Group group)
+        public static async Task<SchoolCource> Get(uint ID)
         {
-            return Get(group.CourceID);
+            return await Table.Where(s => s.ID == ID).FirstOrDefaultAsync();
         }
 
-        public static SchoolCource Get(string Name)
+        public static async Task<SchoolCource> Get(Group group)
         {
-            return DB.Collection.Find((SchoolCource usr) => usr.Name == Name, null).FirstOrDefault();
+            return await Table.Where(s => s.ID == group.CourceID).FirstOrDefaultAsync();
         }
 
-        public static bool Get(string Name, out SchoolCource cource)
+        public static async Task<SchoolCource> Get(string Name)
         {
-            cource = Get(Name);
-            return cource != null; ;
+            return await Table.Where(s => s.Name == Name).FirstOrDefaultAsync();
         }
 
-        public static List<SchoolCource> GetActiveCources(uint iD)
+        public static async Task<List<SchoolCource>> GetActiveCources(uint iD)
         {
             var cources = new List<SchoolCource>();
-            var cource = Get(iD);
+            var cource = await Get(iD);
 
             int minYear = 0;
             int maxYear = 0;
@@ -90,7 +77,7 @@ namespace SKYNET.DB
             for (int i = 1; i < 5; i++)
             {
                 var tempName = $"{(minYear - i)}-{((minYear - i) + 1)}";
-                var tempCource = Get(tempName);
+                var tempCource = await Get(tempName);
                 if (tempCource != null)
                 {
                     cources.Add(tempCource);
@@ -99,63 +86,62 @@ namespace SKYNET.DB
             return cources;
         }
 
-        public static bool Remove(SchoolCource cource)
+        public static async Task<bool> Remove(SchoolCource cource)
         {
-            var Result = DB.Collection.DeleteOne(c => c.ID == cource.ID);
-            if (Result.DeletedCount == 1)
+            if (await DB.DeleteAsync(cource) == 1)
             {
-                //var groups = GroupDB.GetGroups(cource);
-                //foreach (var group in groups)
-                //{
-                //    var students = StudentDB.Students.FindAll(g => g.GroupID == group.ID);
-                //    foreach (var student in students)
-                //    {
-                //        DB.Delete(student);
-                //    }
+                var groups = await GroupDB.Get(cource);
+                foreach (var group in groups)
+                {
+                    var students = await StudentDB.Get(group);
+                    foreach (var student in students)
+                    {
+                        await DB.DeleteAsync(student);
+                    }
 
-                //    DB.Delete(group);
-                //}
+                    await DB.DeleteAsync(group);
+                }
 
                 return true;
             }
             return false;
         }
 
-        public static bool IsValidCourceName(string stringCource, out string CourceName)
+        public static async Task<string> IsValidCourceName(string stringCource)
         {
-            CourceName = "";
+            var CourceName = "";
             if (!string.IsNullOrEmpty(stringCource) && stringCource.Contains("-"))
             {
                 var years = stringCource.Split('-');
                 if (int.TryParse(years[0], out int Year1) && int.TryParse(years[1], out int Year2))
                 {
                     CourceName = years[0] + "-" + years[1];
-                    return Year1 + 1 == Year2;
+                    if (Year1 + 1 != Year2)
+                    return null;
                 }
             }
-            return false;
+            return CourceName;
         }
 
-        public static List<string> GetYears(SchoolCource cource, Career career)
+        public static async Task<List<string>> GetYears(SchoolCource cource, Career career)
         {
             List<string> Years = new List<string>();
-            var Cources = GetActiveCources(cource.ID);
+            var Cources = await GetActiveCources(cource.ID);
 
             foreach (var Cource in Cources)
             {
-                if (GroupDB.Exist(Cource, career))
+                if (await GroupDB.Exist(Cource, career))
                 {
-                    var name = StudentDB.GetCourceYear(Cource, (uint)frmMain.Settings.CurrentCource);
+                    var name = await StudentDB.GetCourceYear(Cource, (uint)frmMain.Settings.CurrentCource);
                     Years.Add(name);
                 }
             }
             return Years;
         }
 
-        public static uint CreateID()
+        public static async Task<SchoolCource> GetCourceByName(string name)
         {
-            uint ID = DB.Collection.Find(FilterDefinition<SchoolCource>.Empty, null).SortByDescending((SchoolCource u) => (object)u.ID).Project((SchoolCource u) => u.ID).FirstOrDefault();
-            return ID <= 0U ? 1 : ID + 1;
+            return await Table.Where(g => g.Name == name).FirstOrDefaultAsync();
         }
     }
 }

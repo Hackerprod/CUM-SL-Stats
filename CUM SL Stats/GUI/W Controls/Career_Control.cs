@@ -12,15 +12,15 @@ namespace SKYNET.Controls
             InitializeComponent();
         }
 
-        private void BT_Register_Click(object sender, EventArgs e)
+        private async void BT_Register_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(TB_Career.Text))
             {
                 MessageBox.Show("Debe especificar el nombre de la carrera para continuar");
                 return;
             }
-            Career Career = CareerDB.Get(TB_Career.Text);
 
+            var Career = await CareerDB.Get(TB_Career.Text);
             if (Career != null)
             {
                 MessageBox.Show($"La carrera \"{TB_Career.Text}\" ya existe");
@@ -29,10 +29,9 @@ namespace SKYNET.Controls
 
             Career = new Career()
             {
-                ID = CareerDB.CreateID(),
                 Name = TB_Career.Text,
             };
-            frmMain.frm.RegisterData(RegisterType.Career, Career);
+            await frmMain.frm.RegisterData(RegisterType.Career, Career);
 
         }
     }

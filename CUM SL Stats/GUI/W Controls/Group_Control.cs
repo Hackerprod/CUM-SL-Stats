@@ -18,16 +18,21 @@ namespace SKYNET.Controls
         public Group_Control()
         {
             InitializeComponent();
+            Initialize();
+        }
 
-            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
+        private async void Initialize()
+        {
+            var SchoolCources = await SchoolCourceDB.Get();
+            for (int i = 0; i < SchoolCources.Count; i++)
             {
-                SchoolCource cource = SchoolCourceDB.SchoolCources[i];
+                var cource = SchoolCources[i];
                 CB_SchoolCource.Items.Add(cource.Name);
                 CB_SchoolCource.SelectedIndex = i;
             }
         }
 
-        private void BT_Register_Click(object sender, EventArgs e)
+        private async void BT_Register_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(TB_GroupName.Text))
             {
@@ -35,19 +40,21 @@ namespace SKYNET.Controls
                 return;
             }
 
-            if (!SchoolCourceDB.Get(CB_SchoolCource.Text, out SchoolCource Cource))
+            var Cource = await SchoolCourceDB.Get(CB_SchoolCource.Text);
+            if (Cource == null)
             {
                 MessageBox.Show("Debe especificar un curso válido");
                 return;
             }
-            
-            if (!CareerDB.Get(CB_Career.Text, out Career career))
+
+            var Career = await CareerDB.Get(CB_Career.Text);
+            if (Career == null)
             {
                 MessageBox.Show($"La carrera {CB_Career.Text} no existe.");
                 return;
             }
 
-            Group target = GroupDB.Get(TB_GroupName.Text);
+            var target = await GroupDB.Get(TB_GroupName.Text);
             if (target != null)
             {
                 MessageBox.Show($"El grupo {TB_GroupName.Text} ya existe.");
@@ -57,19 +64,18 @@ namespace SKYNET.Controls
             Group group = new Group()
             {
                 Name = TB_GroupName.Text,
-                ID = GroupDB.CreateID(),
-                CareerID = career.ID,
+                CareerID = Career.ID,
                 CourceID = Cource.ID
             };
             frmMain.frm.RegisterData(RegisterType.Group, group);
         }
 
-        private void CB_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CB_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
         {
             CB_Career.Items.Clear();
 
-            var cource = SchoolCourceDB.Get(CB_SchoolCource.Text);
-            var careers = CareerDB.GetCareers(cource);
+            var cource = await SchoolCourceDB.Get(CB_SchoolCource.Text);
+            var careers = await CareerDB.Get(cource);
 
             for (int i = 0; i < careers.Count; i++)
             {

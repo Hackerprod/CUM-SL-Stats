@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using SKYNET.DB;
 using SKYNET.Managers;
@@ -11,84 +12,86 @@ namespace SKYNET.Controls
     {
         private Student _student;
 
-        public Student Student 
+        public async Task SetStudent(Student value) 
         {
-            get => _student;
-            set
+            _student = value;
+            if (value != null)
             {
-                _student = value;
-                if (value != null)
+                try
                 {
-                    try
+                    TB_StudentName.Text = value.Names;
+                    TB_CI.Text = value.CI.ToString();
+                    TB_CI.Enabled = false;
+
+                    Group currentGroup = await GroupDB.Get(value.GroupID);
+                    SchoolCource currentCource = null;
+                    Career currentCareer = null;
+
                     {
-                        TB_StudentName.Text = value.Names;
-                        TB_CI.Text = value.CI.ToString();
-                        TB_CI.Enabled = false;
+                        currentCource = await SchoolCourceDB.Get(currentGroup);
+                        CB_SchoolCource.Text = currentCource?.Name;
+                        CB_SchoolCource.Tag = currentCource;
 
-                        Group currentGroup = GroupDB.Get(value.GroupID);
-                        SchoolCource currentCource = null;
-                        Career currentCareer = null;
+                        var SchoolCources = await SchoolCourceDB.Get();
 
+                        for (int i = 0; i < SchoolCources.Count; i++)
                         {
-                            currentCource = SchoolCourceDB.Get(currentGroup);
-                            CB_SchoolCource.Text = currentCource?.Name;
-                            CB_SchoolCource.Tag = currentCource;
-
-                            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
+                            var Cource = SchoolCources[i];
+                            CB_SchoolCource.Items.Add(Cource.Name);
+                            if (currentCource?.ID == Cource.ID)
                             {
-                                SchoolCource Cource = SchoolCourceDB.SchoolCources[i];
-                                CB_SchoolCource.Items.Add(Cource.Name);
-                                if (currentCource?.ID == Cource.ID)
-                                {
-                                    CB_SchoolCource.SelectedIndex = i;
-                                }
+                                CB_SchoolCource.SelectedIndex = i;
                             }
                         }
-
-                        {
-                            currentCareer = CareerDB.Get(currentGroup);
-                            CB_Career.Text = currentCareer?.Name;
-                            CB_Career.Tag = currentCareer;
-
-                            for (int i = 0; i < CareerDB.Careers.Count; i++)
-                            {
-                                Career career = CareerDB.Careers[i];
-                                CB_Career.Items.Add(career.Name);
-                                if (currentCareer?.ID == career.ID)
-                                {
-                                    CB_SchoolCource.SelectedIndex = i;
-                                }
-                            }
-                        }
-
-                        {
-                            for (int i = 0; i < GroupDB.GetGroups(currentCource, currentCareer).Count; i++)
-                            {
-                                var group = GroupDB.GetGroups(currentCource, currentCareer)[i];
-                                CB_Group.Items.Add(group.Name);
-                                if (currentGroup?.ID == group.ID)
-                                {
-                                    CB_Group.SelectedIndex = i;
-                                }
-                            }
-
-                            CB_Group.Text = currentGroup?.Name;
-                            CB_Group.Tag = currentGroup;
-                        }
-
-                        CB_Status.SelectedIndex = (int)_student.Status;
-
-                        BT_Register.Text = "Actualizar";
-                        BT_Register.Location = new Point(138, 370);
-                        BT_RegisterOther.Visible = false;
-
-                        SexSelector.Sex = value.Sex;
-                        SexSelector.BlockSelector = true;
                     }
-                    catch (Exception ex)
+
                     {
-                        Common.Show(ex);
+                        currentCareer = await CareerDB.Get(currentGroup);
+                        CB_Career.Text = currentCareer?.Name;
+                        CB_Career.Tag = currentCareer;
+
+                        var Careers = await CareerDB.Get();
+
+                        for (int i = 0; i < Careers.Count; i++)
+                        {
+                            var career = Careers[i];
+                            CB_Career.Items.Add(career.Name);
+                            if (currentCareer?.ID == career.ID)
+                            {
+                                CB_SchoolCource.SelectedIndex = i;
+                            }
+                        }
                     }
+
+                    {
+                        var Groups = await GroupDB.Get(currentCource, currentCareer);
+
+                        for (int i = 0; i < Groups.Count; i++)
+                        {
+                            var group = Groups[i];
+                            CB_Group.Items.Add(group.Name);
+                            if (currentGroup?.ID == group.ID)
+                            {
+                                CB_Group.SelectedIndex = i;
+                            }
+                        }
+
+                        CB_Group.Text = currentGroup?.Name;
+                        CB_Group.Tag = currentGroup;
+                    }
+
+                    CB_Status.SelectedIndex = (int)_student.Status;
+
+                    BT_Register.Text = "Actualizar";
+                    BT_Register.Location = new Point(138, 370);
+                    BT_RegisterOther.Visible = false;
+
+                    SexSelector.Sex = value.Sex;
+                    SexSelector.BlockSelector = true;
+                }
+                catch (Exception ex)
+                {
+                    Common.Show(ex);
                 }
             }
         }
@@ -97,11 +100,18 @@ namespace SKYNET.Controls
         {
             InitializeComponent();
 
+            Initialize();
+        }
+
+        private async void Initialize()
+        {
             TB_StudentName.TextChanged += TB_StudentName_TextChanged;
 
-            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
+            var SchoolCources = await SchoolCourceDB.Get();
+
+            for (int i = 0; i < SchoolCources.Count; i++)
             {
-                SchoolCource Cource = SchoolCourceDB.SchoolCources[i];
+                var Cource = SchoolCources[i];
                 CB_SchoolCource.Items.Add(Cource.Name);
                 CB_SchoolCource.SelectedIndex = i;
             }
@@ -115,7 +125,7 @@ namespace SKYNET.Controls
 
             TB_StudentName.TextChanged += TB_StudentName_TextChanged;
 
-            Student = student;
+            SetStudent(student);
         }
 
         private void TB_StudentName_TextChanged(object sender, EventArgs e)
@@ -145,7 +155,7 @@ namespace SKYNET.Controls
             Register(true);
         }
 
-        private void Register(bool other)
+        private async void Register(bool other)
         {
             if (string.IsNullOrEmpty(TB_StudentName.Text))
             {
@@ -167,13 +177,16 @@ namespace SKYNET.Controls
                 MessageBox.Show("Debe seleccionar el curso para continuar");
                 return;
             }
-            if (!SchoolCourceDB.Get(CB_SchoolCource.Text, out SchoolCource cource))
+
+            var cource = await SchoolCourceDB.Get(CB_SchoolCource.Text);
+            if (cource == null)
             {
                 MessageBox.Show($"El curso {CB_SchoolCource.Text} no existe.");
                 return;
             }
 
-            if (!CareerDB.Get(CB_Career.Text, out Career career))
+            var career = await CareerDB.Get(CB_Career.Text);
+            if (career == null)
             {
                 MessageBox.Show($"La carrera {CB_Career.Text} no existe.");
                 return;
@@ -185,17 +198,16 @@ namespace SKYNET.Controls
                 return;
             }
 
-            Group group = GroupDB.Get(CB_Group.Text);
+            Group group = await GroupDB.Get(CB_Group.Text);
             if (group == null)
             {
                 group = new Group()
                 { 
-                    ID = GroupDB.CreateID(),
                     CourceID = cource.ID,
                     CareerID = career.ID, 
                     Name = CB_Group.Text
                 };
-                if (!GroupDB.Register(group))
+                if (await GroupDB.Register(group) == false)
                 {
                     Common.Show($"Error creando el grupo {CB_Group.Text}");
                     return;
@@ -208,13 +220,13 @@ namespace SKYNET.Controls
             {
                 var student = new Student()
                 {
-                    CI = ulong.Parse(TB_CI.Text),
+                    CI = TB_CI.Text,
                     Names = TB_StudentName.Text,
                     GroupID = group.ID,
                     Sex = SexSelector.Sex, 
                     Status = status
                 };
-                if (frmMain.frm.RegisterData(RegisterType.Student, student, other) && other)
+                if (await frmMain.frm.RegisterData(RegisterType.Student, student, other) && other)
                 {
                     TB_StudentName.Text = "";
                     TB_CI.Text = "";
@@ -232,12 +244,12 @@ namespace SKYNET.Controls
             }
         }
 
-        private void CB_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CB_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
         {
             CB_Career.Items.Clear();
 
-            var cource = SchoolCourceDB.Get(CB_SchoolCource.Text);
-            var careers = CareerDB.GetCareers(cource);
+            var cource = await SchoolCourceDB.Get(CB_SchoolCource.Text);
+            var careers = await CareerDB.Get(cource);
 
             for (int i = 0; i < careers.Count; i++)
             {
@@ -247,15 +259,19 @@ namespace SKYNET.Controls
             }
         }
 
-        private void CB_Career_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CB_Career_SelectedIndexChanged(object sender, EventArgs e)
         {
             CB_Group.Items.Clear();
             CB_Group.Text = "";
-            if (!SchoolCourceDB.Get(CB_SchoolCource.Text, out SchoolCource cource) || !CareerDB.Get(CB_Career.Text, out Career career))
+
+            var cource = await SchoolCourceDB.Get(CB_SchoolCource.Text);
+            var career = await CareerDB.Get(CB_Career.Text);
+
+            if (cource == null || career == null)
             {
                 return;
             }
-            var groups = GroupDB.GetGroups(cource, career);
+            var groups = await GroupDB.Get(cource, career);
             for (int i = 0; i < groups.Count; i++)
             {
                 Group group = groups[i];

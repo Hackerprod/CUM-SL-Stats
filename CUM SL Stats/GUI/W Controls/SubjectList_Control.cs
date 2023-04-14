@@ -18,42 +18,46 @@ namespace SKYNET.GUI.W_Controls
             this.columnName.Width = 255;
         }
 
-        internal void LoadData()
+        internal async void LoadData()
         {
-            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
+            var SchoolCources = await SchoolCourceDB.Get();
+            for (int i = 0; i < SchoolCources.Count; i++)
             {
-                SchoolCource cource = SchoolCourceDB.SchoolCources[i];
+                var cource = SchoolCources[i];
                 CH_SchoolCource.Items.Add(cource.Name);
                 CH_SchoolCource.SelectedIndex = i;
             }
             CH_Semester.SelectedIndex = 0;
         }
 
-        private void CB_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CB_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
         {
             CH_Career.Items.Clear();
             CH_Career.Text = "";
 
-            var cource = SchoolCourceDB.Get(CH_SchoolCource.Text);
-            var careers = CareerDB.GetCareers(cource);
+            var cource = await SchoolCourceDB.Get(CH_SchoolCource.Text);
+            var careers = await CareerDB.Get(cource);
 
             for (int i = 0; i < careers.Count; i++)
             {
-                Career career = careers[i];
+                var career = careers[i];
                 CH_Career.Items.Add(career.Name);
             }
         }
 
-        private void BT_Show_Click(object sender, EventArgs e)
+        private async void BT_Show_Click(object sender, EventArgs e)
         {
             LV_Subjects.Items.Clear();
 
-            if (!SchoolCourceDB.Get(CH_SchoolCource.Text, out SchoolCource cource))
+            var cource = await SchoolCourceDB.Get(CH_SchoolCource.Text);
+            if (cource == null)
             {
                 Common.Show("El Curso seleccionado no es válido");
                 return;
             }
-            if (!CareerDB.Get(CH_Career.Text, out Career career))
+
+            var career = await CareerDB.Get(CH_Career.Text);
+            if (career == null)
             {
                 Common.Show("La carrera seleccionada no es válida");
                 return;
@@ -83,24 +87,25 @@ namespace SKYNET.GUI.W_Controls
             //}
         }
 
-        private void BT_AddSubject_Click(object sender, EventArgs e)
+        private async void BT_AddSubject_Click(object sender, EventArgs e)
         {
-            if (!SchoolCourceDB.Get(CH_SchoolCource.Text, out SchoolCource cource))
+            var cource = await SchoolCourceDB.Get(CH_SchoolCource.Text);
+            if (cource == null)
             {
                 Common.Show("El Curso seleccionado no es válido");
                 return;
             }
-            if (!CareerDB.Get(CH_Career.Text, out Career career))
+
+            var career = await CareerDB.Get(CH_Career.Text);
+            if (career == null)
             {
                 Common.Show("La carrera seleccionada no es válida");
                 return;
             }
+
             Semester semester = (Semester)CH_Semester.SelectedIndex;
-            if (semester == Semester.Both)
-            {
-                Common.Show("Debe seleccionar un semestre válido para agregar la asignatura." + Environment.NewLine + "Solo esta permitido agregarla en Primer semestre o Segundo semestre");
-                return;
-            }
+
+
             //if (SubjectDB.GetSubject(TB_SubjectName.Text, cource.ID, career.ID, semester, out Subject subject))
             //{
             //    Common.Show($"La asignatura \"{TB_SubjectName.Text}\" existe en el curso seleccionado");

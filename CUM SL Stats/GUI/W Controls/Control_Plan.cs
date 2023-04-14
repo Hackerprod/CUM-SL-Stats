@@ -32,10 +32,10 @@ namespace SKYNET.Controls
 
                 LB_Year.Text = ((int)value.Year).ToString();
                 LB_Semester.Text = ((int)value.Semester).ToString();
-                if (SubjectDB.Get(value.SubjectID, out var Subject))
-                {
-                    LB_Signature.Text = Subject.Name;
-                }
+                //if (SubjectDB.Get(value.SubjectID, out var Subject))
+                //{
+                //    LB_Signature.Text = Subject.Name;
+                //}
             }
         }
 

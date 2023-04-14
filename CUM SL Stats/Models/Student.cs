@@ -3,9 +3,9 @@
 namespace SKYNET.Models
 {
     [Serializable]
-    public class Student
+    public class Student : DBModel
     {
-        public ulong CI { get; set; }
+        public string CI { get; set; }
         public string Names { get; set; }
         public uint GroupID { get; set; }
         public Status Status { get; set; }

@@ -24,24 +24,25 @@ namespace SKYNET.GUI.W_Controls
             this.columnName.Width = 255;
         }
 
-        internal void LoadData()
+        internal async void LoadData()
         {
-            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
+            var SchoolCources = await SchoolCourceDB.Get();
+            for (int i = 0; i < SchoolCources.Count; i++)
             {
-                SchoolCource cource = SchoolCourceDB.SchoolCources[i];
+                SchoolCource cource = SchoolCources[i];
                 CH_SchoolCource.Items.Add(cource.Name);
                 CH_SchoolCource.SelectedIndex = i;
             }
 
         }
 
-        private void CB_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CB_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
         {
             CH_Career.Items.Clear();
             CH_Career.Text = "";
 
-            var cource = SchoolCourceDB.Get(CH_SchoolCource.Text);
-            var careers = CareerDB.GetCareers(cource);
+            var cource = await SchoolCourceDB.Get(CH_SchoolCource.Text);
+            var careers = await CareerDB.Get(cource);
 
             for (int i = 0; i < careers.Count; i++)
             {
@@ -51,15 +52,17 @@ namespace SKYNET.GUI.W_Controls
             }
         }
 
-        private void CB_Career_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CB_Career_SelectedIndexChanged(object sender, EventArgs e)
         {
             CH_Group.Items.Clear();
             CH_Group.Text = "";
-            if (!SchoolCourceDB.Get(CH_SchoolCource.Text, out SchoolCource cource) || !CareerDB.Get(CH_Career.Text, out Career career))
+            var cource = await SchoolCourceDB.Get(CH_SchoolCource.Text);
+            var career = await CareerDB.Get(CH_Career.Text);
+            if (cource == null || career == null)
             {
                 return;
             }
-            var groups = GroupDB.GetGroups(cource, career);
+            var groups = await GroupDB.Get(cource, career);
             for (int i = 0; i < groups.Count; i++)
             {
                 Group group = groups[i];
@@ -79,21 +82,25 @@ namespace SKYNET.GUI.W_Controls
             //TODO
         }
 
-        private void BT_Show_Click(object sender, EventArgs e)
+        private async void BT_Show_Click(object sender, EventArgs e)
         {
             LV_Students.Items.Clear();
 
-            if (!SchoolCourceDB.Get(CH_SchoolCource.Text, out SchoolCource cource))
+            var cource = await SchoolCourceDB.Get(CH_SchoolCource.Text);
+            var career = await CareerDB.Get(CH_Career.Text);
+
+            if (cource == null)
             {
                 Common.Show("El Curso seleccionado no es válido");
                 return;
             }
-            if (!CareerDB.Get(CH_Career.Text, out Career career))
+            if (career == null)
             {
                 Common.Show("La carrera seleccionada no es válida");
                 return;
             }
-            if (!GroupDB.GetGroup(cource, career, CH_Group.Text, out Group group))
+            var group = await GroupDB.Get(cource, career, CH_Group.Text);
+            if (group == null)
             {
                 Common.Show("El Grupo seleccionado no es válido");
                 return;
@@ -101,10 +108,10 @@ namespace SKYNET.GUI.W_Controls
 
             Semester semester = (Semester)CH_Semester.SelectedIndex + 1;
 
-            var Evaluations = EvaluationDB.GetEvaluations(cource, career, group, semester);
+            var Evaluations = await EvaluationDB.Get(cource, career, group, semester);
 
             // Separate Evaluations by Students 
-            var studentsEvaluation = new Dictionary<ulong, object>();
+            var studentsEvaluation = new Dictionary<string, object>();
             foreach (var ev in Evaluations)
             {
                 if (!studentsEvaluation.ContainsKey(ev.StudentID))
@@ -172,7 +179,7 @@ namespace SKYNET.GUI.W_Controls
             foreach (var item in studentsEvaluation)
             {
                 List<Evaluation> evs = (List<Evaluation>)item.Value;
-                Student student = StudentDB.Get(item.Key);
+                Student student = await StudentDB.Get(item.Key);
 
                 var lvItem = CreateListViewItem(evs.Count + 1); 
                 lvItem.SubItems[0].Text = (student.Names);

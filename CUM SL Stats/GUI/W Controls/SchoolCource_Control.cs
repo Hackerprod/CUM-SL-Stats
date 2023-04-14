@@ -12,22 +12,21 @@ namespace SKYNET.Controls
             InitializeComponent();
         }
 
-        private void BT_Register_Click(object sender, EventArgs e)
+        private async void BT_Register_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(TB_CourseName.Text))
             {
                 MessageBox.Show("Debe especificar el nombre del Curso a registrar");
                 return;
             }
-
-            if (!SchoolCourceDB.IsValidCourceName(TB_CourseName.Text, out string CourceName))
+            string CourceName = await SchoolCourceDB.IsValidCourceName(TB_CourseName.Text);
+            if (string.IsNullOrEmpty(CourceName))
             {
                 MessageBox.Show("El nombre del curso no tiene un formato correcto");
                 return;
             }
             SchoolCource schoolCource = new SchoolCource()
             {
-                ID = SchoolCourceDB.CreateID(),
                 Name = CourceName
             };
 

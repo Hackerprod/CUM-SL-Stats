@@ -49,15 +49,18 @@ namespace SKYNET.GUI.W_Controls
             var stringCources = pdfLines.FindAll(s => s.Contains("-"));
             foreach (var stringCource in stringCources)
             {
-                if (SchoolCourceDB.IsValidCourceName(stringCource, out string _courceName))
+                var _courceName = await SchoolCourceDB.IsValidCourceName(stringCource);
+                if (!string.IsNullOrEmpty(_courceName))
                 {
                     CourceName = _courceName;
                 }
             }
 
-            for (int i = 0; i < SchoolCourceDB.SchoolCources.Count; i++)
+            var SchoolCources = await SchoolCourceDB.Get();
+            for (int i = 0; i < SchoolCources.Count; i++)
             {
-                SchoolCource cource = SchoolCourceDB.SchoolCources[i];
+                //Common.Show(SchoolCources[i].Name);
+                var cource = SchoolCources[i];
                 CB_SchoolCource.Items.Add(cource.Name);
                 CB_SchoolCource.SelectedIndex = i;
             }
@@ -118,7 +121,7 @@ namespace SKYNET.GUI.W_Controls
 
             // Fill Study plans ///////////////////////////////////////////////////////////
 
-            foreach (var Plan in StudyPlansDB.StudyPlans)
+            foreach (var Plan in await StudyPlanDB.Get())
             {
                 CB_StudyPlan.Items.Add(Plan.Name);
             }
@@ -239,7 +242,7 @@ namespace SKYNET.GUI.W_Controls
             {
                 Student Student = new Student()
                 {
-                    CI = ulong.Parse(CI),
+                    CI = CI,
                     Names = Names.Replace("  ", " "),
                     Status = Status.Active,
                     Sex = sex
@@ -265,103 +268,100 @@ namespace SKYNET.GUI.W_Controls
             return result;
         }
 
-        private void BT_Import_Click(object sender, EventArgs e)
+        private async void BT_Import_Click(object sender, EventArgs e)
         {
             BT_Import.Enabled = false;
 
-            Task.Run(delegate 
+            if (string.IsNullOrEmpty(CB_SchoolCource.Text))
             {
-                if (string.IsNullOrEmpty(CB_SchoolCource.Text))
-                {
-                    MessageBox.Show($"Introduzca el nombre del Curso");
-                    return;
-                }
+                MessageBox.Show($"Introduzca el nombre del Curso");
+                return;
+            }
 
-                if (!SchoolCourceDB.IsValidCourceName(CB_SchoolCource.Text, out _))
-                {
-                    MessageBox.Show($"En nombre del Curso no es válido, el nombre tiene que seguir el siguiente formato: 2020-2021");
-                    return;
-                }
+            if (SchoolCourceDB.IsValidCourceName(CB_SchoolCource.Text) == null)
+            {
+                MessageBox.Show($"En nombre del Curso no es válido, el nombre tiene que seguir el siguiente formato: 2020-2021");
+                return;
+            }
 
-                if (string.IsNullOrEmpty(CB_StudyPlan.Text))
-                {
-                    MessageBox.Show($"El Plan de estudio especificado no es válido");
-                    return;
-                }
+            if (string.IsNullOrEmpty(CB_StudyPlan.Text))
+            {
+                MessageBox.Show($"El Plan de estudio especificado no es válido");
+                return;
+            }
 
-                SchoolCource Cource = SchoolCourceDB.Get(CB_SchoolCource.Text);
-                if (Cource == null)
+            var Cource = await SchoolCourceDB.Get(CB_SchoolCource.Text);
+            if (Cource == null)
+            {
+                var Dialog = MessageBox.Show($"El Curso {CB_SchoolCource.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
+                if (Dialog == DialogResult.Yes)
                 {
-                    var Dialog = MessageBox.Show($"El Curso {CB_SchoolCource.Text} no existe" + Environment.NewLine + "Desea agregarlo?", "", MessageBoxButtons.YesNo);
-                    if (Dialog == DialogResult.Yes)
+                    Cource = new SchoolCource()
                     {
-                        Cource = new SchoolCource()
-                        {
-                            ID = SchoolCourceDB.CreateID(),
-                            Name = CB_SchoolCource.Text
-                        };
-                        SchoolCourceDB.Register(Cource);
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-
-                var StudyPlan = StudyPlansDB.Get(CB_StudyPlan.Text);
-                if (StudyPlan == null)
-                {
-                    MessageBox.Show($"El Plan de estudio {CB_StudyPlan.Text} no existe" + Environment.NewLine + "Por favor cree un plan de estudio antes de continuar", "", MessageBoxButtons.YesNo);
-                    return;
-                }
-
-                LB_Info.Text = $"Importando grupo desde archivo, por favor espere.";
-
-                if (!CareerDB.Get(CH_Career.Text, out Career Career))
-                {
-                    Career = new Career()
-                    {
-                        ID = CareerDB.CreateID(),
-                        Name = CH_Career.Text
+                        Name = CB_SchoolCource.Text
                     };
-                    CareerDB.Register(Career);
+                    await SchoolCourceDB.Register(Cource);
                 }
-
-                if (!GroupDB.GetGroup(Cource, Career, CH_Group.Text, out Group Group))
+                else
                 {
-                    Group = new Group()
-                    {
-                        ID = GroupDB.CreateID(),
-                        CourceID = Cource.ID,
-                        CareerID = Career.ID,
-                        StudyPlanID = StudyPlan.ID,
-                        Name = CH_Group.Text
-                    };
-                    GroupDB.Register(Group);
+                    return;
                 }
+            }
 
-                int registered = 0;
-                bool done = false;
-                foreach (var KV in Students)
+            var StudyPlan = await StudyPlanDB.Get(CB_StudyPlan.Text);
+            if (StudyPlan == null)
+            {
+                MessageBox.Show($"El Plan de estudio {CB_StudyPlan.Text} no existe" + Environment.NewLine + "Por favor cree un plan de estudio antes de continuar", "", MessageBoxButtons.YesNo);
+                return;
+            }
+
+            LB_Info.Text = $"Importando grupo desde archivo, por favor espere.";
+
+            var Career = await CareerDB.Get(CH_Career.Text);
+            if (Career != null)
+            {
+                Career = new Career()
                 {
-                    Student Student = KV.Value;
-                    if (Student != null)
-                    {
-                        Student.GroupID = Group.ID;
+                    Name = CH_Career.Text
+                };
+                await CareerDB.Register(Career);
+            }
 
-                        done = StudentDB.Register(Student);
-                        registered += done ? 1 : 0;
-                    }
-                }
-
-                Common.Show($"Se han importado {registered} estudiantes de {Count} en el archivo");
-                LB_Info.Text = $"";
-
-                if (done)
+            var Group = await GroupDB.Get(Cource, Career, CH_Group.Text);
+            if (Group != null)
+            {
+                Group = new Group()
                 {
-                    frmMain.frm.SelectTab();
+                    CourceID = Cource.ID,
+                    CareerID = Career.ID,
+                    StudyPlanID = StudyPlan.ID,
+                    Name = CH_Group.Text
+                };
+                await GroupDB.Register(Group);
+            }
+
+            int registered = 0;
+            bool done = false;
+            foreach (var KV in Students)
+            {
+                Student Student = KV.Value;
+                if (Student != null)
+                {
+                    Student.GroupID = Group.ID;
+
+                    done = await StudentDB.Register(Student);
+                    registered += done ? 1 : 0;
                 }
-            });
+            }
+
+            Common.Show($"Se han importado {registered} estudiantes de {Count} en el archivo");
+            LB_Info.Text = $"";
+
+            if (done)
+            {
+                frmMain.frm.SelectTab();
+            }
+
             BT_Import.Enabled = true;
         }
 

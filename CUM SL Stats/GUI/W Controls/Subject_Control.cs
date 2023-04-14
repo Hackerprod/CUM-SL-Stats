@@ -20,7 +20,7 @@ namespace SKYNET.Controls
             InitializeComponent();
         }
 
-        private void BT_Register_Click(object sender, EventArgs e)
+        private async void BT_Register_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(TB_SubjectName.Text))
             {
@@ -28,7 +28,7 @@ namespace SKYNET.Controls
                 return;
             }
 
-            if (SubjectDB.Exists(TB_SubjectName.Text))
+            if (await SubjectDB.Exists(TB_SubjectName.Text))
             {
                 MessageBox.Show($"La asignatura {TB_SubjectName.Text} existe.");
                 return;
@@ -36,11 +36,10 @@ namespace SKYNET.Controls
 
             Subject subject = new Subject()
             {
-                ID = SubjectDB.CreateID(),
                 Name = TB_SubjectName.Text,
             };
 
-            var done = frmMain.frm.RegisterData(RegisterType.Subject, subject);
+            var done = await frmMain.frm.RegisterData(RegisterType.Subject, subject);
             if (done)
             {
                 TB_SubjectName.Text = "";

@@ -19,11 +19,11 @@ namespace SKYNET.GUI.W_Controls
             this.columnName.Width = 255;
         }
 
-        public void LoadData()
+        public async void LoadData()
         {
             LV_Plans.Items.Clear();
 
-            var Plans = StudyPlansDB.StudyPlans;
+            var Plans = await StudyPlanDB.Get();
             foreach (var plan in Plans)
             {
                 var lvItem = new ListViewItem();
@@ -70,14 +70,14 @@ namespace SKYNET.GUI.W_Controls
 
         }
 
-        private void LV_Plans_DoubleClick(object sender, EventArgs e)
+        private async void LV_Plans_DoubleClick(object sender, EventArgs e)
         {
             PN_PlansContainer.Controls.Clear();
 
             StudyPlan studyPlan = (StudyPlan)LV_Plans.SelectedItems[0].Tag;
             if (studyPlan != null)
             {
-                var Plans = studyPlan.Plans;
+                var Plans = await PlanDB.Get(studyPlan);
                 Plans.Sort((s1, s2) => s2.Year.CompareTo(s1.Year));
 
                 foreach (var plan in Plans)

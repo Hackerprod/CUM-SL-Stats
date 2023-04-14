@@ -52,4 +52,29 @@ public class Common
             return new SizeF(700, 0);
         }
     }
+
+    public static void EnsureDirectoryExists(string filePath, bool isFile = false)
+    {
+        if (!string.IsNullOrEmpty(filePath))
+        {
+            filePath = filePath.Trim().Replace("\0", string.Empty);
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                try
+                {
+                    string text = isFile ? Path.GetDirectoryName(filePath) : filePath;
+                    if (Path.IsPathRooted(filePath))
+                    {
+                        text = text.Trim();
+                        if (!Directory.Exists(text))
+                        {
+                            Directory.CreateDirectory(text);
+                        }
+                    }
+                }
+                catch { }
+            }
+        }
+    }
+
 }

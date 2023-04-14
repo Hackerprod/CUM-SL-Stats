@@ -1,99 +1,82 @@
-﻿using MongoDB.Driver;
-using SKYNET.Models;
+﻿using SKYNET.Models;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SKYNET.DB
 {
     public static class GroupDB
     {
-        private static MongoDbCollection<Group> DB;
+        private static SQLiteAsyncConnection DB;
+        private static AsyncTableQuery<Group> Table => DB.Table<Group>();
 
-        public static List<Group> Groups
-    {
-            get
-            {
-                try
-                {
-                    return DB.Collection.Find(s => s != null).ToList();
-                }
-                catch (System.Exception)
-                {
-                    return new List<Group>();
-                }
-            }
+        public async static Task Initialize(SQLiteAsyncConnection dB)
+        {
+            DB = dB;
+           await DB.CreateTableAsync<Group>();
         }
 
-        public static void Initialize()
+        public static async Task<bool> Register(Group source)
         {
-            DB = new MongoDbCollection<Group>("SIGPU_Group");
-
-            DB.CreateIndex(Builders<Group>.IndexKeys.Ascending((Group i) => i.ID));
-            DB.CreateIndex(Builders<Group>.IndexKeys.Ascending((Group i) => i.Name));
-            DB.CreateIndex(Builders<Group>.IndexKeys.Ascending((Group i) => i.StudyPlanID));
-        }
-
-        public static bool Register(Group source)
-        {
-            var target = Get(source.ID);
+            Group target = await Table.Where(s => s.Name == source.Name).FirstOrDefaultAsync();
             if (target == null)
             {
-                source.ID = CreateID();
-                DB.Collection.InsertOne(source);
+                await DB.InsertOrReplaceAsync(source);
                 return true;
             }
             return false;
         }
 
-        public static Group Get(string Name)
+        public static async Task<List<Group>> Get()
         {
-            return DB.Collection.Find(g => g.Name == Name, null).FirstOrDefault();
+            return await Table.ToListAsync();
         }
 
-        public static Group Get(uint ID)
+        public static async Task<Group> Get(string Name)
         {
-            return DB.Collection.Find(g => g.ID == ID, null).FirstOrDefault();
+            return await Table.Where(g => g.Name == Name).FirstOrDefaultAsync();
         }
 
-        public static Group Get(SchoolCource cource)
+        public static async Task<Group> Get(uint ID)
         {
-            return DB.Collection.Find(g => g.CourceID == cource.ID, null).FirstOrDefault();
+            return await Table.Where(g => g.ID == ID).FirstOrDefaultAsync();
         }
 
-        public static Group GetGroup(string Name, SchoolCource cource, Career career)
+        public static async Task<Group> Get(string Name, SchoolCource cource, Career career)
         {
-            return DB.Collection.Find(g => g.Name == Name && g.CourceID == cource.ID && g.CareerID == career.ID).FirstOrDefault();
+            return await Table.Where(g => g.Name == Name && g.CourceID == cource.ID && g.CareerID == career.ID).FirstOrDefaultAsync();
         }
 
-        public static bool GetGroup(SchoolCource cource, Career career, string Name, out Group group)
+        public static async Task<Group> Get(SchoolCource cource, Career career, string Name)
         {
-            group = DB.Collection.Find(g => g.CourceID == cource.ID && g.CareerID == career.ID && g.Name == Name).FirstOrDefault();
-            return group != null;
+            return await Table.Where(g => g.CourceID == cource.ID && g.CareerID == career.ID && g.Name == Name).FirstOrDefaultAsync();
         }
 
-        public static List<Group> GetGroups(SchoolCource cource, Career career)
+        public static async Task<List<Group>> Get(SchoolCource cource, Career career)
         {
-            return DB.Collection.Find(g => g.CourceID == cource.ID && g.CareerID == career.ID).ToList();
+            return await Table.Where(g => g.CourceID == cource.ID && g.CareerID == career.ID).ToListAsync();
         }
 
-        public static List<Group> GetGroups(Career career)
+        public static async Task<List<Group>> Get(Career career)
         {
-            return DB.Collection.Find(g => g.CareerID == career.ID).ToList(); 
+            return await Table.Where(g => g.CareerID == career.ID).ToListAsync();
         }
 
-        public static List<Group> GetGroups(SchoolCource cource)
+        public static async Task<List<Group>> Get(SchoolCource cource)
         {
-            return DB.Collection.Find(g => g.CourceID == cource.ID, null).ToList();  
+            return await Table.Where(g => g.CourceID == cource.ID).ToListAsync();
         }
 
-        public static List<Group> GetActiveGroups(uint ID)
+        public static async Task<List<Group>> GetActiveGroups(uint ID)
         {
             var groups = new List<Group>();
-            var cources = SchoolCourceDB.GetActiveCources(ID);
+            var cources = await SchoolCourceDB.GetActiveCources(ID);
             foreach (var cource in cources)
             {
-                var tempGroups = GetGroups(cource);
+                var tempGroups = await Table.Where(g => g.CourceID == cource.ID).ToListAsync();
                 foreach (var group in tempGroups)
                 {
                     if (!groups.Contains(group))
@@ -105,34 +88,24 @@ namespace SKYNET.DB
             return groups;
         }
 
-        public static bool Exist(SchoolCource cource)
+        public static async Task<bool> Exist(SchoolCource cource)
         {
-            return Get(cource) != null;
+            return await Table.Where(g => g.CourceID == cource.ID).FirstOrDefaultAsync() != null;
         }
 
-        public static bool Exist(SchoolCource cource, Career career)
+        public static async Task<bool> Exist(SchoolCource cource, Career career)
         {
-            return DB.Collection.Find(g => g.CourceID == cource.ID && g.CareerID == career.ID).FirstOrDefault() != null;
+            return (await Table.Where(g => g.CourceID == cource.ID && g.CareerID == career.ID).FirstOrDefaultAsync()) != null;
         }
 
-        public static uint CreateID()
+        public static async Task Update(Group group)
         {
-            uint ID = DB.Collection.Find(FilterDefinition<Group>.Empty, null).SortByDescending((Group u) => (object)u.ID).Project((Group u) => u.ID).FirstOrDefault();
-            return ID <= 0U ? 1 : ID + 1;
+            await DB.InsertOrReplaceAsync(group);
         }
 
-        public static void Update(Group group)
+        public static async Task Remove(Group group)
         {
-            DB.Collection.FindOneAndUpdate((Group g) => g.ID == group.ID, DB.Ub
-            .Set((Group a) => a.Name, group.Name)
-            .Set((Group a) => a.CourceID, group.CourceID)
-            .Set((Group a) => a.StudyPlanID, group.StudyPlanID)
-            .Set((Group a) => a.CareerID, group.CareerID));
-        }
-
-        public static void Remove(Group group)
-        {
-            DB.Collection.DeleteOne(g => g.ID == group.ID);
+            await DB.DeleteAsync(group);
         }
     }
 }

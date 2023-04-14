@@ -29,11 +29,11 @@ namespace SKYNET.GUI.W_Controls
             InitializeComponent();
         }
 
-        public void Select(RegisterType type)
+        public async void Select(RegisterType type)
         {
             ClearData();
 
-            foreach (var item in SchoolCourceDB.SchoolCources)
+            foreach (var item in await SchoolCourceDB.Get())
             {
                 CH_SchoolCource.Items.Add(item.Name);
             }
@@ -83,13 +83,13 @@ namespace SKYNET.GUI.W_Controls
             CH_Subject.SelectedIndex = 0;
         }
 
-        private void CH_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CH_SchoolCource_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Careers
             ClearData(false);
 
-            var cource = SchoolCourceDB.Get(CH_SchoolCource.Text);
-            var careers = CareerDB.GetCareers(cource);
+            var cource = await SchoolCourceDB.Get(CH_SchoolCource.Text);
+            var careers = await CareerDB.Get(cource);
 
             foreach (Career career in careers)
             {
@@ -101,7 +101,7 @@ namespace SKYNET.GUI.W_Controls
             CH_Subject.Items.Add("Todas");
             CH_Subject.SelectedIndex = 0;
 
-            var subjects = SubjectDB.Subjects;
+            var subjects = await SubjectDB.Get();
             foreach (Subject subject in subjects)
             {
                 CH_Subject.Items.Add(subject.Name);
@@ -111,17 +111,20 @@ namespace SKYNET.GUI.W_Controls
             Group = null;
         }
 
-        private void CH_Career_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CH_Career_SelectedIndexChanged(object sender, EventArgs e)
         {
             CH_Group.Items.Clear();
             CH_Group.Items.Add("Todos");
             CH_Group.SelectedIndex = 0;
 
-            if (!SchoolCourceDB.Get(CH_SchoolCource.Text, out Cource) || !CareerDB.Get(CH_Career.Text, out Career))
+            var Cource = await SchoolCourceDB.Get(CH_SchoolCource.Text);
+            var Career = await CareerDB.Get(CH_Career.Text);
+
+            if (Cource == null || Career == null)
             {
                 return;
             }
-            var groups = GroupDB.GetGroups(Cource, Career);
+            var groups = await GroupDB.Get(Cource, Career);
             foreach (Group group in groups)
             {
                 CH_Group.Items.Add(group.Name);
@@ -179,14 +182,14 @@ namespace SKYNET.GUI.W_Controls
                 CH_Subject.Items.Add(subject.Name);
             }
         }
-        private void CH_Group_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CH_Group_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (Career != null)
             {
-                Group = GroupDB.GetGroup(CH_Group.Text, Cource, Career);
+                Group = await GroupDB.Get(CH_Group.Text, Cource, Career);
             }
         }
-        private void BT_Show_Click(object sender, EventArgs e)
+        private async void BT_Show_Click(object sender, EventArgs e)
         {
             RegisterType type = RegisterType.SchoolCource;
 
@@ -197,19 +200,19 @@ namespace SKYNET.GUI.W_Controls
 
                 if (Cource == null && Career == null && Group == null)
                 {
-                    evaluations = EvaluationDB.GetEvaluations(Subject, Semester);
+                    evaluations = await EvaluationDB.Get(Subject, Semester);
                 }
                 else if (Cource == null && Career == null && Group != null)
                 {
-                    evaluations = EvaluationDB.GetEvaluations(Group, Subject, Semester);
+                    evaluations = await EvaluationDB.Get(Group, Subject, Semester);
                 }
                 else if (Cource == null && Career != null && Group != null)
                 {
-                    evaluations = EvaluationDB.GetEvaluations(Career, Group, Subject, Semester);
+                    evaluations = await EvaluationDB.Get(Career, Group, Subject, Semester);
                 }
                 else if (Cource != null && Career != null && Group == null)
                 {
-                    evaluations = EvaluationDB.GetEvaluations(Cource, Career, Group, Subject, Semester);
+                    evaluations = await EvaluationDB.Get(Cource, Career, Group, Subject, Semester);
                 }
 
             }

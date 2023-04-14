@@ -1,79 +1,64 @@
-﻿using MongoDB.Driver;
-using SKYNET.Models;
+﻿using SKYNET.Models;
+using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SKYNET.DB
 {
     public static class CareerDB
     {
-        private static MongoDbCollection<Career> DB;
+        private static SQLiteAsyncConnection DB;
+        private static AsyncTableQuery<Career> Table;
 
-        public static List<Career> Careers
+        public async static Task Initialize(SQLiteAsyncConnection dB)
         {
-            get
-            {
-                try
-                {
-                    return DB.Collection.Find(c => c != null).ToList();
-                }
-                catch (System.Exception)
-                {
-                    return new List<Career>();
-                }
-            }
+            DB = dB;
+
+            await DB.CreateTableAsync<Career>();
+            Table = DB.Table<Career>();
         }
 
-        public static void Initialize()
+        public static async Task<bool> Register(Career source)
         {
-            DB = new MongoDbCollection<Career>("SIGPU_Career");
-
-            DB.CreateIndex(Builders<Career>.IndexKeys.Ascending((Career i) => i.ID));
-            DB.CreateIndex(Builders<Career>.IndexKeys.Ascending((Career i) => i.Name));
-            DB.CreateIndex(Builders<Career>.IndexKeys.Ascending((Career i) => i.StudyPlanID));
-        }
-
-        public static bool Register(Career source)
-        {
-            var target = Get(source.ID);
+            Career target = await Table.Where(s => s.Name == source.Name).FirstOrDefaultAsync();
             if (target == null)
             {
-                source.ID = CreateID();
-                DB.Collection.InsertOne(source);
+                await DB.InsertOrReplaceAsync(source);
                 return true;
             }
-            Common.Show($"La Carrera {source.Name} existe.");
+            Common.Show($"La carrera {source.Name} existe.");
             return false;
         }
 
-        public static Career Get(uint ID)
+        public static async Task<List<Career>> Get()
         {
-            return DB.Collection.Find((Career c) => c.ID == ID, null).FirstOrDefault();
+            return await Table.ToListAsync();
         }
 
-        public static Career Get(Group group)
+        public static async Task<Career> Get(uint ID)
         {
-            return DB.Collection.Find((Career c) => c.ID == group.CareerID, null).FirstOrDefault();
+            return await Table.Where(s => s.ID == ID).FirstOrDefaultAsync();
         }
 
-        public static Career Get(string Name)
+        public static async Task<Career> Get(Group group)
         {
-            return DB.Collection.Find((Career c) => c.Name == Name, null).FirstOrDefault();
+            return await Table.Where(c => c.ID == group.CareerID).FirstOrDefaultAsync();
         }
 
-        public static bool Get(string Name, out Career career)
+        public static async Task<Career> Get(string Name)
         {
-            career = Get(Name);
-            return career != null;
+            return await Table.Where(s => s.Name == Name).FirstOrDefaultAsync();
         }
 
-        public static List<Career> GetCareers(SchoolCource cource)
+        public static async Task<List<Career>> Get(SchoolCource cource)
         {
             var careers = new List<Career>();
             try
             {
-                var allgroups = GroupDB.GetActiveGroups(cource.ID);
+                var allgroups = await GroupDB.GetActiveGroups(cource.ID);
                 var groups = new List<Group>();
 
                 foreach (var group in allgroups)
@@ -87,7 +72,7 @@ namespace SKYNET.DB
 
                 foreach (var group in groups)
                 {
-                    var Career = Get(group.CareerID);
+                    var Career = await Get(group.CareerID);
                     if (Career != null && careers.Find(c => c.ID == Career.ID || c.Name == Career.Name) == null)
                     {
                         careers.Add(Career);
@@ -98,12 +83,6 @@ namespace SKYNET.DB
             {
             }
             return careers;
-        }
-
-        public static uint CreateID()
-        {
-            uint ID = DB.Collection.Find(FilterDefinition<Career>.Empty, null).SortByDescending((Career u) => (object)u.ID).Project((Career u) => u.ID).FirstOrDefault(default(CancellationToken));
-            return ID <= 0U ? 1 : ID + 1;
         }
     }
 }

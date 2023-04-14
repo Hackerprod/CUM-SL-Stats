@@ -1,16 +1,22 @@
-﻿using System;
+﻿using SQLite.Net.Attributes;
+using System;
 
 namespace SKYNET.Models
 {
     [Serializable]
-    public class Evaluation
+    public class Evaluation : DBModel
     {
-        public uint ID { get; set; }
+        [Indexed]
         public uint CourceID { get; set; }
+        [Indexed]
         public uint CareerID { get; set; }
+        [Indexed]
         public uint GroupID { get; set; }
+        [Indexed]
         public uint SubjectID { get; set; }
-        public ulong StudentID { get; set; }
+        [Indexed]
+        public string StudentID { get; set; }
+        [Indexed]
         public string Points { get; set; }
         public Semester Semester { get; set; }
     }

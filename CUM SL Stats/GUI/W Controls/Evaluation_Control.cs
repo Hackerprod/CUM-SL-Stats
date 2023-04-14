@@ -62,7 +62,7 @@ namespace SKYNET.Controls
             CH_Semester.SelectedIndex = 0;
         }
 
-        private void BT_Register_Click(object sender, EventArgs e)
+        private async void BT_Register_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(CH_Subjects.Text))
             {
@@ -84,7 +84,6 @@ namespace SKYNET.Controls
             {
                 Evaluation evaluation = new Evaluation()
                 {
-                    ID = EvaluationDB.CreateID(),
                     CourceID = Cource.ID,
                     CareerID = Career.ID,
                     StudentID = this.Student.CI,
@@ -93,7 +92,7 @@ namespace SKYNET.Controls
                     Semester = (Semester)CH_Semester.SelectedIndex,
                     Points = TB_Evaluation.Text.Replace(",", ".")
                 };
-                if (EvaluationDB.RegisterOrUpdate(evaluation))
+                if (await EvaluationDB.RegisterOrUpdate(evaluation))
                 {
                     MessageBox.Show($"Estudiante evaluado correctamente");
                     LB_StudentEvaluate.Text = "";
@@ -106,7 +105,7 @@ namespace SKYNET.Controls
             }
         }
 
-        public void LoadData(Student student, SchoolCource cource, Career career, Group group)
+        public async void LoadData(Student student, SchoolCource cource, Career career, Group group)
         {
             this.Student = student;
             this.Cource  = cource;
@@ -120,9 +119,9 @@ namespace SKYNET.Controls
                 CH_Subjects.Text = "";
             }
 
-            if (Student != null && Cource != null && Career != null && Group != null && Semester != Semester.Both && Subject != null)
+            if (Student != null && Cource != null && Career != null && Group != null && Subject != null)
             {
-                var evaluation = EvaluationDB.GetEvaluation(student, cource, career, group, Semester, Subject);
+                var evaluation = await EvaluationDB.Get(student, cource, career, group, Semester, Subject);
                 if (evaluation != null)
                 {
                     TB_Evaluation.Text = evaluation.Points;

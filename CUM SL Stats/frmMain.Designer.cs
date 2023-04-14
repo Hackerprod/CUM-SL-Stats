@@ -178,6 +178,7 @@ namespace SKYNET
             this.groups_Control1 = new SKYNET.Controls.Groups_Control();
             this.tabPage_StudyPlan = new System.Windows.Forms.TabPage();
             this.StudyPlanList = new SKYNET.GUI.W_Controls.StudyPlanList_Control();
+            this.añadirPlanMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.TabControl1.SuspendLayout();
             this.tabPage_Home.SuspendLayout();
@@ -369,28 +370,29 @@ namespace SKYNET
             // mostrarGruposMenuItem
             // 
             this.mostrarGruposMenuItem.Name = "mostrarGruposMenuItem";
-            this.mostrarGruposMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.mostrarGruposMenuItem.Size = new System.Drawing.Size(180, 22);
             this.mostrarGruposMenuItem.Text = "Mostrar Grupos";
             this.mostrarGruposMenuItem.Click += new System.EventHandler(this.MostrarGruposMenuItem_Click);
             // 
             // addGroupMenuItem
             // 
             this.addGroupMenuItem.Name = "addGroupMenuItem";
-            this.addGroupMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.addGroupMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addGroupMenuItem.Text = "Añadir Grupo";
             this.addGroupMenuItem.Click += new System.EventHandler(this.addGroupMenuItem_Click);
             // 
             // groupStatsMenuItem
             // 
             this.groupStatsMenuItem.Name = "groupStatsMenuItem";
-            this.groupStatsMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.groupStatsMenuItem.Size = new System.Drawing.Size(180, 22);
             this.groupStatsMenuItem.Text = "Estadísticas";
             this.groupStatsMenuItem.Click += new System.EventHandler(this.groupStatsMenuItem_Click);
             // 
             // planDeEstudioToolStripMenuItem
             // 
             this.planDeEstudioToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mostrarPlanesMenuItem});
+            this.mostrarPlanesMenuItem,
+            this.añadirPlanMenuItem});
             this.planDeEstudioToolStripMenuItem.Name = "planDeEstudioToolStripMenuItem";
             this.planDeEstudioToolStripMenuItem.Size = new System.Drawing.Size(110, 21);
             this.planDeEstudioToolStripMenuItem.Text = "Plan de estudio";
@@ -460,7 +462,7 @@ namespace SKYNET
             // aboutUsMenuItem
             // 
             this.aboutUsMenuItem.Name = "aboutUsMenuItem";
-            this.aboutUsMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutUsMenuItem.Size = new System.Drawing.Size(167, 22);
             this.aboutUsMenuItem.Text = "Sobre nosotros";
             this.aboutUsMenuItem.Click += new System.EventHandler(this.aboutUsMenuItem_Click);
             // 
@@ -1785,6 +1787,13 @@ namespace SKYNET
             this.StudyPlanList.Size = new System.Drawing.Size(962, 549);
             this.StudyPlanList.TabIndex = 0;
             // 
+            // añadirPlanMenuItem
+            // 
+            this.añadirPlanMenuItem.Name = "añadirPlanMenuItem";
+            this.añadirPlanMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.añadirPlanMenuItem.Text = "Añadir Plan de Estudio";
+            this.añadirPlanMenuItem.Click += new System.EventHandler(this.AñadirPlanMenuItem_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2003,6 +2012,7 @@ namespace SKYNET
         private System.Windows.Forms.ToolStripMenuItem mostrarPlanesMenuItem;
         private System.Windows.Forms.TabPage tabPage_StudyPlan;
         public GUI.W_Controls.StudyPlanList_Control StudyPlanList;
+        private System.Windows.Forms.ToolStripMenuItem añadirPlanMenuItem;
     }
 }
 
