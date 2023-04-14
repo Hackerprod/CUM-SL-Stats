@@ -24,7 +24,7 @@ namespace SKYNET.Controls
         {
             if (string.IsNullOrEmpty(TB_SubjectName.Text))
             {
-                MessageBox.Show("Debe especificar el nombre de la carrera para continuar");
+                MessageBox.Show("Debe especificar el nombre de la asignatura para continuar");
                 return;
             }
 

@@ -1,5 +1,6 @@
 ﻿using SKYNET.Models;
 using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -19,13 +20,16 @@ namespace SKYNET.DB
 
         public static async Task<bool> Register(Subject source)
         {
-            if (Table.Where(s => s.ID == source.ID) == null)
+            try
             {
-                await DB.InsertOrReplaceAsync(source);
+                await DB.InsertAsync(source);
                 return true;
             }
-            Common.Show($"La asignatura {source.Name} existe.");
-            return false;
+            catch (System.Exception)
+            {
+                Common.Show($"Error agregando la asignatura {source.Name}.");
+                return false;
+            }
         }
 
         public static async Task<List<Subject>> Get()
@@ -51,6 +55,30 @@ namespace SKYNET.DB
         public static async Task<bool> Exists(string Name)
         {
             return await Table.Where(c => c.Name == Name).FirstOrDefaultAsync() != null;
+        }
+
+        internal async static void Update(Subject subject)
+        {
+            try
+            {
+                await DB.UpdateAsync(subject);
+            }
+            catch (System.Exception)
+            {
+                Common.Show($"Error actualizando la asignatura {subject.Name}.");
+            }
+        }
+
+        internal async static void Remove(Subject subject)
+        {
+            try
+            {
+                await DB.DeleteAsync(subject);
+            }
+            catch (System.Exception)
+            {
+                Common.Show($"Error eliminando la asignatura {subject.Name}.");
+            }
         }
 
         //public static uint CreateID()

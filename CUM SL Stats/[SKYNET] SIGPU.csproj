@@ -239,6 +239,12 @@
     <Compile Include="GUI\W Controls\Plan_Control.Designer.cs">
       <DependentUpon>Plan_Control.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\W Controls\Subject_Item.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\Subject_Item.Designer.cs">
+      <DependentUpon>Subject_Item.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\W Controls\StudyPlanList_Control .cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -369,6 +375,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\W Controls\Plan_Control.resx">
       <DependentUpon>Plan_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\Subject_Item.resx">
+      <DependentUpon>Subject_Item.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\W Controls\StudyPlanList_Control .resx">
       <DependentUpon>StudyPlanList_Control .cs</DependentUpon>
