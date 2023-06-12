@@ -62,6 +62,7 @@ namespace SKYNET
             this.aboutUsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TabControl1 = new SKYNET.Controls.SKYNET_TabControl();
             this.tabPage_Home = new System.Windows.Forms.TabPage();
+            this.AlertBox = new SKYNET_AlertBox();
             this.TB_Departament = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.BN_Start = new SKYNET_Button();
@@ -178,7 +179,6 @@ namespace SKYNET
             this.groups_Control1 = new SKYNET.Controls.Groups_Control();
             this.tabPage_StudyPlan = new System.Windows.Forms.TabPage();
             this.StudyPlanList = new SKYNET.GUI.W_Controls.StudyPlanList_Control();
-            this.añadirPlanMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.TabControl1.SuspendLayout();
             this.tabPage_Home.SuspendLayout();
@@ -370,29 +370,28 @@ namespace SKYNET
             // mostrarGruposMenuItem
             // 
             this.mostrarGruposMenuItem.Name = "mostrarGruposMenuItem";
-            this.mostrarGruposMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mostrarGruposMenuItem.Size = new System.Drawing.Size(170, 22);
             this.mostrarGruposMenuItem.Text = "Mostrar Grupos";
             this.mostrarGruposMenuItem.Click += new System.EventHandler(this.MostrarGruposMenuItem_Click);
             // 
             // addGroupMenuItem
             // 
             this.addGroupMenuItem.Name = "addGroupMenuItem";
-            this.addGroupMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addGroupMenuItem.Size = new System.Drawing.Size(170, 22);
             this.addGroupMenuItem.Text = "Añadir Grupo";
             this.addGroupMenuItem.Click += new System.EventHandler(this.addGroupMenuItem_Click);
             // 
             // groupStatsMenuItem
             // 
             this.groupStatsMenuItem.Name = "groupStatsMenuItem";
-            this.groupStatsMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.groupStatsMenuItem.Size = new System.Drawing.Size(170, 22);
             this.groupStatsMenuItem.Text = "Estadísticas";
             this.groupStatsMenuItem.Click += new System.EventHandler(this.groupStatsMenuItem_Click);
             // 
             // planDeEstudioToolStripMenuItem
             // 
             this.planDeEstudioToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mostrarPlanesMenuItem,
-            this.añadirPlanMenuItem});
+            this.mostrarPlanesMenuItem});
             this.planDeEstudioToolStripMenuItem.Name = "planDeEstudioToolStripMenuItem";
             this.planDeEstudioToolStripMenuItem.Size = new System.Drawing.Size(110, 21);
             this.planDeEstudioToolStripMenuItem.Text = "Plan de estudio";
@@ -493,6 +492,7 @@ namespace SKYNET
             // 
             // tabPage_Home
             // 
+            this.tabPage_Home.Controls.Add(this.AlertBox);
             this.tabPage_Home.Controls.Add(this.TB_Departament);
             this.tabPage_Home.Controls.Add(this.label1);
             this.tabPage_Home.Controls.Add(this.BN_Start);
@@ -506,6 +506,19 @@ namespace SKYNET
             this.tabPage_Home.TabIndex = 0;
             this.tabPage_Home.Text = "Home";
             this.tabPage_Home.UseVisualStyleBackColor = true;
+            // 
+            // AlertBox
+            // 
+            this.AlertBox.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.AlertBox.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.AlertBox.kind = SKYNET_AlertBox.NotificationType.Success;
+            this.AlertBox.Location = new System.Drawing.Point(8, 496);
+            this.AlertBox.Name = "AlertBox";
+            this.AlertBox.Size = new System.Drawing.Size(576, 42);
+            this.AlertBox.T = null;
+            this.AlertBox.TabIndex = 12;
+            this.AlertBox.Text = "AlertBox";
+            this.AlertBox.Visible = false;
             // 
             // TB_Departament
             // 
@@ -572,6 +585,7 @@ namespace SKYNET
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.PictureBox1_Click);
             // 
             // panel1
             // 
@@ -1787,13 +1801,6 @@ namespace SKYNET
             this.StudyPlanList.Size = new System.Drawing.Size(962, 549);
             this.StudyPlanList.TabIndex = 0;
             // 
-            // añadirPlanMenuItem
-            // 
-            this.añadirPlanMenuItem.Name = "añadirPlanMenuItem";
-            this.añadirPlanMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.añadirPlanMenuItem.Text = "Añadir Plan de Estudio";
-            this.añadirPlanMenuItem.Click += new System.EventHandler(this.AñadirPlanMenuItem_Click);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2012,7 +2019,7 @@ namespace SKYNET
         private System.Windows.Forms.ToolStripMenuItem mostrarPlanesMenuItem;
         private System.Windows.Forms.TabPage tabPage_StudyPlan;
         public GUI.W_Controls.StudyPlanList_Control StudyPlanList;
-        private System.Windows.Forms.ToolStripMenuItem añadirPlanMenuItem;
+        private SKYNET_AlertBox AlertBox;
     }
 }
 

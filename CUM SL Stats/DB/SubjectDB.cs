@@ -10,6 +10,8 @@ namespace SKYNET.DB
     {
         private static SQLiteAsyncConnection DB;
         private static AsyncTableQuery<Subject> Table;
+        public static event EventHandler<Subject> OnSubjectRemoved;
+        public static event EventHandler<Subject> OnSubjectAdded;
 
         public async static Task Initialize(SQLiteAsyncConnection dB)
         {
@@ -23,6 +25,7 @@ namespace SKYNET.DB
             try
             {
                 await DB.InsertAsync(source);
+                OnSubjectAdded?.Invoke(null, source);
                 return true;
             }
             catch (System.Exception)
@@ -74,6 +77,7 @@ namespace SKYNET.DB
             try
             {
                 await DB.DeleteAsync(subject);
+                OnSubjectRemoved?.Invoke(null, subject);
             }
             catch (System.Exception)
             {

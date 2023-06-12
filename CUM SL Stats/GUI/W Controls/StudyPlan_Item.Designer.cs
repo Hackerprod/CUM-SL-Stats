@@ -1,6 +1,6 @@
 ﻿namespace SKYNET.GUI.W_Controls
 {
-    partial class Subject_Item
+    partial class StudyPlan_Item
     {
         /// <summary> 
         /// Variable del diseñador necesaria.
@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.TB_SubjectName = new System.Windows.Forms.TextBox();
-            this.LB_SubjectName = new SKYNET.Controls.SKYNET_Label();
+            this.TB_StudyPlanName = new System.Windows.Forms.TextBox();
+            this.LB_StudyPlanName = new SKYNET.Controls.SKYNET_Label();
             this.BT_Save = new System.Windows.Forms.PictureBox();
             this.BT_Delete = new System.Windows.Forms.PictureBox();
             this.BT_Edit = new System.Windows.Forms.PictureBox();
@@ -38,41 +38,42 @@
             ((System.ComponentModel.ISupportInitialize)(this.BT_Edit)).BeginInit();
             this.SuspendLayout();
             // 
-            // TB_SubjectName
+            // TB_StudyPlanName
             // 
-            this.TB_SubjectName.BackColor = System.Drawing.Color.White;
-            this.TB_SubjectName.Font = new System.Drawing.Font("Lucida Fax", 9F);
-            this.TB_SubjectName.Location = new System.Drawing.Point(25, 1);
-            this.TB_SubjectName.Name = "TB_SubjectName";
-            this.TB_SubjectName.Size = new System.Drawing.Size(430, 22);
-            this.TB_SubjectName.TabIndex = 3;
-            this.TB_SubjectName.Visible = false;
-            this.TB_SubjectName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TB_SubjectName_KeyDown);
+            this.TB_StudyPlanName.BackColor = System.Drawing.Color.White;
+            this.TB_StudyPlanName.Font = new System.Drawing.Font("Lucida Fax", 9F);
+            this.TB_StudyPlanName.Location = new System.Drawing.Point(9, 1);
+            this.TB_StudyPlanName.Name = "TB_StudyPlanName";
+            this.TB_StudyPlanName.Size = new System.Drawing.Size(218, 22);
+            this.TB_StudyPlanName.TabIndex = 3;
+            this.TB_StudyPlanName.Visible = false;
+            this.TB_StudyPlanName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TB_StudyPlan_KeyDown);
             // 
-            // LB_SubjectName
+            // LB_StudyPlanName
             // 
-            this.LB_SubjectName.AutoSize = true;
-            this.LB_SubjectName.ChangeColor = true;
-            this.LB_SubjectName.Font = new System.Drawing.Font("Lucida Fax", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LB_SubjectName.GradiantColor = false;
-            this.LB_SubjectName.GradiantColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(98)))), ((int)(((byte)(255)))));
-            this.LB_SubjectName.GradiantColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(92)))), ((int)(((byte)(135)))));
-            this.LB_SubjectName.GradiantMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.LB_SubjectName.Location = new System.Drawing.Point(22, 4);
-            this.LB_SubjectName.Name = "LB_SubjectName";
-            this.LB_SubjectName.Size = new System.Drawing.Size(119, 15);
-            this.LB_SubjectName.TabIndex = 0;
-            this.LB_SubjectName.Text = "Español Literatura";
-            this.LB_SubjectName.TextColor = System.Drawing.SystemColors.ControlText;
-            this.LB_SubjectName.TextColor_MouseHover = System.Drawing.SystemColors.ControlText;
-            this.LB_SubjectName.MouseLeave += new System.EventHandler(this.Control_MouseLeave);
-            this.LB_SubjectName.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Control_MouseMove);
+            this.LB_StudyPlanName.AutoSize = true;
+            this.LB_StudyPlanName.ChangeColor = true;
+            this.LB_StudyPlanName.Font = new System.Drawing.Font("Lucida Fax", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LB_StudyPlanName.GradiantColor = false;
+            this.LB_StudyPlanName.GradiantColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(98)))), ((int)(((byte)(255)))));
+            this.LB_StudyPlanName.GradiantColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(92)))), ((int)(((byte)(135)))));
+            this.LB_StudyPlanName.GradiantMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.LB_StudyPlanName.Location = new System.Drawing.Point(6, 4);
+            this.LB_StudyPlanName.Name = "LB_StudyPlanName";
+            this.LB_StudyPlanName.Size = new System.Drawing.Size(119, 15);
+            this.LB_StudyPlanName.TabIndex = 0;
+            this.LB_StudyPlanName.Text = "Español Literatura";
+            this.LB_StudyPlanName.TextColor = System.Drawing.SystemColors.ControlText;
+            this.LB_StudyPlanName.TextColor_MouseHover = System.Drawing.SystemColors.ControlText;
+            this.LB_StudyPlanName.Click += new System.EventHandler(this.StudyPlan_Item_Click);
+            this.LB_StudyPlanName.MouseLeave += new System.EventHandler(this.Control_MouseLeave);
+            this.LB_StudyPlanName.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Control_MouseMove);
             // 
             // BT_Save
             // 
             this.BT_Save.Cursor = System.Windows.Forms.Cursors.Hand;
             this.BT_Save.Image = global::SKYNET.Properties.Resources.checkmark_26px;
-            this.BT_Save.Location = new System.Drawing.Point(461, 1);
+            this.BT_Save.Location = new System.Drawing.Point(233, 1);
             this.BT_Save.Name = "BT_Save";
             this.BT_Save.Size = new System.Drawing.Size(20, 20);
             this.BT_Save.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -85,7 +86,7 @@
             // 
             this.BT_Delete.Cursor = System.Windows.Forms.Cursors.Hand;
             this.BT_Delete.Image = global::SKYNET.Properties.Resources.remove_48px;
-            this.BT_Delete.Location = new System.Drawing.Point(513, 1);
+            this.BT_Delete.Location = new System.Drawing.Point(285, 1);
             this.BT_Delete.Name = "BT_Delete";
             this.BT_Delete.Size = new System.Drawing.Size(20, 20);
             this.BT_Delete.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -99,7 +100,7 @@
             // 
             this.BT_Edit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.BT_Edit.Image = global::SKYNET.Properties.Resources.Edit;
-            this.BT_Edit.Location = new System.Drawing.Point(487, 1);
+            this.BT_Edit.Location = new System.Drawing.Point(259, 1);
             this.BT_Edit.Name = "BT_Edit";
             this.BT_Edit.Size = new System.Drawing.Size(20, 20);
             this.BT_Edit.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -109,17 +110,17 @@
             this.BT_Edit.MouseLeave += new System.EventHandler(this.Control_MouseLeave);
             this.BT_Edit.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Control_MouseMove);
             // 
-            // Subject_Item
+            // StudyPlan_Item
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Controls.Add(this.BT_Save);
-            this.Controls.Add(this.TB_SubjectName);
+            this.Controls.Add(this.TB_StudyPlanName);
             this.Controls.Add(this.BT_Delete);
             this.Controls.Add(this.BT_Edit);
-            this.Controls.Add(this.LB_SubjectName);
-            this.Name = "Subject_Item";
-            this.Size = new System.Drawing.Size(546, 23);
+            this.Controls.Add(this.LB_StudyPlanName);
+            this.Name = "StudyPlan_Item";
+            this.Size = new System.Drawing.Size(314, 23);
+            this.Click += new System.EventHandler(this.StudyPlan_Item_Click);
             this.MouseLeave += new System.EventHandler(this.Control_MouseLeave);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Control_MouseMove);
             ((System.ComponentModel.ISupportInitialize)(this.BT_Save)).EndInit();
@@ -132,10 +133,10 @@
 
         #endregion
 
-        private SKYNET.Controls.SKYNET_Label LB_SubjectName;
+        private SKYNET.Controls.SKYNET_Label LB_StudyPlanName;
         private System.Windows.Forms.PictureBox BT_Edit;
         private System.Windows.Forms.PictureBox BT_Delete;
-        private System.Windows.Forms.TextBox TB_SubjectName;
+        private System.Windows.Forms.TextBox TB_StudyPlanName;
         private System.Windows.Forms.PictureBox BT_Save;
     }
 }

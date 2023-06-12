@@ -26,7 +26,7 @@ namespace SKYNET.DB
             Career target = await Table.Where(s => s.Name == source.Name).FirstOrDefaultAsync();
             if (target == null)
             {
-                await DB.InsertOrReplaceAsync(source);
+                await DB.InsertAsync(source);
                 return true;
             }
             Common.Show($"La carrera {source.Name} existe.");

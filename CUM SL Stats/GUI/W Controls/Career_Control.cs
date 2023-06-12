@@ -12,6 +12,8 @@ namespace SKYNET.Controls
             InitializeComponent();
         }
 
+        public event EventHandler<bool> OnActionResult;
+
         private async void BT_Register_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(TB_Career.Text))
@@ -31,8 +33,11 @@ namespace SKYNET.Controls
             {
                 Name = TB_Career.Text,
             };
-            await frmMain.frm.RegisterData(RegisterType.Career, Career);
 
+            var result = await CareerDB.Register(Career);
+
+            Common.Notify(result ? $"La Carrera {Career.Name} se ha registrado correctamente" : $"Error agregando la asignatura {Career.Name}");
+            OnActionResult?.Invoke(this, result);
         }
     }
 }

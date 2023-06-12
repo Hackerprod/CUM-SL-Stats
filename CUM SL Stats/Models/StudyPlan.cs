@@ -8,6 +8,7 @@ namespace SKYNET.Models
     public class StudyPlan : DBModel
     {
         public uint CourceID { get; set; }
+        public uint CareerID { get; set; }
         public string Name { get; set; }
 
         [OneToMany()]

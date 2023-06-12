@@ -9,112 +9,124 @@ namespace SKYNET.GUI.W_Controls
 {
     public partial class StudyPlanList_Control : UserControl
     {
-        ColumnHeader columnName;
+        private Career selectedCareer;
+
         public StudyPlanList_Control()
         {
             InitializeComponent();
 
-            this.columnName = new ColumnHeader();
-            this.columnName.Text = "Nombre";
-            this.columnName.Width = 255;
+            StudyPlanDB.OnStudyPlanAdded += StudyPlanDB_OnStudyPlanAdded;
+            StudyPlanDB.OnStudyPlanRemoved += StudyPlanDB_OnStudyPlanRemoved;
+
         }
 
-        public async void LoadData()
+        internal async void LoadData()
         {
-            LV_Plans.Items.Clear();
+            PN_StudyPlanContainer.Controls.Clear();
+            CH_Career.Items.Clear();
 
-            var Plans = await StudyPlanDB.Get();
-            foreach (var plan in Plans)
+            foreach (var career in await CareerDB.Get())
             {
-                var lvItem = new ListViewItem();
-                lvItem.SubItems.Add(plan.Name);
-                lvItem.Tag = plan;
-                LV_Plans.Items.Add(lvItem);
+                CH_Career.Items.Add(career.Name);
             }
+        }
+
+        private void BT_AddSignature_Click(object sender, EventArgs e)
+        {
+            
         }
 
         private void BT_AddStudyPlan_Click(object sender, EventArgs e)
         {
-            frmMain.frm.Register(RegisterType.StudyPlan);
-        }
-
-        private void BT_EditPlan_Click(object sender, EventArgs e)
-        {
-            try
+            //frmMain.frm.Register(RegisterType.StudyPlan);
+            var result = new frmPopup(frmPopup.PopupType.Add_StudyPlan).ShowDialog();
+            if (result == DialogResult.OK)
             {
-                StudyPlan Plan = (StudyPlan)LV_Plans.SelectedItems[0].Tag;
-                if (Plan == null)
-                {
-                    Common.Show("Por favor seleccione un plan.");
-                    return;
-                }
-                else
-                {
-                    frmMain.frm.PN_RegisterContainer.Controls.Clear();
-                    frmMain.frm.PN_RegisterContainer.Controls.Add(new Plan_Control(Plan)
-                    {
-                        Dock = DockStyle.Fill
-                    });
-                    frmMain.frm.SelectTab(frmMain.frm.tabPage_Register);
-                }
-
+                LoadData();
             }
-            catch (Exception)
-            {
-            }
-
         }
 
-        private void BT_RemovePlan_Click(object sender, EventArgs e)
+        private async void Subject_Item_OnItemClicked(object sender, StudyPlan_Item e)
         {
+            ModifyItemsColor(e);
 
-        }
-
-        private async void LV_Plans_DoubleClick(object sender, EventArgs e)
-        {
             PN_PlansContainer.Controls.Clear();
-
-            StudyPlan studyPlan = (StudyPlan)LV_Plans.SelectedItems[0].Tag;
-            if (studyPlan != null)
+            var Plans = await StudyPlanDB.GetPlans(e.StudyPlan);
+            foreach (var Plan in Plans)
             {
-                var Plans = await PlanDB.Get(studyPlan);
-                Plans.Sort((s1, s2) => s2.Year.CompareTo(s1.Year));
+                //Common.Show(Plan.SubjectID);
+            }
+        }
 
-                foreach (var plan in Plans)
+        private void ModifyItemsColor(StudyPlan_Item e)
+        {
+            for (int i = 0; i < PN_StudyPlanContainer.Controls.Count; i++)
+            {
+                var control = PN_StudyPlanContainer.Controls[i];
+                if (control is StudyPlan_Item subject)
                 {
-                    AddStudyPlan(plan);
+                    //Common.Show($"Control: {subject.StudyPlan.Name} || Selected: {e.StudyPlan.Name}");
+                    if (subject.StudyPlan.ID == e.StudyPlan.ID)
+                    {
+                        subject.SetSelected(true);
+                    }
+                    else
+                    {
+                        subject.SetSelected(false);
+                    }
                 }
             }
         }
 
-        private void AddStudyPlan(Plan plan)
+        private void StudyPlanDB_OnStudyPlanRemoved(object sender, StudyPlan e)
         {
-            var PlanControl = new Control_Plan()
+            Common.Notify($"El plan de estudio {e.Name} se ha eliminado correctamente");
+
+            for (int i = 0; i < PN_StudyPlanContainer.Controls.Count; i++)
             {
-                Plan = plan,
-                Dock = DockStyle.Top
-            };
-
-            PlanControl.OnEditPlan += PlanControl_OnEditPlan;
-            PlanControl.OnDeletePlan += PlanControl_OnDeletePlan;
-
-            PN_PlansContainer.Controls.Add(PlanControl);
-
+                var control = PN_StudyPlanContainer.Controls[i];
+                if (control is StudyPlan_Item subject)
+                {
+                    if (subject.StudyPlan.ID == e.ID)
+                    {
+                        PN_StudyPlanContainer.Controls.Remove(control);
+                    }
+                }
+            }
         }
 
-        private void PlanControl_OnEditPlan(object sender, Plan e)
+        private void StudyPlanDB_OnStudyPlanAdded(object sender, StudyPlan e)
         {
+            Common.Notify($"El plan de estudio {e.Name} se ha agregado correctamente");
 
+            if (selectedCareer == null || e.CareerID != selectedCareer.ID)
+                return;
+
+            var Subject_Item = new StudyPlan_Item(e);
+            Subject_Item.Dock = DockStyle.Top;
+            Subject_Item.OnItemClicked += Subject_Item_OnItemClicked;
+            Subject_Item.Name = e.ID.ToString();
+            PN_StudyPlanContainer.Controls.Add(Subject_Item);
         }
 
-        private void PlanControl_OnDeletePlan(object sender, Plan e)
+        private async void CH_Career_SelectedIndexChanged(object sender, EventArgs e)
         {
+            selectedCareer = await CareerDB.Get(CH_Career.Text);
+            if (selectedCareer == null) return;
 
-        }
+            PN_StudyPlanContainer.Controls.Clear();
 
-        private void BT_AddPlan_Click(object sender, EventArgs e)
-        {
+            var Subjects = await StudyPlanDB.Get(selectedCareer);
 
+            for (int i = 0; i < Subjects.Count; i++)
+            {
+                var Subject = Subjects[i];
+                var Subject_Item = new StudyPlan_Item(Subject);
+                Subject_Item.Dock = DockStyle.Top;
+                Subject_Item.OnItemClicked += Subject_Item_OnItemClicked;
+                Subject_Item.Name = Subject.ID.ToString();
+                PN_StudyPlanContainer.Controls.Add(Subject_Item);
+            }
         }
     }
 }

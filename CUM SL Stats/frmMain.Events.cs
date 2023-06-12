@@ -59,7 +59,11 @@ namespace SKYNET
 
         private void addCareerMenuItem_Click(object sender, EventArgs e)
         {
-            Register(RegisterType.Career);
+            var result = new frmPopup(frmPopup.PopupType.Add_Career).ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                //LoadData();
+            }
         }
 
         private void addSubjectMenuItem_Click(object sender, EventArgs e)

@@ -354,7 +354,7 @@ namespace SKYNET.GUI.W_Controls
                 }
             }
 
-            Common.Show($"Se han importado {registered} estudiantes de {Count} en el archivo");
+            Common.Notify($"Se han importado {registered} estudiantes de {Count} en el archivo");
             LB_Info.Text = $"";
 
             if (done)

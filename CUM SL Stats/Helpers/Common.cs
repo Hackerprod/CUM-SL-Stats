@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SKYNET;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -36,6 +37,7 @@ public class Common
     {
         return Convert.ToInt32(Common.GetTextSize(text, control.Font).Width);
     }
+
     public static SizeF GetTextSize(string text, Font font)
     {
         try
@@ -77,4 +79,20 @@ public class Common
         }
     }
 
+    internal static void Notify(string msg, SKYNET_AlertBox.NotificationType flag = SKYNET_AlertBox.NotificationType.Success)
+    {
+        frmMain.frm.Notify(msg, flag);
+    }
+
+    public static void InvokeAction(Control control, Action Action)
+    {
+        if (control.InvokeRequired)
+        {
+            control.Invoke(Action);
+        }
+        else
+        {
+            Action();
+        }
+    }
 }

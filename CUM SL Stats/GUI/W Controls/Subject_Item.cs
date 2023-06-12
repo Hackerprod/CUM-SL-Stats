@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SKYNET.Models;
 using SKYNET.DB;
@@ -14,7 +8,7 @@ namespace SKYNET.GUI.W_Controls
 {
     public partial class Subject_Item : UserControl
     {
-        Subject Subject;
+        public Subject Subject;
 
         public Subject_Item(Subject subject)
         {
@@ -22,8 +16,10 @@ namespace SKYNET.GUI.W_Controls
 
             Subject = subject;
 
-            LB_SubnectName.Text = Subject.Name;
-            TB_SubnectName.Text = Subject.Name;
+            LB_SubjectName.Text = Subject.Name;
+            TB_SubjectName.Text = Subject.Name;
+
+            BT_Save.Location = BT_Edit.Location;
         }
 
         private void Control_MouseMove(object sender, MouseEventArgs e)
@@ -33,15 +29,16 @@ namespace SKYNET.GUI.W_Controls
 
         private void Control_MouseLeave(object sender, EventArgs e)
         {
-            BackColor = Color.White; ;
+            BackColor = Color.White; 
         }
 
         private void BT_Edit_Click(object sender, EventArgs e)
         {
-            LB_SubnectName.Visible = false;
-            TB_SubnectName.Visible = true;
+            LB_SubjectName.Visible = false;
+            TB_SubjectName.Visible = true;
             BT_Save.Visible = true;
-            TB_SubnectName.Focus();
+            BT_Edit.Visible = false;
+            TB_SubjectName.Focus();
         }
 
         private void BT_Delete_Click(object sender, EventArgs e)
@@ -55,16 +52,33 @@ namespace SKYNET.GUI.W_Controls
 
         private void BT_Save_Click(object sender, EventArgs e)
         {
-            LB_SubnectName.Visible = true;
-            TB_SubnectName.Visible = false;
-            BT_Save.Visible = false;
+            UpdateSubject(true);
+        }
 
-            if (LB_SubnectName.Text != TB_SubnectName.Text)
+        private void UpdateSubject(bool Update)
+        {
+            LB_SubjectName.Visible = true;
+            TB_SubjectName.Visible = false;
+            BT_Save.Visible = false;
+            BT_Edit.Visible = true;
+
+            if (Update && LB_SubjectName.Text != TB_SubjectName.Text)
             {
-                LB_SubnectName.Text = TB_SubnectName.Text;
-                Subject.Name = TB_SubnectName.Text;
+                LB_SubjectName.Text = TB_SubjectName.Text;
+                Subject.Name = TB_SubjectName.Text;
                 SubjectDB.Update(Subject);
-                sd
+            }
+        }
+
+        private void TB_SubjectName_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Return)
+            {
+                UpdateSubject(true);
+            }
+            if (e.KeyData == Keys.Escape)
+            {
+                UpdateSubject(false);
             }
         }
     }

@@ -8,14 +8,13 @@ namespace SKYNET.GUI.W_Controls
 {
     public partial class SubjectList_Control : UserControl
     {
-        ColumnHeader columnName;
+       
         public SubjectList_Control()
         {
             InitializeComponent();
 
-            this.columnName = new ColumnHeader();
-            this.columnName.Text = "Nombre";
-            this.columnName.Width = 255;
+            SubjectDB.OnSubjectRemoved += SubjectDB_OnRemoved;
+            SubjectDB.OnSubjectAdded += SubjectDB_OnAdded;
         }
 
         internal async void LoadData()
@@ -26,13 +25,37 @@ namespace SKYNET.GUI.W_Controls
             for (int i = 0; i < Subjects.Count; i++)
             {
                 var Subject = Subjects[i];
-                var lvItem = new ListViewItem();
-                lvItem.SubItems.Add(Subject.Name);
-                lvItem.Tag = Subject;
                 var Subject_Item = new Subject_Item(Subject);
                 Subject_Item.Dock = DockStyle.Top;
                 SubjectContainer.Controls.Add(Subject_Item);
             }
+        }
+
+        private void SubjectDB_OnRemoved(object sender, Subject e)
+        {
+            for (int i = 0; i < SubjectContainer.Controls.Count; i++)
+            {
+                var control = SubjectContainer.Controls[i];
+                if (control is Subject_Item subject)
+                {
+                    if (subject.Subject.ID == e.ID)
+                    {
+                        SubjectContainer.Controls.Remove(control);
+                    }
+                }
+            }
+        }
+
+        private void SubjectDB_OnAdded(object sender, Subject e)
+        {
+            var Subject_Item = new Subject_Item(e);
+            Subject_Item.Dock = DockStyle.Top;
+            SubjectContainer.Controls.Add(Subject_Item);
+        }
+
+        private void BT_AddSignature_Click(object sender, EventArgs e)
+        {
+            frmMain.frm.Register(RegisterType.Subject);
         }
     }
 }

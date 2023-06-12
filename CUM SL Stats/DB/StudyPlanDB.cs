@@ -11,6 +11,9 @@ namespace SKYNET.DB
         private static SQLiteAsyncConnection DB;
         private static AsyncTableQuery<StudyPlan> Table;
 
+        public static event EventHandler<StudyPlan> OnStudyPlanRemoved;
+        public static event EventHandler<StudyPlan> OnStudyPlanAdded;
+
         public async static Task Initialize(SQLiteAsyncConnection dB)
         {
             DB = dB;
@@ -22,10 +25,11 @@ namespace SKYNET.DB
 
         public static async Task<bool> Register(StudyPlan source)
         {
-            StudyPlan target = await Get(source.ID); 
+            StudyPlan target = await Get(source.Name, source.CourceID, source.CareerID); 
             if (target == null)
             {
-                await DB.InsertOrReplaceAsync(source);
+                await DB.InsertAsync(source);
+                OnStudyPlanAdded?.Invoke(null, source); 
                 return true;
             }
             Common.Show($"El Plan {source.Name} existe.");
@@ -49,21 +53,12 @@ namespace SKYNET.DB
 
         public static async Task<List<StudyPlan>> Get(Career career)
         {
-            var Plans = new List<StudyPlan>();
-            var Groups = await GroupDB.Get(career);
-            foreach (var group in Groups)
-            {
-                var plan = Plans.Find(p => p.ID == group.StudyPlanID);
-                if (plan == null)
-                {
-                    var targetPlan = await Get(group.StudyPlanID);
-                    if (targetPlan != null)
-                    {
-                        Plans.Add(targetPlan);
-                    }
-                }
-            }
-            return Plans;
+            return await Table.Where(s => s.CareerID == career.ID).ToListAsync();
+        }
+
+        private async static Task<StudyPlan> Get(string name, uint courceID, uint careerID)
+        {
+            return await Table.Where(c => c.Name == name && c.CourceID == courceID && c.CareerID == careerID).FirstOrDefaultAsync();
         }
 
         public static async Task<List<Plan>> GetPlans(uint StudyPlanID)
@@ -90,6 +85,19 @@ namespace SKYNET.DB
         public static async Task<StudyPlan> Get(uint ID)
         {
             return await Table.Where(c => c.ID == ID).FirstOrDefaultAsync();
+        }
+
+        public async static void Remove(StudyPlan studyPlan)
+        {
+            try
+            {
+                await DB.DeleteAsync(studyPlan);
+                OnStudyPlanRemoved?.Invoke(null, studyPlan);
+            }
+            catch (System.Exception)
+            {
+                Common.Show($"Error eliminando la asignatura {studyPlan.Name}.");
+            }
         }
     }
 }

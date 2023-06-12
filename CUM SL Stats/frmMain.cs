@@ -135,7 +135,7 @@ namespace SKYNET
                     break;
                 case RegisterType.StudyPlan:
                     {
-                        PN_RegisterContainer.Controls.Add(new Plan_Control()
+                        PN_RegisterContainer.Controls.Add(new StudyPlan_Control()
                         {
                             Dock = DockStyle.Fill
                         });
@@ -687,7 +687,15 @@ namespace SKYNET
             SelectTab(tabPage_CourceStats);
         }
 
+        public void Notify(string msg, SKYNET_AlertBox.NotificationType flag = SKYNET_AlertBox.NotificationType.Success)
+        {
+            AlertBox.ShowControl(flag, msg, 3500);
+        }
 
+        private void PictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 

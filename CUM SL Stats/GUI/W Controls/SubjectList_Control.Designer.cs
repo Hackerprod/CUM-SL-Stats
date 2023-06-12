@@ -36,6 +36,7 @@ namespace SKYNET.GUI.W_Controls
             this.label10 = new System.Windows.Forms.Label();
             this.panel17 = new System.Windows.Forms.Panel();
             this.label12 = new System.Windows.Forms.Label();
+            this.BT_AddSignature = new SKYNET_Button();
             this.panel13.SuspendLayout();
             this.panel14.SuspendLayout();
             this.panel16.SuspendLayout();
@@ -96,6 +97,7 @@ namespace SKYNET.GUI.W_Controls
             // panel17
             // 
             this.panel17.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.panel17.Controls.Add(this.BT_AddSignature);
             this.panel17.Controls.Add(this.label12);
             this.panel17.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel17.Location = new System.Drawing.Point(2, 2);
@@ -114,6 +116,26 @@ namespace SKYNET.GUI.W_Controls
             this.label12.TabIndex = 1;
             this.label12.Text = "ASIGNATURAS";
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // BT_AddSignature
+            // 
+            this.BT_AddSignature.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.BT_AddSignature.BackColorMouseOver = System.Drawing.Color.Empty;
+            this.BT_AddSignature.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BT_AddSignature.Font = new System.Drawing.Font("Arial Rounded MT Bold", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BT_AddSignature.ForeColor = System.Drawing.Color.White;
+            this.BT_AddSignature.ForeColorMouseOver = System.Drawing.Color.Empty;
+            this.BT_AddSignature.ImageAlignment = SKYNET_Button.ImgAlign.Left;
+            this.BT_AddSignature.ImageIcon = null;
+            this.BT_AddSignature.Location = new System.Drawing.Point(516, 5);
+            this.BT_AddSignature.MenuMode = false;
+            this.BT_AddSignature.Name = "BT_AddSignature";
+            this.BT_AddSignature.Rounded = false;
+            this.BT_AddSignature.Size = new System.Drawing.Size(40, 28);
+            this.BT_AddSignature.Style = SKYNET_Button._Style.TextOnly;
+            this.BT_AddSignature.TabIndex = 47;
+            this.BT_AddSignature.Text = "+";
+            this.BT_AddSignature.Click += new System.EventHandler(this.BT_AddSignature_Click);
             // 
             // SubjectList_Control
             // 
@@ -139,5 +161,6 @@ namespace SKYNET.GUI.W_Controls
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Panel panel17;
         private System.Windows.Forms.Label label12;
+        private SKYNET_Button BT_AddSignature;
     }
 }

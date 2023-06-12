@@ -56,6 +56,7 @@
     <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
     </Reference>
@@ -200,6 +201,15 @@
     <Compile Include="DB\GroupDB.cs" />
     <Compile Include="DB\SchoolCourceDB.cs" />
     <Compile Include="DB\CareerDB.cs" />
+    <Compile Include="frmPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmPopup.Designer.cs">
+      <DependentUpon>frmPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Controls\SKYNET_AlertBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="GUI\W Controls\Control_Plan.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -233,11 +243,17 @@
     <Compile Include="GUI\W Controls\Groups_Control.Designer.cs">
       <DependentUpon>Groups_Control.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\W Controls\Plan_Control.cs">
+    <Compile Include="GUI\W Controls\StudyPlan_Control.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\W Controls\Plan_Control.Designer.cs">
-      <DependentUpon>Plan_Control.cs</DependentUpon>
+    <Compile Include="GUI\W Controls\StudyPlan_Control.Designer.cs">
+      <DependentUpon>StudyPlan_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\W Controls\StudyPlan_Item.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\W Controls\StudyPlan_Item.Designer.cs">
+      <DependentUpon>StudyPlan_Item.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\W Controls\Subject_Item.cs">
       <SubType>UserControl</SubType>
@@ -324,6 +340,7 @@
       <DependentUpon>SKYNET_TextBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BlurExtentions.cs" />
+    <Compile Include="Helpers\ColorSystem.cs" />
     <Compile Include="Helpers\Extentions.cs" />
     <Compile Include="ISQLite.cs" />
     <Compile Include="Managers\ChartManager.cs" />
@@ -358,6 +375,9 @@
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmPopup.resx">
+      <DependentUpon>frmPopup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\W Controls\Control_Plan.resx">
       <DependentUpon>Control_Plan.cs</DependentUpon>
     </EmbeddedResource>
@@ -373,8 +393,11 @@
     <EmbeddedResource Include="GUI\W Controls\Groups_Control.resx">
       <DependentUpon>Groups_Control.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\W Controls\Plan_Control.resx">
-      <DependentUpon>Plan_Control.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\W Controls\StudyPlan_Control.resx">
+      <DependentUpon>StudyPlan_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\W Controls\StudyPlan_Item.resx">
+      <DependentUpon>StudyPlan_Item.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\W Controls\Subject_Item.resx">
       <DependentUpon>Subject_Item.cs</DependentUpon>
@@ -456,6 +479,7 @@
     <None Include="Resources\remove_48px.png" />
     <None Include="Resources\Edit.png" />
     <Content Include="mongocrypt.dll" />
+    <None Include="Resources\checkmark_26px.png" />
     <Content Include="SKYNET.SQLite.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -8,7 +8,5 @@ namespace SKYNET.Models
     {
         [Indexed]
         public string Name { get; set; }
-        [Indexed]
-        public uint StudyPlanID { get; set; }
     }
 }
